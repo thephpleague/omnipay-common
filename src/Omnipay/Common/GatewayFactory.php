@@ -68,7 +68,7 @@ class GatewayFactory
      * @param ClientInterface|null $httpClient  A Guzzle HTTP Client implementation
      * @param HttpRequest|null     $httpRequest A Symfony HTTP Request implementation
      */
-    public function create($class, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
+    public static function create($class, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
     {
         $class = Helper::getGatewayClassName($class);
 
