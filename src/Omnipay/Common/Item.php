@@ -106,6 +106,22 @@ class Item implements ItemInterface
     /**
      * {@inheritDoc}
      */
+    public function getTax()
+    {
+        return $this->getParameter('tax');
+    }
+
+    /**
+     * Set the item tax
+     */
+    public function setTax($value)
+    {
+        return $this->setParameter('tax', $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPrice()
     {
         return $this->getParameter('price');
@@ -117,5 +133,13 @@ class Item implements ItemInterface
     public function setPrice($value)
     {
         return $this->setParameter('price', $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFullPrice()
+    {
+        return $this->getParameter('price') + $this->getParameter('tax');
     }
 }
