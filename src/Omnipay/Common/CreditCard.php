@@ -142,6 +142,19 @@ class CreditCard
         }
     }
 
+    public function getTitle()
+    {
+        return $this->getBillingTitle();
+    }
+
+    public function setTitle($value)
+    {
+        $this->setBillingTitle($value);
+        $this->setShippingTitle($value);
+
+        return $this;
+    }
+
     public function getFirstName()
     {
         return $this->getBillingFirstName();
@@ -324,6 +337,16 @@ class CreditCard
         return $this;
     }
 
+    public function getBillingTitle()
+    {
+        return $this->getParameter('billingTitle');
+    }
+
+    public function setBillingTitle($value)
+    {
+        return $this->setParameter('billingTitle', $value);
+    }
+
     public function getBillingFirstName()
     {
         return $this->getParameter('billingFirstName');
@@ -436,6 +459,16 @@ class CreditCard
         $this->setShippingLastName(isset($names[1]) ? $names[1] : null);
 
         return $this;
+    }
+
+    public function getShippingTitle()
+    {
+        return $this->getParameter('shippingTitle');
+    }
+
+    public function setShippingTitle($value)
+    {
+        return $this->setParameter('shippingTitle', $value);
     }
 
     public function getShippingFirstName()
@@ -642,6 +675,16 @@ class CreditCard
         return $this;
     }
 
+    public function getMobile()
+    {
+        return $this->getParameter('mobile');
+    }
+
+    public function setMobile($value)
+    {
+        return $this->setParameter('mobile', $value);
+    }
+
     public function getEmail()
     {
         return $this->getParameter('email');
@@ -650,6 +693,16 @@ class CreditCard
     public function setEmail($value)
     {
         return $this->setParameter('email', $value);
+    }
+
+    public function getFax()
+    {
+        return $this->getParameter('fax');
+    }
+
+    public function setFax($value)
+    {
+        return $this->setParameter('fax', $value);
     }
 
     public function getBirthday($format = 'Y-m-d')
