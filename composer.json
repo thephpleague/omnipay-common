@@ -67,6 +67,7 @@
             "SagePay_Direct",
             "SagePay_Server",
             "SecurePay_DirectPost",
+            "Skrill",
             "Stripe",
             "TargetPay_Directebanking",
             "TargetPay_Ideal",
