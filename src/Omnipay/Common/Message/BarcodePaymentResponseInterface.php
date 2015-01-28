@@ -6,7 +6,7 @@ namespace Omnipay\Common\Message;
  * Barcode Payment Response interface
  * @package Omnipay\Common\Message
  */
-interface BarcodePaymentResponseInterface extends AdvancedPaymentResponseInterface
+interface BarcodePaymentResponseInterface extends ResponseInterface
 {
     /**
      * Barcode absolute url or data URI
