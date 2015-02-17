@@ -601,4 +601,10 @@ class CreditCardTest extends TestCase
         $this->card->setDocumentNumber('0123456789AB');
         $this->assertEquals('0123456789AB', $this->card->getDocumentNumber());
     }
+
+    public function testPersonType()
+    {
+        $this->card->setPersonType(CreditCard::PERSON_TYPE_LEGAL);
+        $this->assertEquals(CreditCard::PERSON_TYPE_LEGAL, $this->card->getPersonType());
+    }
 }

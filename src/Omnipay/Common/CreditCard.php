@@ -32,6 +32,9 @@ class CreditCard
     const DOCUMENT_TYPE_FOREIGNERS_ID_CARD = 'foreignersIdCard';
     const DOCUMENT_TYPE_PASSPORT = 'passport';
 
+    const PERSON_TYPE_NATURAL = 'natural';
+    const PERSON_TYPE_LEGAL = 'legal';
+
     /**
      * @var \Symfony\Component\HttpFoundation\ParameterBag
      */
@@ -771,5 +774,15 @@ class CreditCard
     public function setDocumentType($value)
     {
         return $this->setParameter('documentType', $value);
+    }
+
+    public function getPersonType()
+    {
+        return $this->getParameter('personType');
+    }
+
+    public function setPersonType($value)
+    {
+        return $this->setParameter('personType', $value);
     }
 }
