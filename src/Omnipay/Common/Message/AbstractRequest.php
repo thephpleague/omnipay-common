@@ -620,4 +620,23 @@ abstract class AbstractRequest implements RequestInterface
 
         return $this->response;
     }
+    public function getTax()
+    {
+        return $this->getParameter('tax');
+    }
+
+    public function setTax($value)
+    {
+        return $this->setParameter('tax', $value);
+    }
+
+    public function getTaxBase()
+    {
+        return $this->getParameter('taxBase');
+    }
+
+    public function setTaxBase($value)
+    {
+        return $this->setParameter('taxBase', $value);
+    }
 }

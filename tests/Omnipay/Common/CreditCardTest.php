@@ -589,4 +589,22 @@ class CreditCardTest extends TestCase
         $this->card->setGender('female');
         $this->assertEquals('female', $this->card->getGender());
     }
+
+    public function testDocumentType()
+    {
+        $this->card->setDocumentType(CreditCard::DOCUMENT_TYPE_NATIONAL_ID_CARD);
+        $this->assertEquals(CreditCard::DOCUMENT_TYPE_NATIONAL_ID_CARD, $this->card->getDocumentType());
+    }
+
+    public function testDocumentNumber()
+    {
+        $this->card->setDocumentNumber('0123456789AB');
+        $this->assertEquals('0123456789AB', $this->card->getDocumentNumber());
+    }
+
+    public function testPersonType()
+    {
+        $this->card->setPersonType(CreditCard::PERSON_TYPE_LEGAL);
+        $this->assertEquals(CreditCard::PERSON_TYPE_LEGAL, $this->card->getPersonType());
+    }
 }
