@@ -590,6 +590,23 @@ class CreditCardTest extends TestCase
         $this->assertEquals('female', $this->card->getGender());
     }
 
+    public function testCustomSupportedBrand()
+    {
+        $this->card->setSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/');
+        $this->assertArrayHasKey('omniexpress', $this->card->getSupportedBrands());
+    }
+
+    public function testCustomBrandWorks()
+    {
+        $this->card->setSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/');
+        $this->assertArrayHasKey('omniexpress', $this->card->getSupportedBrands());
+
+        $this->card->setNumber('9111111111111110');
+        $this->card->validate();
+
+        $this->assertEquals('omniexpress', $this->card->getBrand());
+    }
+
     /**
      * @expectedException Omnipay\Common\Exception\InvalidCreditCardException
      */
