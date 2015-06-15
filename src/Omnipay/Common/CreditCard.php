@@ -172,8 +172,9 @@ class CreditCard
     {
         $known_brands = array_keys(static::$supported_cards);
 
-        if (in_array($name, $known_brands))
+        if (in_array($name, $known_brands)) {
             return false;
+        }
 
         static::$supported_cards[$name] = $expression;
         return true;
