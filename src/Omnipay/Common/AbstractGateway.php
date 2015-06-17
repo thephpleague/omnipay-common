@@ -278,6 +278,17 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
+     * Create a response object using existing parameters from return url , redirect url
+     * @param string $class The response class name, ex: \Omnipay\Payflow\Message\Response
+     * @param array $parameters, ex: ["action" => "return", "vpc_TxnResponseCode" => 5, "vpc_Message" => "Amount is invalid"]
+     * @return object, ex: \Omnipay\Common\Message\Response
+     */
+    public function createResponse($class, array $parameters)
+    {
+        return new $class($this->httpRequest, $parameters);
+    }
+
+    /**
      * Create and initialize a request object
      *
      * This function is usually used to create objects of type
