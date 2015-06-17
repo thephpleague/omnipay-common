@@ -285,7 +285,7 @@ abstract class AbstractGateway implements GatewayInterface
      */
     public function createResponse($class, array $parameters)
     {
-        return new $class($this->httpClient, $parameters);
+        return new $class($this->httpRequest, $parameters);
     }
 
     /**
