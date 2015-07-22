@@ -116,8 +116,8 @@ class CreditCard
      *
      * The order of the card brands is important, as some of the regular expressions overlap.
      *
-     * Note: The fact that this class knows about a particular card brand does not imply
-     * that your gateway supports it.
+     * Note: The fact that a particular card brand has been added to this array does not imply
+     * that a selected gateway will support the card.
      *
      * @link https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/credit_card_methods.rb
      * @var array
@@ -149,6 +149,9 @@ class CreditCard
 
     /**
      * All known/supported card brands, and a regular expression to match them.
+     *
+     * Note: The fact that this class knows about a particular card brand does not imply
+     * that your gateway supports it.
      *
      * @see self::$supported_cards
      * @return array
