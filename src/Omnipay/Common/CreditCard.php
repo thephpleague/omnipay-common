@@ -167,11 +167,14 @@ class CreditCard
      * Note: The fact that a particular card is known does not imply that your
      * gateway supports it.
      *
+     * Set $add_to_front to true if the key should be added to the front of the array
+     *
      * @param string $name The name of the new supported brand.
      * @param string $expression The regular expression to check if a card is supported.
+     * @param bool   $add_to_front should the key be added to the front of the array?
      * @return boolean success
      */
-    public function setSupportedBrand($name, $expression)
+    public function setSupportedBrand($name, $expression, $add_to_front = false)
     {
         $known_brands = array_keys(static::$supported_cards);
 
@@ -179,7 +182,13 @@ class CreditCard
             return false;
         }
 
-        static::$supported_cards[$name] = $expression;
+        if ($add_to_front) {
+            $new_card = [ $name => $expression ];
+            static::$supported_cards = $new_card + static::$supported_cards;
+        } else {
+            static::$supported_cards[$name] = $expression;
+        }
+
         return true;
     }
 
