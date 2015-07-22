@@ -138,6 +138,13 @@ class CreditCard
     );
 
     /**
+     * A variable holding a list of all the custom defined cards.
+     *
+     * @var null|array
+     */
+    private $user_defined_cards = null;
+
+    /**
      * Create a new CreditCard object using the specified parameters
      *
      * @param array $parameters An array of parameters to set on the new object
@@ -158,7 +165,11 @@ class CreditCard
      */
     public function getSupportedBrands()
     {
-        return static::$supported_cards;
+        if (is_array($this->user_defined_cards)) {
+            return $this->user_defined_cards;
+        }
+
+        return self::$supported_cards;
     }
 
     /**
@@ -169,14 +180,18 @@ class CreditCard
      *
      * Set $add_to_front to true if the key should be added to the front of the array
      *
-     * @param string $name The name of the new supported brand.
-     * @param string $expression The regular expression to check if a card is supported.
-     * @param bool   $add_to_front should the key be added to the front of the array?
+     * @param  string  $name The name of the new supported brand.
+     * @param  string  $expression The regular expression to check if a card is supported.
+     * @param  bool    $add_to_front should the key be added to the front of the array?
      * @return boolean success
      */
     public function setSupportedBrand($name, $expression, $add_to_front = false)
     {
-        $known_brands = array_keys(static::$supported_cards);
+        if (!is_array($this->user_defined_cards)) {
+            $this->user_defined_cards = self::$supported_cards;
+        }
+
+        $known_brands = array_keys($this->user_defined_cards);
 
         if (in_array($name, $known_brands)) {
             return false;
@@ -184,9 +199,9 @@ class CreditCard
 
         if ($add_to_front) {
             $new_card = array($name => $expression);
-            static::$supported_cards = $new_card + static::$supported_cards;
+            $this->user_defined_cards = $new_card + $this->user_defined_cards;
         } else {
-            static::$supported_cards[$name] = $expression;
+            $this->user_defined_cards[$name] = $expression;
         }
 
         return true;
