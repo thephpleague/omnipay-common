@@ -183,7 +183,7 @@ class CreditCard
         }
 
         if ($add_to_front) {
-            $new_card = [ $name => $expression ];
+            $new_card = array($name => $expression);
             static::$supported_cards = $new_card + static::$supported_cards;
         } else {
             static::$supported_cards[$name] = $expression;
