@@ -112,6 +112,39 @@ class CreditCard
     protected $parameters;
 
     /**
+     * All known/supported card brands, and a regular expression to match them.
+     *
+     * The order of the card brands is important, as some of the regular expressions overlap.
+     *
+     * Note: The fact that a particular card brand has been added to this array does not imply
+     * that a selected gateway will support the card.
+     *
+     * @link https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/credit_card_methods.rb
+     * @var array
+     */
+    protected static $supported_cards = array(
+        self::BRAND_VISA => '/^4\d{12}(\d{3})?$/',
+        self::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$/',
+        self::BRAND_DISCOVER => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
+        self::BRAND_AMEX => '/^3[47]\d{13}$/',
+        self::BRAND_DINERS_CLUB => '/^3(0[0-5]|[68]\d)\d{11}$/',
+        self::BRAND_JCB => '/^35(28|29|[3-8]\d)\d{12}$/',
+        self::BRAND_SWITCH => '/^6759\d{12}(\d{2,3})?$/',
+        self::BRAND_SOLO => '/^6767\d{12}(\d{2,3})?$/',
+        self::BRAND_DANKORT => '/^5019\d{12}$/',
+        self::BRAND_MAESTRO => '/^(5[06-8]|6\d)\d{10,17}$/',
+        self::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
+        self::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
+    );
+
+    /**
+     * A variable holding a list of all the custom defined cards.
+     *
+     * @var null|array
+     */
+    private $user_defined_cards = null;
+
+    /**
      * Create a new CreditCard object using the specified parameters
      *
      * @param array $parameters An array of parameters to set on the new object
@@ -124,30 +157,54 @@ class CreditCard
     /**
      * All known/supported card brands, and a regular expression to match them.
      *
-     * The order of the card brands is important, as some of the regular expressions overlap.
-     *
      * Note: The fact that this class knows about a particular card brand does not imply
      * that your gateway supports it.
      *
+     * @see self::$supported_cards
      * @return array
-     * @link https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/credit_card_methods.rb
      */
     public function getSupportedBrands()
     {
-        return array(
-            static::BRAND_VISA => '/^4\d{12}(\d{3})?$/',
-            static::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$/',
-            static::BRAND_DISCOVER => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
-            static::BRAND_AMEX => '/^3[47]\d{13}$/',
-            static::BRAND_DINERS_CLUB => '/^3(0[0-5]|[68]\d)\d{11}$/',
-            static::BRAND_JCB => '/^35(28|29|[3-8]\d)\d{12}$/',
-            static::BRAND_SWITCH => '/^6759\d{12}(\d{2,3})?$/',
-            static::BRAND_SOLO => '/^6767\d{12}(\d{2,3})?$/',
-            static::BRAND_DANKORT => '/^5019\d{12}$/',
-            static::BRAND_MAESTRO => '/^(5[06-8]|6\d)\d{10,17}$/',
-            static::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
-            static::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
-        );
+        if (is_array($this->user_defined_cards)) {
+            return $this->user_defined_cards;
+        }
+
+        return self::$supported_cards;
+    }
+
+    /**
+     * Set a custom supported card brand with a regular expression to match it.
+     *
+     * Note: The fact that a particular card is known does not imply that your
+     * gateway supports it.
+     *
+     * Set $add_to_front to true if the key should be added to the front of the array
+     *
+     * @param  string  $name The name of the new supported brand.
+     * @param  string  $expression The regular expression to check if a card is supported.
+     * @param  bool    $add_to_front should the key be added to the front of the array?
+     * @return boolean success
+     */
+    public function setSupportedBrand($name, $expression, $add_to_front = false)
+    {
+        if (!is_array($this->user_defined_cards)) {
+            $this->user_defined_cards = self::$supported_cards;
+        }
+
+        $known_brands = array_keys($this->user_defined_cards);
+
+        if (in_array($name, $known_brands)) {
+            return false;
+        }
+
+        if ($add_to_front) {
+            $new_card = array($name => $expression);
+            $this->user_defined_cards = $new_card + $this->user_defined_cards;
+        } else {
+            $this->user_defined_cards[$name] = $expression;
+        }
+
+        return true;
     }
 
     /**

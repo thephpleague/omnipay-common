@@ -590,12 +590,54 @@ class CreditCardTest extends TestCase
         $this->assertEquals('female', $this->card->getGender());
     }
 
+    public function testCustomSupportedBrand()
+    {
+        $this->card->setSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/');
+        $this->assertArrayHasKey('omniexpress', $this->card->getSupportedBrands());
+    }
+
+    public function testCustomBrandWorks()
+    {
+        $this->card->setSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/');
+        $this->assertArrayHasKey('omniexpress', $this->card->getSupportedBrands());
+
+        $this->card->setNumber('9111111111111110');
+        $this->card->validate();
+
+        $this->assertEquals('omniexpress', $this->card->getBrand());
+    }
+
+    public function testCustomBrandAtFront()
+    {
+        $this->card->setSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/');
+        $this->card->setNumber('9911111111111112');
+        $this->assertEquals('omniexpress', $this->card->getBrand());
+
+        $this->card->setSupportedBrand('omniexpressgold', '/^99\d{12}(\d{2})?$/', true);
+        $this->assertArrayHasKey('omniexpressgold', $this->card->getSupportedBrands());
+        $this->card->setNumber('9911111111111112');
+        $this->card->validate();
+
+        $this->assertEquals('omniexpressgold', $this->card->getBrand());
+    }
+
     /**
      * @expectedException Omnipay\Common\Exception\InvalidCreditCardException
+     * @expectedExceptionMessage Card number is invalid
+     */
+    public function testInvalidLuhn()
+    {
+        $this->card->setNumber('43');
+        $this->card->validate();
+    }
+
+    /**
+     * @expectedException Omnipay\Common\Exception\InvalidCreditCardException
+     * @expectedExceptionMessage Card number should have 12 to 19 digits
      */
     public function testInvalidShortCard()
     {
-        $this->card->setNumber('43');
+        $this->card->setNumber('4440');
         $this->card->validate();
     }
 }
