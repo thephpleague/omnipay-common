@@ -56,6 +56,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * * startMonth
  * * startYear
  * * cvv
+ * * tracks
  * * issueNumber
  * * billingTitle
  * * billingName
@@ -542,6 +543,28 @@ class CreditCard
     public function setCvv($value)
     {
         return $this->setParameter('cvv', $value);
+    }
+
+    /**
+     * Get raw data for all tracks on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTracks()
+    {
+        return $this->getParameter('tracks');
+    }
+
+    /**
+     * Sets raw data from all tracks on the credit card magnetic strip. Used by gateways that support card-present
+     * transactions.
+     *
+     * @param $value
+     * @return CreditCard
+     */
+    public function setTracks($value)
+    {
+        return $this->setParameter('tracks', $value);
     }
 
     /**

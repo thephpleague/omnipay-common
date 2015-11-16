@@ -309,6 +309,12 @@ class CreditCardTest extends TestCase
         $this->assertEquals('456', $this->card->getCvv());
     }
 
+    public function testTracks()
+    {
+        $this->card->setTracks('%25B4242424242424242%5ETESTLAST%2FTESTFIRST%5E1505201425400714000000%3F%3B4242424242424242%3D150520142547140130%3F');
+        $this->assertSame('%25B4242424242424242%5ETESTLAST%2FTESTFIRST%5E1505201425400714000000%3F%3B4242424242424242%3D150520142547140130%3F', $this->card->getTracks());
+    }
+
     public function testIssueNumber()
     {
         $this->card->setIssueNumber('12');
