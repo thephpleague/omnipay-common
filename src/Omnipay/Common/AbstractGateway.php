@@ -335,6 +335,7 @@ abstract class AbstractGateway implements GatewayInterface
             '',
             array(
                 'curl.options' => array(CURLOPT_CONNECTTIMEOUT => 60),
+                'ssl.certificate_authority' => 'system',
             )
         );
     }
