@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
@@ -17,6 +15,7 @@ env:
   - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.1"
   - SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.*"
   - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.*"
+  - SYMFONY_VERSION="3.0" GUZZLE_VERSION="3.*"
 
 before_script:
   - composer require symfony/http-foundation:${SYMFONY_VERSION} --no-update
