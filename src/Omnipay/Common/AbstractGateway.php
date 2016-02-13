@@ -5,10 +5,10 @@
 
 namespace Omnipay\Common;
 
-use Guzzle\Http\ClientInterface;
-use Guzzle\Http\Client as HttpClient;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Omnipay\Common\Http\GuzzleClient;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\ServerRequestFactory;
+use Omnipay\Common\Http\ClientInterface;
 
 /**
  * Base payment gateway class
@@ -42,30 +42,27 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  *
  * @see GatewayInterface
  */
-abstract class AbstractGateway implements GatewayInterface
+abstract class AbstractGateway implements GatewayInterface, ParameterizedInterface
 {
-    /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
-     */
-    protected $parameters;
+    use HasParametersTrait;
 
     /**
-     * @var \Guzzle\Http\ClientInterface
+     * @var ClientInterface
      */
     protected $httpClient;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var ServerRequestInterface
      */
     protected $httpRequest;
 
     /**
      * Create a new gateway instance
      *
-     * @param ClientInterface $httpClient  A Guzzle client to make API calls with
-     * @param HttpRequest     $httpRequest A Symfony HTTP request object
+     * @param ClientInterface $httpClient  A HTTP client to make API calls with
+     * @param ServerRequestInterface     $httpRequest A HTTP request object
      */
-    public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
+    public function __construct(ClientInterface $httpClient = null, ServerRequestInterface $httpRequest = null)
     {
         $this->httpClient = $httpClient ?: $this->getDefaultHttpClient();
         $this->httpRequest = $httpRequest ?: $this->getDefaultHttpRequest();
@@ -101,7 +98,7 @@ abstract class AbstractGateway implements GatewayInterface
             }
         }
 
-        Helper::initialize($this, $parameters);
+        Helper::initializeParameters($this, $parameters);
 
         return $this;
     }
@@ -112,35 +109,6 @@ abstract class AbstractGateway implements GatewayInterface
     public function getDefaultParameters()
     {
         return array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters->all();
-    }
-
-    /**
-     * @param  string $key
-     * @return mixed
-     */
-    public function getParameter($key)
-    {
-        return $this->parameters->get($key);
-    }
-
-    /**
-     * @param  string $key
-     * @param  mixed  $value
-     * @return $this
-     */
-    public function setParameter($key, $value)
-    {
-        $this->parameters->set($key, $value);
-
-        return $this;
     }
 
     /**
@@ -327,25 +295,20 @@ abstract class AbstractGateway implements GatewayInterface
     /**
      * Get the global default HTTP client.
      *
-     * @return HttpClient
+     * @return ClientInterface
      */
     protected function getDefaultHttpClient()
     {
-        return new HttpClient(
-            '',
-            array(
-                'curl.options' => array(CURLOPT_CONNECTTIMEOUT => 60),
-            )
-        );
+        return new GuzzleClient();
     }
 
     /**
      * Get the global default HTTP request.
      *
-     * @return HttpRequest
+     * @return ServerRequestInterface
      */
     protected function getDefaultHttpRequest()
     {
-        return HttpRequest::createFromGlobals();
+        return ServerRequestFactory::fromGlobals();
     }
 }

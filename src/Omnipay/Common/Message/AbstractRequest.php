@@ -5,15 +5,18 @@
 
 namespace Omnipay\Common\Message;
 
-use Guzzle\Http\ClientInterface;
+use Omnipay\Common\Amount;
+use Omnipay\Common\HasParametersTrait;
+use Omnipay\Common\Http\ClientInterface;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Currency;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Helper;
 use Omnipay\Common\ItemBag;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Omnipay\Common\ParameterBag;
+use Omnipay\Common\ParameterizedInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use InvalidArgumentException;
 
 /**
@@ -59,26 +62,26 @@ use InvalidArgumentException;
  * @see RequestInterface
  * @see AbstractResponse
  */
-abstract class AbstractRequest implements RequestInterface
+abstract class AbstractRequest implements RequestInterface, ParameterizedInterface
 {
     /**
      * The request parameters
      *
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var ParameterBag
      */
     protected $parameters;
 
     /**
      * The request client.
      *
-     * @var \Guzzle\Http\ClientInterface
+     * @var ClientInterface
      */
     protected $httpClient;
 
     /**
      * The HTTP request object.
      *
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var ServerRequestInterface
      */
     protected $httpRequest;
 
@@ -102,10 +105,10 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Create a new Request
      *
-     * @param ClientInterface $httpClient  A Guzzle client to make API calls with
-     * @param HttpRequest     $httpRequest A Symfony HTTP request object
+     * @param ClientInterface           $httpClient  A Http client to make API calls with
+     * @param ServerRequestInterface    $httpRequest A HTTP request object
      */
-    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
+    public function __construct(ClientInterface $httpClient, ServerRequestInterface $httpRequest)
     {
         $this->httpClient = $httpClient;
         $this->httpRequest = $httpRequest;
@@ -122,7 +125,7 @@ abstract class AbstractRequest implements RequestInterface
      * @return $this
      * @throws RuntimeException
      */
-    public function initialize(array $parameters = array())
+    public function initialize(array $parameters = [])
     {
         if (null !== $this->response) {
             throw new RuntimeException('Request cannot be modified after it has been sent!');
@@ -130,7 +133,7 @@ abstract class AbstractRequest implements RequestInterface
 
         $this->parameters = new ParameterBag;
 
-        Helper::initialize($this, $parameters);
+        Helper::initializeParameters($this, $parameters);
 
         return $this;
     }
@@ -144,18 +147,16 @@ abstract class AbstractRequest implements RequestInterface
     {
         return $this->parameters->all();
     }
-
     /**
      * Get a single parameter.
      *
      * @param string $key The parameter key
      * @return mixed
      */
-    protected function getParameter($key)
+    public function getParameter($key)
     {
         return $this->parameters->get($key);
     }
-
     /**
      * Set a single parameter
      *
@@ -164,14 +165,12 @@ abstract class AbstractRequest implements RequestInterface
      * @return AbstractRequest Provides a fluent interface
      * @throws RuntimeException if a request parameter is modified after the request has been sent.
      */
-    protected function setParameter($key, $value)
+    public function setParameter($key, $value)
     {
         if (null !== $this->response) {
             throw new RuntimeException('Request cannot be modified after it has been sent!');
         }
-
         $this->parameters->set($key, $value);
-
         return $this;
     }
 
@@ -283,153 +282,69 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * Convert an amount into a float.
-     *
-     * @var string|int|float $value The value to convert.
-     * @throws InvalidRequestException on any validation failure.
-     * @return float The amount converted to a float.
+     * @return string
      */
-
-    public function toFloat($value)
+    protected function getCurrency()
     {
-        try {
-            return Helper::toFloat($value);
-        } catch (InvalidArgumentException $e) {
-            // Throw old exception for legacy implementations.
-            throw new InvalidRequestException($e->getMessage(), $e->getCode(), $e);
-        }
+        return strtoupper($this->getParameter('currency'));
     }
 
     /**
-     * Validates and returns the formated amount.
+     * @param  string $value
+     * @return $this
+     */
+    public function setCurrency($value)
+    {
+        return $this->setParameter('currency', $value);
+    }
+
+    /**
+     * Validates and returns  amount as integer.
      *
      * @throws InvalidRequestException on any validation failure.
-     * @return string The amount formatted to the correct number of decimal places for the selected currency.
+     * @return string The amount in smallest unit possible (eg. 'cents')
      */
     public function getAmount()
     {
         $amount = $this->getParameter('amount');
 
         if ($amount !== null) {
-            // Don't allow integers for currencies that support decimals.
-            // This is for legacy reasons - upgrades from v0.9
-            if ($this->getCurrencyDecimalPlaces() > 0) {
-                if (is_int($amount) || (is_string($amount) && false === strpos((string) $amount, '.'))) {
-                    throw new InvalidRequestException(
-                        'Please specify amount as a string or float, '
-                        . 'with decimal places (e.g. \'10.00\' to represent $10.00).'
-                    );
-                };
+            if (!$amount instanceof Amount) {
+
+                // Default currency when none set
+                $currency = $this->getCurrency();
+
+                if ($currency == null) {
+                    throw new InvalidRequestException('A currency is required.');
+                }
+
+                $amount = new Amount($amount, $currency);
             }
 
-            $amount = $this->toFloat($amount);
-
             // Check for a negative amount.
-            if (!$this->negativeAmountAllowed && $amount < 0) {
+            if (!$this->negativeAmountAllowed && $amount->isNegative()) {
                 throw new InvalidRequestException('A negative amount is not allowed.');
             }
 
             // Check for a zero amount.
-            if (!$this->zeroAmountAllowed && $amount === 0.0) {
+            if (!$this->zeroAmountAllowed && $amount->isZero()) {
                 throw new InvalidRequestException('A zero amount is not allowed.');
             }
 
-            // Check for rounding that may occur if too many significant decimal digits are supplied.
-            $decimal_count = strlen(substr(strrchr(sprintf('%.8g', $amount), '.'), 1));
-            if ($decimal_count > $this->getCurrencyDecimalPlaces()) {
-                throw new InvalidRequestException('Amount precision is too high for currency.');
-            }
-
-            return $this->formatCurrency($amount);
+            return $amount;
         }
     }
 
     /**
      * Sets the payment amount.
      *
-     * @param string $value
+     * @param string|Amount $value
      * @return AbstractRequest Provides a fluent interface
+     * @throws InvalidRequestException
      */
     public function setAmount($value)
     {
         return $this->setParameter('amount', $value);
-    }
-
-    /**
-     * Get the payment amount as an integer.
-     *
-     * @return integer
-     */
-    public function getAmountInteger()
-    {
-        return (int) round($this->getAmount() * $this->getCurrencyDecimalFactor());
-    }
-
-    /**
-     * Get the payment currency code.
-     *
-     * @return string
-     */
-    public function getCurrency()
-    {
-        return $this->getParameter('currency');
-    }
-
-    /**
-     * Sets the payment currency code.
-     *
-     * @param string $value
-     * @return AbstractRequest Provides a fluent interface
-     */
-    public function setCurrency($value)
-    {
-        return $this->setParameter('currency', strtoupper($value));
-    }
-
-    /**
-     * Get the payment currency number.
-     *
-     * @return integer
-     */
-    public function getCurrencyNumeric()
-    {
-        if ($currency = Currency::find($this->getCurrency())) {
-            return $currency->getNumeric();
-        }
-    }
-
-    /**
-     * Get the number of decimal places in the payment currency.
-     *
-     * @return integer
-     */
-    public function getCurrencyDecimalPlaces()
-    {
-        if ($currency = Currency::find($this->getCurrency())) {
-            return $currency->getDecimals();
-        }
-
-        return 2;
-    }
-
-    private function getCurrencyDecimalFactor()
-    {
-        return pow(10, $this->getCurrencyDecimalPlaces());
-    }
-
-    /**
-     * Format an amount for the payment currency.
-     *
-     * @return string
-     */
-    public function formatCurrency($amount)
-    {
-        return number_format(
-            $amount,
-            $this->getCurrencyDecimalPlaces(),
-            '.',
-            ''
-        );
     }
 
     /**

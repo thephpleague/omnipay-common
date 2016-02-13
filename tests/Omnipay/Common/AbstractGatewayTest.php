@@ -5,7 +5,6 @@ namespace Omnipay\Common;
 use Mockery as m;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Tests\TestCase;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AbstractGatewayTest extends TestCase
 {
@@ -18,8 +17,8 @@ class AbstractGatewayTest extends TestCase
     public function testConstruct()
     {
         $this->gateway = new AbstractGatewayTest_MockAbstractGateway;
-        $this->assertInstanceOf('\Guzzle\Http\Client', $this->gateway->getProtectedHttpClient());
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Request', $this->gateway->getProtectedHttpRequest());
+        $this->assertInstanceOf('\Omnipay\Common\Http\ClientInterface', $this->gateway->getProtectedHttpClient());
+        $this->assertInstanceOf('\Psr\Http\Message\ServerRequestInterface', $this->gateway->getProtectedHttpRequest());
         $this->assertSame(array(), $this->gateway->getParameters());
     }
 
@@ -56,7 +55,7 @@ class AbstractGatewayTest extends TestCase
             'unknown' => '42',
         ));
 
-        $this->assertSame(array('currency' => 'USD'), $this->gateway->getParameters());
+        $this->assertSame(array('currency' => 'USD', 'unknown' => '42'), $this->gateway->getParameters());
     }
 
     public function testGetDefaultParameters()
