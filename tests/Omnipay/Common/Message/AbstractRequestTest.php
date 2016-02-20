@@ -63,6 +63,11 @@ class AbstractRequestTest extends TestCase
         $this->assertSame($card, $this->request->getCard());
     }
 
+    public function testGetCard()
+    {
+        $this->assertInstanceOf('\Omnipay\Common\CreditCard', $this->request->getCard());
+    }
+
     public function testSetCardWithArray()
     {
         // passing array should create CreditCard object

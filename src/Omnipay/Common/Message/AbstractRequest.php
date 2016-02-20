@@ -222,7 +222,13 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getCard()
     {
-        return $this->getParameter('card');
+        $card = $this->getParameter('card');
+
+        if (!$card instanceof CreditCard) {
+            return new CreditCard();
+        }
+
+        return $card;
     }
 
     /**
