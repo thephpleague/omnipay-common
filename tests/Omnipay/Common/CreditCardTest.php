@@ -6,6 +6,9 @@ use Omnipay\Tests\TestCase;
 
 class CreditCardTest extends TestCase
 {
+    /** @var CreditCard */
+    private $card;
+
     public function setUp()
     {
         $this->card = new CreditCard;
@@ -322,6 +325,26 @@ class CreditCardTest extends TestCase
     {
         $this->card->setCvv('456');
         $this->assertEquals('456', $this->card->getCvv());
+    }
+
+    public function testTracks()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $this->assertSame('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?', $this->card->getTracks());
+    }
+
+    public function testShouldReturnTrack1()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $actual = $this->card->getTrack1();
+        $this->assertEquals('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?', $actual);
+    }
+
+    public function testShouldReturnTrack2()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $actual = $this->card->getTrack2();
+        $this->assertEquals(';4242424242424242=15201269999944401?', $actual);
     }
 
     public function testIssueNumber()

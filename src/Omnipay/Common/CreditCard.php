@@ -57,6 +57,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * * startMonth
  * * startYear
  * * cvv
+ * * tracks
  * * issueNumber
  * * billingTitle
  * * billingName
@@ -578,6 +579,62 @@ class CreditCard
     public function setCvv($value)
     {
         return $this->setParameter('cvv', $value);
+    }
+
+    /**
+     * Get raw data for all tracks on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTracks()
+    {
+        return $this->getParameter('tracks');
+    }
+
+    /**
+     * Get raw data for track 1 on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTrack1()
+    {
+        $track1 = null;
+        if ($tracks = $this->getTracks()) {
+            $pattern = '/\%B\d{1,19}\^.{2,26}\^\d{4}\d*\?/';
+            if (preg_match($pattern, $tracks, $matches) === 1) {
+                $track1 = $matches[0];
+            }
+        }
+        return $track1;
+    }
+
+    /**
+     * Get raw data for track 2 on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTrack2()
+    {
+        $track2 = null;
+        if ($tracks = $this->getTracks()) {
+            $pattern = '/;\d{1,19}=\d{4}\d*\?/';
+            if (preg_match($pattern, $tracks, $matches) === 1) {
+                $track2 = $matches[0];
+            }
+        }
+        return $track2;
+    }
+
+    /**
+     * Sets raw data from all tracks on the credit card magnetic strip. Used by gateways that support card-present
+     * transactions.
+     *
+     * @param $value
+     * @return CreditCard
+     */
+    public function setTracks($value)
+    {
+        return $this->setParameter('tracks', $value);
     }
 
     /**
