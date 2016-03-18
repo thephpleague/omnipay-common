@@ -49,6 +49,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * * state
  * * country
  * * phone
+ * * phoneExtension
  * * fax
  * * number
  * * expiryMonth
@@ -56,6 +57,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * * startMonth
  * * startYear
  * * cvv
+ * * tracks
  * * issueNumber
  * * billingTitle
  * * billingName
@@ -105,6 +107,32 @@ class CreditCard
     const BRAND_LASER = 'laser';
 
     /**
+     * All known/supported card brands, and a regular expression to match them.
+     *
+     * The order of the card brands is important, as some of the regular expressions overlap.
+     *
+     * Note: The fact that a particular card brand has been added to this array does not imply
+     * that a selected gateway will support the card.
+     *
+     * @link https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/credit_card_methods.rb
+     * @var array
+     */
+    protected $supported_cards = array(
+        self::BRAND_VISA => '/^4\d{12}(\d{3})?$/',
+        self::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$/',
+        self::BRAND_DISCOVER => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
+        self::BRAND_AMEX => '/^3[47]\d{13}$/',
+        self::BRAND_DINERS_CLUB => '/^3(0[0-5]|[68]\d)\d{11}$/',
+        self::BRAND_JCB => '/^35(28|29|[3-8]\d)\d{12}$/',
+        self::BRAND_SWITCH => '/^6759\d{12}(\d{2,3})?$/',
+        self::BRAND_SOLO => '/^6767\d{12}(\d{2,3})?$/',
+        self::BRAND_DANKORT => '/^5019\d{12}$/',
+        self::BRAND_MAESTRO => '/^(5[06-8]|6\d)\d{10,17}$/',
+        self::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
+        self::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
+    );
+
+    /**
      * Internal storage of all of the card parameters.
      *
      * @var \Symfony\Component\HttpFoundation\ParameterBag
@@ -124,30 +152,39 @@ class CreditCard
     /**
      * All known/supported card brands, and a regular expression to match them.
      *
-     * The order of the card brands is important, as some of the regular expressions overlap.
-     *
      * Note: The fact that this class knows about a particular card brand does not imply
      * that your gateway supports it.
      *
+     * @see self::$supported_cards
      * @return array
-     * @link https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/credit_card_methods.rb
      */
     public function getSupportedBrands()
     {
-        return array(
-            static::BRAND_VISA => '/^4\d{12}(\d{3})?$/',
-            static::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$/',
-            static::BRAND_DISCOVER => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
-            static::BRAND_AMEX => '/^3[47]\d{13}$/',
-            static::BRAND_DINERS_CLUB => '/^3(0[0-5]|[68]\d)\d{11}$/',
-            static::BRAND_JCB => '/^35(28|29|[3-8]\d)\d{12}$/',
-            static::BRAND_SWITCH => '/^6759\d{12}(\d{2,3})?$/',
-            static::BRAND_SOLO => '/^6767\d{12}(\d{2,3})?$/',
-            static::BRAND_DANKORT => '/^5019\d{12}$/',
-            static::BRAND_MAESTRO => '/^(5[06-8]|6\d)\d{10,17}$/',
-            static::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
-            static::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
-        );
+        return $this->supported_cards;
+    }
+
+    /**
+     * Set a custom supported card brand with a regular expression to match it.
+     *
+     * Note: The fact that a particular card is known does not imply that your
+     * gateway supports it.
+     *
+     * Set $add_to_front to true if the key should be added to the front of the array
+     *
+     * @param  string  $name The name of the new supported brand.
+     * @param  string  $expression The regular expression to check if a card is supported.
+     * @return boolean success
+     */
+    public function addSupportedBrand($name, $expression)
+    {
+        $known_brands = array_keys($this->supported_cards);
+
+        if (in_array($name, $known_brands)) {
+            return false;
+        }
+
+        $this->supported_cards[$name] = $expression;
+        return true;
     }
 
     /**
@@ -545,6 +582,62 @@ class CreditCard
     }
 
     /**
+     * Get raw data for all tracks on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTracks()
+    {
+        return $this->getParameter('tracks');
+    }
+
+    /**
+     * Get raw data for track 1 on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTrack1()
+    {
+        $track1 = null;
+        if ($tracks = $this->getTracks()) {
+            $pattern = '/\%B\d{1,19}\^.{2,26}\^\d{4}\d*\?/';
+            if (preg_match($pattern, $tracks, $matches) === 1) {
+                $track1 = $matches[0];
+            }
+        }
+        return $track1;
+    }
+
+    /**
+     * Get raw data for track 2 on the credit card magnetic strip.
+     *
+     * @return string
+     */
+    public function getTrack2()
+    {
+        $track2 = null;
+        if ($tracks = $this->getTracks()) {
+            $pattern = '/;\d{1,19}=\d{4}\d*\?/';
+            if (preg_match($pattern, $tracks, $matches) === 1) {
+                $track2 = $matches[0];
+            }
+        }
+        return $track2;
+    }
+
+    /**
+     * Sets raw data from all tracks on the credit card magnetic strip. Used by gateways that support card-present
+     * transactions.
+     *
+     * @param $value
+     * @return CreditCard
+     */
+    public function setTracks($value)
+    {
+        return $this->setParameter('tracks', $value);
+    }
+
+    /**
      * Get the card issue number.
      *
      * @return string
@@ -819,6 +912,27 @@ class CreditCard
     public function setBillingPhone($value)
     {
         return $this->setParameter('billingPhone', $value);
+    }
+
+    /**
+     * Get the billing phone number extension.
+     *
+     * @return string
+     */
+    public function getBillingPhoneExtension()
+    {
+        return $this->getParameter('billingPhoneExtension');
+    }
+
+    /**
+     * Sets the billing phone number extension.
+     *
+     * @param string $value
+     * @return CreditCard provides a fluent interface.
+     */
+    public function setBillingPhoneExtension($value)
+    {
+        return $this->setParameter('billingPhoneExtension', $value);
     }
 
     /**
@@ -1099,6 +1213,27 @@ class CreditCard
     }
 
     /**
+     * Get the shipping phone number extension.
+     *
+     * @return string
+     */
+    public function getShippingPhoneExtension()
+    {
+        return $this->getParameter('shippingPhoneExtension');
+    }
+
+    /**
+     * Sets the shipping phone number extension.
+     *
+     * @param string $value
+     * @return CreditCard provides a fluent interface.
+     */
+    public function setShippingPhoneExtension($value)
+    {
+        return $this->setParameter('shippingPhoneExtension', $value);
+    }
+
+    /**
      * Get the shipping fax number.
      *
      * @return string
@@ -1283,6 +1418,30 @@ class CreditCard
     {
         $this->setParameter('billingPhone', $value);
         $this->setParameter('shippingPhone', $value);
+
+        return $this;
+    }
+
+    /**
+     * Get the billing phone number extension.
+     *
+     * @return string
+     */
+    public function getPhoneExtension()
+    {
+        return $this->getParameter('billingPhoneExtension');
+    }
+
+    /**
+     * Sets the billing and shipping phone number extension.
+     *
+     * @param string $value
+     * @return CreditCard provides a fluent interface.
+     */
+    public function setPhoneExtension($value)
+    {
+        $this->setParameter('billingPhoneExtension', $value);
+        $this->setParameter('shippingPhoneExtension', $value);
 
         return $this;
     }
