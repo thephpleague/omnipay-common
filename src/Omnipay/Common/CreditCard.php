@@ -119,7 +119,7 @@ class CreditCard
      */
     protected $supported_cards = array(
         self::BRAND_VISA => '/^4\d{12}(\d{3})?$/',
-        self::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$/',
+        self::BRAND_MASTERCARD => '/^(5[1-5]\d{4}|677189)\d{10}$|^(222[1-9]|2[3-6]\d{2}|27[0-1]\d|2720)\d{12}$/',
         self::BRAND_DISCOVER => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
         self::BRAND_AMEX => '/^3[47]\d{13}$/',
         self::BRAND_DINERS_CLUB => '/^3(0[0-5]|[68]\d)\d{11}$/',
