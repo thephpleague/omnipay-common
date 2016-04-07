@@ -233,6 +233,8 @@ class CreditCardTest extends TestCase
     {
         $card = new CreditCard(array('number' => '5555555555554444'));
         $this->assertSame(CreditCard::BRAND_MASTERCARD, $card->getBrand());
+        $card = new CreditCard(array('number' => '2221000010000015'));
+        $this->assertSame(CreditCard::BRAND_MASTERCARD, $card->getBrand());
     }
 
     public function testGetBrandAmex()
