@@ -6,6 +6,9 @@ use Omnipay\Tests\TestCase;
 
 class CreditCardTest extends TestCase
 {
+    /** @var CreditCard */
+    private $card;
+
     public function setUp()
     {
         $this->card = new CreditCard;
@@ -124,6 +127,13 @@ class CreditCardTest extends TestCase
         $this->assertEquals('omniexpress', $this->card->getBrand());
     }
 
+    public function testCustomBrandAddedTwiceReturnsFalse()
+    {
+        $this->assertTrue($this->card->addSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/'));
+        $this->assertArrayHasKey('omniexpress', $this->card->getSupportedBrands());
+        $this->assertFalse($this->card->addSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/'));
+    }
+
     public function testTitle()
     {
         $this->card->setTitle('Mr.');
@@ -230,6 +240,8 @@ class CreditCardTest extends TestCase
     {
         $card = new CreditCard(array('number' => '5555555555554444'));
         $this->assertSame(CreditCard::BRAND_MASTERCARD, $card->getBrand());
+        $card = new CreditCard(array('number' => '2221000010000015'));
+        $this->assertSame(CreditCard::BRAND_MASTERCARD, $card->getBrand());
     }
 
     public function testGetBrandAmex()
@@ -322,6 +334,26 @@ class CreditCardTest extends TestCase
     {
         $this->card->setCvv('456');
         $this->assertEquals('456', $this->card->getCvv());
+    }
+
+    public function testTracks()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $this->assertSame('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?', $this->card->getTracks());
+    }
+
+    public function testShouldReturnTrack1()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $actual = $this->card->getTrack1();
+        $this->assertEquals('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?', $actual);
+    }
+
+    public function testShouldReturnTrack2()
+    {
+        $this->card->setTracks('%B4242424242424242^SMITH/JOHN ^1520126100000000000000444000000?;4242424242424242=15201269999944401?');
+        $actual = $this->card->getTrack2();
+        $this->assertEquals(';4242424242424242=15201269999944401?', $actual);
     }
 
     public function testIssueNumber()
