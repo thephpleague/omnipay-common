@@ -170,7 +170,7 @@ abstract class AbstractRequest implements RequestInterface
             throw new RuntimeException('Request cannot be modified after it has been sent!');
         }
 
-        if($value !== null && !is_scalar($value)) {
+        if (null !== $value && !is_scalar($value)) {
             throw new RuntimeException('Only scalar values are allowed for parameters');
         }
 

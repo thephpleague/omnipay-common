@@ -139,7 +139,7 @@ abstract class AbstractGateway implements GatewayInterface
      */
     public function setParameter($key, $value)
     {
-        if($value !== null && !is_scalar($value)) {
+        if ($value !== null && !is_scalar($value)) {
             throw new RuntimeException('Only scalar values are allowed for parameters');
         }
 
