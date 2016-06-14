@@ -170,6 +170,10 @@ abstract class AbstractRequest implements RequestInterface
             throw new RuntimeException('Request cannot be modified after it has been sent!');
         }
 
+        if($value !== null && !is_scalar($value)) {
+            throw new RuntimeException('Only scalar values are allowed for parameters');
+        }
+
         $this->parameters->set($key, $value);
 
         return $this;
@@ -243,7 +247,13 @@ abstract class AbstractRequest implements RequestInterface
             $value = new CreditCard($value);
         }
 
-        return $this->setParameter('card', $value);
+        if (null !== $this->response) {
+            throw new RuntimeException('Request cannot be modified after it has been sent!');
+        }
+
+        $this->parameters->set('card', $value);
+
+        return $this;
     }
 
     /**
@@ -528,7 +538,13 @@ abstract class AbstractRequest implements RequestInterface
             $items = new ItemBag($items);
         }
 
-        return $this->setParameter('items', $items);
+        if (null !== $this->response) {
+            throw new RuntimeException('Request cannot be modified after it has been sent!');
+        }
+
+        $this->parameters->set('items', $items);
+
+        return $this;
     }
 
     /**

@@ -78,6 +78,15 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('1234', $card->getNumber());
     }
 
+    public function testSetCardAfterRequestSent()
+    {
+        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request->send();
+
+        $this->setExpectedException('\Omnipay\Common\Exception\RuntimeException');
+        $this->request->setCard(array('number' => '1234'));
+    }
+
     public function testToken()
     {
         $this->assertSame($this->request, $this->request->setToken('12345'));
@@ -340,6 +349,18 @@ class AbstractRequestTest extends TestCase
         $this->assertSame($itemBag, $this->request->getItems());
     }
 
+    public function testSetItemsBagAfterRequestSent()
+    {
+        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request->send();
+
+        $itemBag = new ItemBag;
+        $itemBag->add(array('name' => 'Floppy Disk'));
+
+        $this->setExpectedException('\Omnipay\Common\Exception\RuntimeException');
+        $this->request->setItems($itemBag);
+    }
+
     public function testClientIp()
     {
         $this->assertSame($this->request, $this->request->setClientIp('127.0.0.1'));
@@ -395,6 +416,12 @@ class AbstractRequestTest extends TestCase
             'token' => 'asdf',
         );
         $this->assertEquals($expected, $this->request->getParameters());
+    }
+
+    public function testSetParameterObject()
+    {
+        $this->setExpectedException('\Omnipay\Common\Exception\RuntimeException');
+        $this->request->setParameter('test', new \stdClass());
     }
 
     /**
