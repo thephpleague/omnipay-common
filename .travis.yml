@@ -1,26 +1,29 @@
 language: php
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
-
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
 
-env:
-  - SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.1"
-  - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.1"
-  - SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.*"
-  - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.*"
+matrix:
+    fast_finish: true
+    include:
+        - php: 5.3
+          env: SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.1"
+        - php: 5.4
+          env: SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.*"
+        - php: 5.5
+          env: SYMFONY_VERSION="3.*" GUZZLE_VERSION="3.*"
+        - php: 5.6
+          env: SYMFONY_VERSION="3.*" GUZZLE_VERSION="3.*"
+        - php: 7.0
+          env: SYMFONY_VERSION="3.*" GUZZLE_VERSION="3.*"
+        - php: hhvm
+          env: SYMFONY_VERSION="3.*" GUZZLE_VERSION="3.*"
+
 
 before_script:
   - composer require symfony/http-foundation:${SYMFONY_VERSION} --no-update
   - composer require guzzle/guzzle:${GUZZLE_VERSION} --no-update
-  - composer install -n --dev --prefer-source
+  - composer install -n --prefer-source
 
 script: vendor/bin/phpcs --standard=PSR2 src && vendor/bin/phpunit --coverage-text
