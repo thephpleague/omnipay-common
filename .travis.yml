@@ -25,17 +25,11 @@ matrix:
   include:
     - php: 5.3
       env: setup=lowest
-    - php: 5.3
-      env: setup=stable
     - php: 5.5
       env: setup=lowest
-    - php: 5.5
-      env: setup=stable
 
 install:
   - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
-  - if [[ $setup = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable; fi
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
-
 
 script: vendor/bin/phpcs --standard=PSR2 src && vendor/bin/phpunit --coverage-text
