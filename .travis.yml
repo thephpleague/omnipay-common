@@ -12,15 +12,24 @@ php:
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
 
-env:
-  - SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.1"
-  - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.1"
-  - SYMFONY_VERSION="2.1" GUZZLE_VERSION="3.*"
-  - SYMFONY_VERSION="2.*" GUZZLE_VERSION="3.*"
+## Cache composer
+cache:
+  directories:
+    - $HOME/.composer/cache
 
-before_script:
-  - composer require symfony/http-foundation:${SYMFONY_VERSION} --no-update
-  - composer require guzzle/guzzle:${GUZZLE_VERSION} --no-update
-  - composer install -n --dev --prefer-source
+env:
+  global:
+    - setup=basic
+
+matrix:
+  include:
+    - php: 5.3
+      env: setup=lowest
+    - php: 5.5
+      env: setup=lowest
+
+install:
+  - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
+  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 
 script: vendor/bin/phpcs --standard=PSR2 src && vendor/bin/phpunit --coverage-text
