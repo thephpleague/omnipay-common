@@ -63,4 +63,17 @@ interface ResponseInterface extends MessageInterface
      * @return null|string A reference provided by the gateway to represent this transaction
      */
     public function getTransactionReference();
+    
+    /**
+     * User message.
+     * 
+     * Retrieves response from the payment gateway with any adjustments required to make it more relevant to users
+     *
+     * @return string response message for end users.
+     */
+    public function getUserMessage() 
+    {
+        return $this->getMessage();
+    }
+    
 }
