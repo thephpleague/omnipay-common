@@ -71,9 +71,8 @@ interface ResponseInterface extends MessageInterface
      *
      * @return string response message for end users.
      */
-    public function getUserMessage() 
+    public function getUserMessage()
     {
         return $this->getMessage();
     }
-    
 }
