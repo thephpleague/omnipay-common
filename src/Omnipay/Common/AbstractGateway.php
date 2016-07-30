@@ -9,6 +9,7 @@ use Guzzle\Http\ClientInterface;
 use Guzzle\Http\Client as HttpClient;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Omnipay\Common\Exception\RuntimeException;
 
 /**
  * Base payment gateway class
@@ -138,6 +139,10 @@ abstract class AbstractGateway implements GatewayInterface
      */
     public function setParameter($key, $value)
     {
+        if ($value !== null && !is_scalar($value)) {
+            throw new RuntimeException('Only scalar values are allowed for parameters');
+        }
+
         $this->parameters->set($key, $value);
 
         return $this;
