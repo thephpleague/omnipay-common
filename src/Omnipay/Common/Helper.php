@@ -83,7 +83,7 @@ class Helper
         if (is_array($parameters)) {
             foreach ($parameters as $key => $value) {
                 $method = 'set'.ucfirst(static::camelCase($key));
-                if (is_callable([$target, $method])) {
+                if (is_callable(array($target, $method))) {
                     $target->$method($value);
                 }
             }
