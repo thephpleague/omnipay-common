@@ -87,7 +87,8 @@ class Helper
                     $target->$method($value);
                 } catch (\BadMethodCallException $e) {
                     $targetRef = new \ReflectionClass($target);
-                    if ($targetRef->getShortName() !== $e->getTrace()[0]['class']) {
+                    $trace     = $e->getTrace();
+                    if ($targetRef->getShortName() !== $trace[0]['class']) {
                         throw $e;
                     }
                 }
