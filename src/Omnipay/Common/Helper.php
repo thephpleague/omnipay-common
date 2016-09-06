@@ -83,8 +83,13 @@ class Helper
         if (is_array($parameters)) {
             foreach ($parameters as $key => $value) {
                 $method = 'set'.ucfirst(static::camelCase($key));
-                if (is_callable(array($target, $method))) {
+                try {
                     $target->$method($value);
+                } catch (\BadMethodCallException $e) {
+                    $targetRef = new \ReflectionClass($target);
+                    if ($targetRef->getShortName() !== $e->getTrace()[0]['class']) {
+                        throw $e;
+                    }
                 }
             }
         }
