@@ -105,6 +105,7 @@ class Currency
             'ILS' => array('numeric' => '376', 'decimals' => 2),
             'INR' => array('numeric' => '356', 'decimals' => 2),
             'JPY' => array('numeric' => '392', 'decimals' => 0),
+            'KES' => array('numeric' => '404', 'decimals' => 2),
             'KRW' => array('numeric' => '410', 'decimals' => 0),
             'LAK' => array('numeric' => '418', 'decimals' => 0),
             'MXN' => array('numeric' => '484', 'decimals' => 2),
