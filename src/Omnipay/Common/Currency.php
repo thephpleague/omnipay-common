@@ -82,8 +82,10 @@ class Currency
     public static function all()
     {
         return array(
+            'AED' => array('numeric' => '784', 'decimals' => 2),
             'ARS' => array('numeric' => '032', 'decimals' => 2),
             'AUD' => array('numeric' => '036', 'decimals' => 2),
+            'BHD' => array('numeric' => '048', 'decimals' => 4),
             'BOB' => array('numeric' => '068', 'decimals' => 2),
             'BRL' => array('numeric' => '986', 'decimals' => 2),
             'BTC' => array('numeric' => null, 'decimals' => 8),
@@ -108,8 +110,10 @@ class Currency
             'KES' => array('numeric' => '404', 'decimals' => 2),
             'KRW' => array('numeric' => '410', 'decimals' => 0),
             'LAK' => array('numeric' => '418', 'decimals' => 0),
+            'LBP' => array('numeric' => '422', 'decimals' => 2),
             'MXN' => array('numeric' => '484', 'decimals' => 2),
             'MYR' => array('numeric' => '458', 'decimals' => 2),
+            'NGN' => array('numeric' => '566', 'decimals' => 2),
             'NOK' => array('numeric' => '578', 'decimals' => 2),
             'NZD' => array('numeric' => '554', 'decimals' => 2),
             'OMR' => array('numeric' => '512', 'decimals' => 3),
@@ -118,6 +122,8 @@ class Currency
             'PHP' => array('numeric' => '608', 'decimals' => 2),
             'PLN' => array('numeric' => '985', 'decimals' => 2),
             'PYG' => array('numeric' => '600', 'decimals' => 0),
+            'QAR' => array('numeric' => '634', 'decimals' => 2),
+            'SAR' => array('numeric' => '682', 'decimals' => 2),
             'SBD' => array('numeric' => '090', 'decimals' => 2),
             'SEK' => array('numeric' => '752', 'decimals' => 2),
             'SGD' => array('numeric' => '702', 'decimals' => 2),
