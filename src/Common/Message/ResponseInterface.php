@@ -1,7 +1,4 @@
 <?php
-/**
- * Response interface
- */
 
 namespace Omnipay\Common\Message;
 

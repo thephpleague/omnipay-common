@@ -1,7 +1,4 @@
 <?php
-/**
- * Credit Card class
- */
 
 namespace Omnipay\Common;
 

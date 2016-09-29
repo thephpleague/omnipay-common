@@ -1,7 +1,4 @@
 <?php
-/**
- * Helper class
- */
 
 namespace Omnipay\Common;
 

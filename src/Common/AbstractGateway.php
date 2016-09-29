@@ -1,7 +1,4 @@
 <?php
-/**
- * Base payment gateway class
- */
 
 namespace Omnipay\Common;
 

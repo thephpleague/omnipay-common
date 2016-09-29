@@ -1,7 +1,4 @@
 <?php
-/**
- * Currency class
- */
 
 namespace Omnipay\Common;
 

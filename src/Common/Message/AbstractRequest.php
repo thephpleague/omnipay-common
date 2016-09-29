@@ -1,7 +1,4 @@
 <?php
-/**
- * Abstract Request
- */
 
 namespace Omnipay\Common\Message;
 

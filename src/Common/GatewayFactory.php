@@ -1,7 +1,4 @@
 <?php
-/**
- * Omnipay Gateway Factory class
- */
 
 namespace Omnipay\Common;
 

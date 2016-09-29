@@ -1,7 +1,4 @@
 <?php
-/**
- * Issuer
- */
 
 namespace Omnipay\Common;
 

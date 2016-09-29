@@ -1,7 +1,4 @@
 <?php
-/**
- * Cart Item Bag
- */
 
 namespace Omnipay\Common;
 

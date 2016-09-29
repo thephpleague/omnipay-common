@@ -1,7 +1,4 @@
 <?php
-/**
- * Fetch Issuers Response interface
- */
 
 namespace Omnipay\Common\Message;
 

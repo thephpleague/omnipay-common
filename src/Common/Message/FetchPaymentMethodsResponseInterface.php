@@ -1,7 +1,4 @@
 <?php
-/**
- * Fetch Payment Methods Response interface
- */
 
 namespace Omnipay\Common\Message;
 
