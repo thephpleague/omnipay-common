@@ -2,17 +2,50 @@
 
 namespace Omnipay\Common\Message;
 
-use Mockery as m;
+use GuzzleHttp\ClientInterface;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\ItemBag;
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+
+class SomeRequest extends AbstractRequest
+{
+    public function getData()
+    {
+    }
+
+    public function sendData($data)
+    {
+        $this->response = new SomeResponse($this, $data);
+    }
+}
+
+class SomeResponse extends AbstractResponse
+{
+    public function isSuccessful()
+    {
+    }
+}
 
 class AbstractRequestTest extends TestCase
 {
+    private $client;
+    private $httpRequest;
+
+    /**
+     * @var SomeRequest
+     */
+    private $request;
+
     public function setUp()
     {
-        $this->request = m::mock('\Omnipay\Common\Message\AbstractRequest')->makePartial();
-        $this->request->initialize();
+        $this->client      = $this->createMock(ClientInterface::class);
+        $this->httpRequest = $this->createMock(HttpRequest::class);
+
+        $this->request = new SomeRequest(
+            $this->client,
+            $this->httpRequest
+        );
     }
 
     /**
@@ -33,13 +66,20 @@ class AbstractRequestTest extends TestCase
 
     public function testConstruct()
     {
-        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SomeRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
         $this->assertSame(array(), $this->request->getParameters());
     }
 
     public function testInitializeWithParams()
     {
-        $this->assertSame($this->request, $this->request->initialize(array('amount' => '1.23')));
+        $params = array('amount' => '1.23');
+
+        $this->request->initialize($params);
+
         $this->assertSame('1.23', $this->request->getAmount());
     }
 
@@ -49,9 +89,8 @@ class AbstractRequestTest extends TestCase
      */
     public function testInitializeAfterRequestSent()
     {
-        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SomeRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->send();
-
         $this->request->initialize();
     }
 
@@ -65,11 +104,11 @@ class AbstractRequestTest extends TestCase
 
     public function testSetCardWithArray()
     {
-        // passing array should create CreditCard object
-        $this->assertSame($this->request, $this->request->setCard(array('number' => '1234')));
+        $this->request->setCard(array('number' => '1234'));
 
         $card = $this->request->getCard();
-        $this->assertInstanceOf('\Omnipay\Common\CreditCard', $card);
+
+        $this->assertInstanceOf(CreditCard::class, $card);
         $this->assertSame('1234', $card->getNumber());
     }
 
@@ -116,7 +155,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      * @expectedExceptionMessage A zero amount is not allowed.
      */
     public function testAmountZeroNotAllowed()
@@ -150,7 +189,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      *
      * We still want to catch obvious fractions of the minor units that are
      * not precision errors at a much lower level.
@@ -169,7 +208,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testGetAmountNoDecimalsRounding()
     {
@@ -180,7 +219,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountWithIntThrowsException()
     {
@@ -190,7 +229,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountWithIntStringThrowsException()
     {
@@ -214,7 +253,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountThousandsSepThrowsException()
     {
@@ -223,7 +262,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountInvalidFormatThrowsException()
     {
@@ -232,7 +271,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountInvalidTypeThrowsException()
     {
@@ -241,7 +280,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountNegativeStringThrowsException()
     {
@@ -250,7 +289,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountNegativeFloatThrowsException()
     {
@@ -313,10 +352,13 @@ class AbstractRequestTest extends TestCase
 
     public function testItemsArray()
     {
-        $this->assertSame($this->request, $this->request->setItems(array(
-            array('name' => 'Floppy Disk'),
-            array('name' => 'CD-ROM'),
-        )));
+        $this->assertSame(
+            $this->request,
+            $this->request->setItems(array(
+                array('name' => 'Floppy Disk'),
+                array('name' => 'CD-ROM')
+            ))
+        );
 
         $itemBag = $this->request->getItems();
         $this->assertInstanceOf('\Omnipay\Common\ItemBag', $itemBag);
@@ -398,7 +440,11 @@ class AbstractRequestTest extends TestCase
      */
     public function testSetParameterAfterRequestSent()
     {
-        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SomeRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
         $this->request->send();
 
         $this->request->setCurrency('PHP');
@@ -429,11 +475,7 @@ class AbstractRequestTest extends TestCase
 
     public function testSend()
     {
-        $response = m::mock('\Omnipay\Common\Message\ResponseInterface');
-        $data = array('request data');
-
-        $this->request->shouldReceive('getData')->once()->andReturn($data);
-        $this->request->shouldReceive('sendData')->once()->with($data)->andReturn($response);
+        $response = $this->request->sendData(array('request data'));
 
         $this->assertSame($response, $this->request->send());
     }
@@ -444,26 +486,16 @@ class AbstractRequestTest extends TestCase
      */
     public function testGetResponseBeforeRequestSent()
     {
-        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SomeRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->getResponse();
     }
 
     public function testGetResponseAfterRequestSent()
     {
-        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SomeRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->send();
 
         $response = $this->request->getResponse();
         $this->assertInstanceOf('\Omnipay\Common\Message\ResponseInterface', $response);
-    }
-}
-
-class AbstractRequestTest_MockAbstractRequest extends AbstractRequest
-{
-    public function getData() {}
-
-    public function sendData($data)
-    {
-        $this->response = m::mock('\Omnipay\Common\Message\AbstractResponse');
     }
 }

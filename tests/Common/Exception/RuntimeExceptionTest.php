@@ -2,13 +2,13 @@
 
 namespace Omnipay\Common\Exception;
 
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
 
-class InvalidRequestExceptionTest extends TestCase
+class RuntimeExceptionTest extends TestCase
 {
     public function testConstruct()
     {
-        $exception = new InvalidRequestException('Oops');
+        $exception = new RuntimeException('Oops');
         $this->assertSame('Oops', $exception->getMessage());
     }
 }

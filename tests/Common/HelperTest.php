@@ -3,7 +3,7 @@
 namespace Omnipay\Common;
 
 use Mockery as m;
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
 
 class HelperTest extends TestCase
 {
