@@ -2,7 +2,7 @@
 
 namespace Omnipay\Common\Exception;
 
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
 
 class InvalidResponseExceptionTest extends TestCase
 {

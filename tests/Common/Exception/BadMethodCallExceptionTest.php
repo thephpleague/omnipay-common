@@ -2,13 +2,13 @@
 
 namespace Omnipay\Common\Exception;
 
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
 
-class RuntimeExceptionTest extends TestCase
+class BadMethodCallExceptionTest extends TestCase
 {
     public function testConstruct()
     {
-        $exception = new RuntimeException('Oops');
+        $exception = new BadMethodCallException('Oops');
         $this->assertSame('Oops', $exception->getMessage());
     }
 }

@@ -5,7 +5,7 @@
 
 namespace Omnipay\Common;
 
-use Guzzle\Http\ClientInterface;
+use GuzzleHttp\ClientInterface;
 use Omnipay\Common\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  *   $gateway = Omnipay::create('ExpressGateway');
  * </code>
  *
- * @see Omnipay\Omnipay
+ * @see \Omnipay\Omnipay
  */
 class GatewayFactory
 {
@@ -115,7 +115,7 @@ class GatewayFactory
      */
     public function getSupportedGateways()
     {
-        $package = json_decode(file_get_contents(__DIR__.'/../../../composer.json'), true);
+        $package = json_decode(file_get_contents(__DIR__.'/../../composer.json'), true);
 
         return $package['extra']['gateways'];
     }

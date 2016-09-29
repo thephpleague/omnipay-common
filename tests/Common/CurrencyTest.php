@@ -3,7 +3,7 @@
 namespace Omnipay\Common;
 
 use Omnipay\Common\Currency;
-use Omnipay\Tests\TestCase;
+use Omnipay\TestCase;
 
 class CurrencyTest extends TestCase
 {
