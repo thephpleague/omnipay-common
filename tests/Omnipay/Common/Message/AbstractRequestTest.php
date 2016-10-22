@@ -270,6 +270,12 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('USD', $this->request->getCurrency());
     }
 
+    public function testCurrencyNull()
+    {
+        $this->assertSame($this->request, $this->request->setCurrency(null));
+        $this->assertNull($this->request->getCurrency());
+    }
+
     public function testCurrencyNumeric()
     {
         $this->assertSame($this->request, $this->request->setCurrency('USD'));
