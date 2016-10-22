@@ -2,9 +2,12 @@
 
 namespace League\Omnipay\Common;
 
+use GuzzleHttp\Client;
+use League\Omnipay\Common\Http\GuzzleClient;
 use Mockery as m;
 use League\Omnipay\Common\Message\AbstractRequest;
 use League\Omnipay\Tests\TestCase;
+use Zend\Diactoros\ServerRequestFactory;
 
 class AbstractGatewayTest extends TestCase
 {
@@ -16,7 +19,9 @@ class AbstractGatewayTest extends TestCase
 
     public function testConstruct()
     {
-        $this->gateway = new AbstractGatewayTest_MockAbstractGateway;
+        $httpClient = new GuzzleClient(new Client());
+        $httpRequest = ServerRequestFactory::fromGlobals();
+        $this->gateway = new AbstractGatewayTest_MockAbstractGateway($httpClient, $httpRequest);
         $this->assertInstanceOf('\League\Omnipay\Common\Http\ClientInterface', $this->gateway->getProtectedHttpClient());
         $this->assertInstanceOf('\Psr\Http\Message\ServerRequestInterface', $this->gateway->getProtectedHttpRequest());
         $this->assertSame(array(), $this->gateway->getParameters());
@@ -139,7 +144,9 @@ class AbstractGatewayTest extends TestCase
 
     public function testCreateRequest()
     {
-        $this->gateway = new AbstractGatewayTest_MockAbstractGateway;
+        $httpClient = new GuzzleClient(new Client());
+        $httpRequest = ServerRequestFactory::fromGlobals();
+        $this->gateway = new AbstractGatewayTest_MockAbstractGateway($httpClient, $httpRequest);
         $request = $this->gateway->callCreateRequest(
             '\League\Omnipay\Common\AbstractGatewayTest_MockAbstractRequest',
             array('currency' => 'THB')

@@ -62,10 +62,10 @@ abstract class AbstractGateway implements GatewayInterface, ParameterizedInterfa
      * @param ClientInterface $httpClient  A HTTP client to make API calls with
      * @param ServerRequestInterface     $httpRequest A HTTP request object
      */
-    public function __construct(ClientInterface $httpClient = null, ServerRequestInterface $httpRequest = null)
+    public function __construct(ClientInterface $httpClient, ServerRequestInterface $httpRequest)
     {
-        $this->httpClient = $httpClient ?: $this->getDefaultHttpClient();
-        $this->httpRequest = $httpRequest ?: $this->getDefaultHttpRequest();
+        $this->httpClient = $httpClient;
+        $this->httpRequest = $httpRequest;
         $this->initialize();
     }
 
@@ -290,25 +290,5 @@ abstract class AbstractGateway implements GatewayInterface, ParameterizedInterfa
         $obj = new $class($this->httpClient, $this->httpRequest);
 
         return $obj->initialize(array_replace($this->getParameters(), $parameters));
-    }
-
-    /**
-     * Get the global default HTTP client.
-     *
-     * @return ClientInterface
-     */
-    protected function getDefaultHttpClient()
-    {
-        return new GuzzleClient();
-    }
-
-    /**
-     * Get the global default HTTP request.
-     *
-     * @return ServerRequestInterface
-     */
-    protected function getDefaultHttpRequest()
-    {
-        return ServerRequestFactory::fromGlobals();
     }
 }
