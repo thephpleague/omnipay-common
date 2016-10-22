@@ -42,7 +42,7 @@ final class Amount implements AmountInterface
      *
      * @return string
      */
-    public function getAmount()
+    public function getInteger()
     {
         return $this->amount;
     }

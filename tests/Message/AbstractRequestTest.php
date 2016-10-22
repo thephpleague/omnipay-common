@@ -42,8 +42,8 @@ class AbstractRequestTest extends TestCase
 
     public function testInitializeWithParams()
     {
-        $this->assertSame($this->request, $this->request->initialize(array('amount' => '123', 'currency' => 'USD')));
-        $this->assertSame('123', $this->request->getAmount()->getAmount());
+        $this->assertSame($this->request, $this->request->initialize(array('amount' => '1.23', 'currency' => 'USD')));
+        $this->assertSame('123', $this->request->getAmount()->getInteger());
     }
 
     /**
@@ -90,14 +90,14 @@ class AbstractRequestTest extends TestCase
 
     public function testAmount()
     {
-        $this->assertSame($this->request, $this->request->setAmount(2));
-        $this->assertSame('2', $this->request->getAmount()->getAmount());
+        $this->assertSame($this->request, $this->request->setAmount('2'));
+        $this->assertSame('200', $this->request->getAmount()->getInteger());
     }
 
     public function testAmountWithInt()
     {
         $this->assertSame($this->request, $this->request->setAmount(2));
-        $this->assertSame('2', $this->request->getAmount()->getAmount());
+        $this->assertSame('200', $this->request->getAmount()->getInteger());
     }
 
     public function testAmountWithEmpty()
@@ -109,13 +109,13 @@ class AbstractRequestTest extends TestCase
     public function testAmountZeroFloat()
     {
         $this->assertSame($this->request, $this->request->setAmount(0));
-        $this->assertSame('0', $this->request->getAmount()->getAmount());
+        $this->assertSame('0', $this->request->getAmount()->getInteger());
     }
 
     public function testAmountZeroString()
     {
         $this->assertSame($this->request, $this->request->setAmount('0'));
-        $this->assertSame('0', $this->request->getAmount()->getAmount());
+        $this->assertSame('0', $this->request->getAmount()->getInteger());
     }
 
     /**
@@ -129,18 +129,9 @@ class AbstractRequestTest extends TestCase
         $this->request->getAmount();
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testAmountWithFloatStringThrowsException()
-    {
-        $this->assertSame($this->request, $this->request->setAmount('10.00'));
-        $this->request->getAmount();
-    }
-
     public function testGetAmountFormatted()
     {
-        $this->assertSame($this->request, $this->request->setAmount(1366));
+        $this->assertSame($this->request, $this->request->setAmount(13.66));
         $this->assertSame('13.66', $this->request->getAmount()->getFormatted());
     }
 

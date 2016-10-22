@@ -10,13 +10,13 @@ class AmountTest extends TestCase
     public function testConstruct()
     {
         $amount = new Amount('1000', 'USD');
-        $this->assertSame('1000', $amount->getAmount());
+        $this->assertSame('1000', $amount->getInteger());
     }
 
     public function testConstructInteger()
     {
         $amount = new Amount(1000, 'USD');
-        $this->assertSame('1000', $amount->getAmount());
+        $this->assertSame('1000', $amount->getInteger());
     }
 
     /**
@@ -38,16 +38,16 @@ class AmountTest extends TestCase
     public function testFromDecimal()
     {
         $amount = Amount::fromDecimal('10.00', 'USD');
-        $this->assertSame('1000', $amount->getAmount());
+        $this->assertSame('1000', $amount->getInteger());
     }
 
     public function testFromDecimalRounded()
     {
         $amount = Amount::fromDecimal('10', 'USD');
-        $this->assertSame('1000', $amount->getAmount());
+        $this->assertSame('1000', $amount->getInteger());
 
         $amount = Amount::fromDecimal(10, 'USD');
-        $this->assertSame('1000', $amount->getAmount());
+        $this->assertSame('1000', $amount->getInteger());
     }
 
     /**
@@ -84,14 +84,14 @@ class AmountTest extends TestCase
         $amount = new Amount(1366, 'JPY');
 
         $this->assertSame('JPY', $amount->getCurrency()->getCode());
-        $this->assertSame('1366', $amount->getAmount());
+        $this->assertSame('1366', $amount->getInteger());
         $this->assertSame('1366', $amount->getFormatted());
     }
 
     public function testFromDecimalNoDecimals()
     {
         $amount = Amount::fromDecimal('10', 'JPY');
-        $this->assertSame('10', $amount->getAmount());
+        $this->assertSame('10', $amount->getInteger());
     }
 
     public function testIsNegative()
@@ -128,7 +128,7 @@ class AmountTest extends TestCase
     {
         $amount = Amount::fromDecimal('-123.00', 'USD');
 
-        $this->assertEquals('-12300', $amount->getAmount());
+        $this->assertEquals('-12300', $amount->getInteger());
         $this->assertTrue($amount->isNegative());
     }
 
@@ -136,7 +136,7 @@ class AmountTest extends TestCase
     {
         $amount = Amount::fromDecimal(-123.00, 'USD');
 
-        $this->assertEquals('-12300', $amount->getAmount());
+        $this->assertEquals('-12300', $amount->getInteger());
         $this->assertTrue($amount->isNegative());
     }
 

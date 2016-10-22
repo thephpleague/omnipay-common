@@ -306,7 +306,7 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
      * Validates and returns  amount as integer.
      *
      * @throws InvalidRequestException on any validation failure.
-     * @return string The amount in smallest unit possible (eg. 'cents')
+     * @return string The amount as decimal
      */
     public function getAmount()
     {
@@ -321,7 +321,7 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
                     throw new InvalidRequestException('A currency is required.');
                 }
 
-                $amount = new Amount($amount, $currency);
+                $amount = Amount::fromDecimal($amount, $currency);
             }
 
             // Check for a negative amount.

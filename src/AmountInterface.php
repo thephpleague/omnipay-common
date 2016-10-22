@@ -19,7 +19,7 @@ interface AmountInterface
      *
      * @return string
      */
-    public function getAmount();
+    public function getInteger();
 
     /**
      * Get the amount as decimal string
