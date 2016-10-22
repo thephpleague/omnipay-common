@@ -1,8 +1,9 @@
 {
-    "name": "league/omnipay",
+    "name": "omnipay/common",
     "type": "library",
     "description": "Common components for Omnipay payment processing library",
     "keywords": [
+        "league",
         "gateway",
         "merchant",
         "omnipay",
@@ -16,6 +17,10 @@
         {
             "name": "Adrian Macneil",
             "email": "adrian@adrianmacneil.com"
+        },
+        {
+            "name": "Barry vd. Heuvel",
+            "email": "barryvdh@gmail.com"
         },
         {
             "name": "Omnipay Contributors",
