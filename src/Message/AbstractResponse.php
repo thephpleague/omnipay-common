@@ -6,6 +6,7 @@
 namespace League\Omnipay\Common\Message;
 
 use League\Omnipay\Common\Exception\RuntimeException;
+use League\Omnipay\Common\Http\Factory;
 use Psr\Http\Message\ResponseInterface as HttpResponseInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -202,7 +203,9 @@ abstract class AbstractResponse implements ResponseInterface
 
         /** @var $this RedirectResponseInterface */
         if ('GET' === $this->getRedirectMethod()) {
-            return new RedirectResponse($this->getRedirectUrl());
+            return Factory::createResponse(302, [
+                'location' => $this->getRedirectUrl(),
+            ]);
         } elseif ('POST' === $this->getRedirectMethod()) {
             $hiddenFields = '';
             foreach ($this->getRedirectData() as $key => $value) {
@@ -235,7 +238,9 @@ abstract class AbstractResponse implements ResponseInterface
                 $hiddenFields
             );
 
-            return new HtmlResponse($output);
+            return Factory::createResponse(200, [
+                'content-type' => 'text/html',
+            ], $output);
         }
 
         throw new RuntimeException('Invalid redirect method "'.$this->getRedirectMethod().'".');
