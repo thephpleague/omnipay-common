@@ -5,6 +5,8 @@
 
 namespace League\Omnipay\Common\Message;
 
+use League\Omnipay\Common\AmountInterface;
+
 /**
  * Response Interface
  *
@@ -78,4 +80,11 @@ interface ResponseInterface extends MessageInterface
      * @return null|string A reference provided by the gateway to represent this transaction
      */
     public function getTransactionReference();
+
+    /**
+     * Get the amount of the transaction if returned by the Gateway
+     *
+     * @return null|AmountInterface
+     */
+    public function getAmount();
 }

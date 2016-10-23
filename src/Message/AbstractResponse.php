@@ -5,6 +5,7 @@
 
 namespace League\Omnipay\Common\Message;
 
+use League\Omnipay\Common\AmountInterface;
 use League\Omnipay\Common\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface as HttpResponseInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -123,6 +124,16 @@ abstract class AbstractResponse implements ResponseInterface
     public function isCancelled()
     {
         return $this->getStatus() === ResponseInterface::STATUS_CANCELLED;
+    }
+
+    /**
+     * Get the amount of the transaction if returned by the Gateway
+     *
+     * @return null|AmountInterface
+     */
+    public function getAmount()
+    {
+        return null;
     }
 
     /**
