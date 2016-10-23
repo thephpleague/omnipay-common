@@ -22,7 +22,7 @@ class GuzzleClient extends AbstractClient implements ClientInterface
 
     public function __construct(Client $client = null)
     {
-        $this->guzzle = $client ?: new Client(['a' => 'b']);
+        $this->guzzle = $client ?: new Client();
     }
 
     /**
