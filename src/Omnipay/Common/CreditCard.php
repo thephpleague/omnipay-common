@@ -456,7 +456,7 @@ class CreditCard
     /**
      * Get the card expiry month.
      *
-     * @return string
+     * @return int
      */
     public function getExpiryMonth()
     {
@@ -477,7 +477,7 @@ class CreditCard
     /**
      * Get the card expiry year.
      *
-     * @return string
+     * @return int
      */
     public function getExpiryYear()
     {
@@ -531,7 +531,7 @@ class CreditCard
     /**
      * Get the card start year.
      *
-     * @return string
+     * @return int
      */
     public function getStartYear()
     {
