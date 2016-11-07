@@ -12,6 +12,9 @@ use Psr\Http\Message\UriInterface;
 
 class GuzzleClientTest extends TestCase
 {
+    /** @var  GuzzleClient */
+    protected $client;
+
     public function setUp()
     {
         $this->guzzle = m::mock(Guzzle::class)->makePartial();
@@ -42,51 +45,6 @@ class GuzzleClientTest extends TestCase
         $this->guzzle->shouldReceive('send')->once()->with($request)->andReturn($response);
 
         $this->assertSame($response, $this->client->sendRequest($request));
-    }
-
-    public function testCreateRequest()
-    {
-        $request = $this->client->createRequest('GET', 'https://thephpleague.com/', ['key' => 'value'], 'my-body');
-
-        $this->assertInstanceOf(RequestInterface::class, $request);
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('https://thephpleague.com/', $request->getUri());
-        $this->assertEquals('value', $request->getHeaderLine('key'));
-        $this->assertEquals('my-body', $request->getBody());
-    }
-
-    public function testCreateUri()
-    {
-        $uri = $this->client->createUri('https://thephpleague.com/');
-
-        $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertEquals('https://thephpleague.com/', (string) $uri);
-    }
-
-    public function testCreateStream()
-    {
-        $stream = $this->client->createStream('my-body');
-
-        $this->assertInstanceOf(StreamInterface::class, $stream);
-        $this->assertEquals('my-body', (string) $stream);
-    }
-
-    public function getGet()
-    {
-        $response = m::mock(ResponseInterface::class);
-
-        $this->guzzle->shouldReceive('send')->once()->andReturn($response);
-
-        $this->assertSame($response, $this->client->get('https://thephpleague.com/'));
-    }
-
-    public function getPost()
-    {
-        $response = m::mock(ResponseInterface::class);
-
-        $this->guzzle->shouldReceive('send')->once()->andReturn($response);
-
-        $this->assertSame($response, $this->client->post('https://thephpleague.com/', [], 'my-body'));
     }
 }
 

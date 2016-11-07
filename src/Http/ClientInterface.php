@@ -17,39 +17,74 @@ use Psr\Http\Message\UriInterface;
 interface ClientInterface
 {
     /**
-     * @param  string
-     * @param  string|UriInterface$uri
-     * @param  array $headers
-     * @param  string|resource|StreamInterface $body
-     * @return ResponseInterface
-     */
-    public function request($method, $uri, array $headers = [], $body = null);
-
-    /**
      * @param  RequestInterface $request
      * @return ResponseInterface
      */
     public function sendRequest(RequestInterface $request);
 
     /**
-     * @param  string $method
-     * @param  string|UriInterface $uri
-     * @param  array $headers
-     * @param  string|resource|StreamInterface $body
-     * @param  string $protocolVersion
-     * @return RequestInterface
+     * Send a GET request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @return ResponseInterface
      */
-    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1');
+    public function get($uri, $headers = []);
 
     /**
-     * @param  string|UriInterface $uri
-     * @return UriInterface
+     * Send a POST request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @param string|null|resource|StreamInterface $body
+     * @return ResponseInterface
      */
-    public function createUri($uri);
+    public function post($uri, $headers = [], $body = null);
 
     /**
-     * @param  mixed $body
-     * @return StreamInterface
+     * Send a PUT request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @param string|null|resource|StreamInterface $body
+     * @return ResponseInterface
      */
-    public function createStream($body);
+    public function put($uri, $headers = [], $body = null);
+
+    /**
+     * Send a PATCH request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @param string|null|resource|StreamInterface $body
+     * @return ResponseInterface
+     */
+    public function patch($uri, $headers = [], $body = null);
+
+    /**
+     * Send a DELETE request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @param string|null|resource|StreamInterface $body
+     * @return ResponseInterface
+     */
+    public function delete($uri, $headers = [], $body = null);
+
+    /**
+     * Send a HEAD request.
+     *
+     * @param UriInterface|string $uri
+     * @param array $headers
+     * @return ResponseInterface
+     */
+    public function head($uri, $headers = []);
+
+    /**
+     * Send a OPTIONS request.
+     *
+     * @param UriInterface|string $uri
+     * @return ResponseInterface
+     */
+    public function options($uri);
 }

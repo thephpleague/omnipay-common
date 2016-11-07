@@ -3,11 +3,11 @@
 namespace League\Omnipay\Common;
 
 use GuzzleHttp\Client;
+use League\Omnipay\Common\Http\Factory;
 use League\Omnipay\Common\Http\GuzzleClient;
 use Mockery as m;
 use League\Omnipay\Common\Message\AbstractRequest;
 use League\Omnipay\Tests\TestCase;
-use Zend\Diactoros\ServerRequestFactory;
 
 class AbstractGatewayTest extends TestCase
 {
@@ -20,7 +20,7 @@ class AbstractGatewayTest extends TestCase
     public function testConstruct()
     {
         $httpClient = new GuzzleClient(new Client());
-        $httpRequest = ServerRequestFactory::fromGlobals();
+        $httpRequest = Factory::createServerRequestFromGlobals();
         $this->gateway = new AbstractGatewayTest_MockAbstractGateway($httpClient, $httpRequest);
         $this->assertInstanceOf('\League\Omnipay\Common\Http\ClientInterface', $this->gateway->getProtectedHttpClient());
         $this->assertInstanceOf('\Psr\Http\Message\ServerRequestInterface', $this->gateway->getProtectedHttpRequest());
@@ -145,7 +145,7 @@ class AbstractGatewayTest extends TestCase
     public function testCreateRequest()
     {
         $httpClient = new GuzzleClient(new Client());
-        $httpRequest = ServerRequestFactory::fromGlobals();
+        $httpRequest = Factory::createServerRequestFromGlobals();
         $this->gateway = new AbstractGatewayTest_MockAbstractGateway($httpClient, $httpRequest);
         $request = $this->gateway->callCreateRequest(
             '\League\Omnipay\Common\AbstractGatewayTest_MockAbstractRequest',
