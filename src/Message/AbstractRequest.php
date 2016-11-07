@@ -219,6 +219,31 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
     }
 
     /**
+     * Get the customer.
+     *
+     * @return Customer
+     */
+    public function getCustomer()
+    {
+        return $this->getParameter('customer');
+    }
+
+    /**
+     * Sets the customer.
+     *
+     * @param Customer $value
+     * @return AbstractRequest Provides a fluent interface
+     */
+    public function setCustomer($value)
+    {
+        if ($value && !$value instanceof Customer) {
+            $value = new Customer($value);
+        }
+
+        return $this->setParameter('customer', $value);
+    }
+
+    /**
      * Get the card.
      *
      * @return CreditCard
