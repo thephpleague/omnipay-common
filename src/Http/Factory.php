@@ -14,7 +14,21 @@ use Psr\Http\Message\UriInterface;
 class Factory
 {
     /**
-     * Create a new request.
+     * Create a new Response.
+     *
+     * @param int $statusCode
+     * @param array $headers
+     * @param null $body
+     * @return ResponseInterface
+     *
+     */
+    public static function createResponse($statusCode = 200, $headers = [], $body = null)
+    {
+        return new Response($statusCode, $headers, $body);
+    }
+
+    /**
+     * Create a new Request.
      *
      * @param string $method
      * @param UriInterface|string $uri
@@ -29,21 +43,20 @@ class Factory
     }
 
     /**
-     * Create a new response.
+     * Create a new ServerRequest.
      *
-     * @param int $statusCode
-     * @param array $headers
-     * @param null $body
-     * @return ResponseInterface
-     *
+     * @param string $method
+     * @param UriInterface|string $uri
+     * @param array $server
+     * @return ServerRequestInterface
      */
-    public static function createResponse($statusCode = 200, $headers = [], $body = null)
+    public static function createServerRequest($method, $uri, array $server = null)
     {
-        return new Response($statusCode, $headers, $body);
+        return new ServerRequest($method, $uri, [], null, '1.1', $server);
     }
 
     /**
-     * Create a new server request from PHP globals.
+     * Create a new ServerRequest from PHP globals.
      *
      * @return ServerRequestInterface
      */
