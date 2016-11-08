@@ -331,7 +331,7 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
      * Validates and returns  amount as integer.
      *
      * @throws InvalidRequestException on any validation failure.
-     * @return string The amount as decimal
+     * @return Amount The amount as decimal
      */
     public function getAmount()
     {
