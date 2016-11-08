@@ -664,7 +664,7 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
 
     /**
      * Get a query parameter
-     * 
+     *
      * @param $key
      * @param null $default
      * @return mixed
