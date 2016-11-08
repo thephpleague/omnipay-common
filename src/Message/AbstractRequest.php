@@ -11,6 +11,7 @@ use League\Omnipay\Common\HasParametersTrait;
 use League\Omnipay\Common\Http\ClientInterface;
 use League\Omnipay\Common\CreditCard;
 use League\Omnipay\Common\Currency;
+use League\Omnipay\Common\Customer;
 use League\Omnipay\Common\Exception\InvalidRequestException;
 use League\Omnipay\Common\Exception\RuntimeException;
 use League\Omnipay\Common\Helper;
