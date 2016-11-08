@@ -661,4 +661,17 @@ abstract class AbstractRequest implements RequestInterface, ParameterizedInterfa
 
         return $this->response;
     }
+
+    /**
+     * Get a query parameter
+     * 
+     * @param $key
+     * @param null $default
+     * @return mixed
+     */
+    public function query($key, $default = null)
+    {
+        $params = $this->httpRequest->getQueryParams();
+        return isset($params[$key]) ? $params[$key] : $default;
+    }
 }
