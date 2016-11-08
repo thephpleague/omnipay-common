@@ -25,6 +25,16 @@ class GuzzleClient extends AbstractClient implements ClientInterface
         $this->guzzle = $client ?: new Client();
     }
 
+    public function getGuzzleClient()
+    {
+        return $this->guzzle;
+    }
+
+    public function setGuzzleClient(Client $client)
+    {
+        $this->guzzle = $client;
+    }
+
     /**
      * @param  RequestInterface $request
      * @return ResponseInterface
