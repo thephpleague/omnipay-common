@@ -1,5 +1,5 @@
 {
-    "name": "omnipay/common",
+    "name": "glp/omnipay-common",
     "type": "library",
     "description": "Common components for Omnipay payment processing library",
     "keywords": [
