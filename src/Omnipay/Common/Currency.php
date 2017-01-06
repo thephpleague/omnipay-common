@@ -160,7 +160,7 @@ class Currency
             'KWD' => array('numeric' => '414', 'decimals' => 3),
             'KYD' => array('numeric' => '136', 'decimals' => 2),
             'KZT' => array('numeric' => '398', 'decimals' => 2),
-            'LAK' => array('numeric' => '418', 'decimals' => 2),
+            'LAK' => array('numeric' => '418', 'decimals' => 0),
             'LBP' => array('numeric' => '422', 'decimals' => 2),
             'LKR' => array('numeric' => '144', 'decimals' => 2),
             'LRD' => array('numeric' => '430', 'decimals' => 2),
