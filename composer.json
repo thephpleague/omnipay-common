@@ -72,6 +72,9 @@
             "TargetPay_Directebanking",
             "TargetPay_Ideal",
             "TargetPay_Mrcash",
+            "Vindicia",
+            "Vindicia_HOA",
+            "Vindicia_PayPal",
             "WorldPay"
         ]
     }
