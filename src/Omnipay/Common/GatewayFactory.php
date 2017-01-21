@@ -5,8 +5,8 @@
 
 namespace Omnipay\Common;
 
-use Guzzle\Http\ClientInterface;
 use Omnipay\Common\Exception\RuntimeException;
+use Omnipay\Common\Http\Client;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 /**
@@ -92,12 +92,12 @@ class GatewayFactory
      * Create a new gateway instance
      *
      * @param string               $class       Gateway name
-     * @param ClientInterface|null $httpClient  A Guzzle HTTP Client implementation
+     * @param Client|null $httpClient  A HTTP Client implementation
      * @param HttpRequest|null     $httpRequest A Symfony HTTP Request implementation
      * @throws RuntimeException                 If no such gateway is found
      * @return GatewayInterface                 An object of class $class is created and returned
      */
-    public function create($class, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
+    public function create($class, Client $httpClient = null, HttpRequest $httpRequest = null)
     {
         $class = Helper::getGatewayClassName($class);
 

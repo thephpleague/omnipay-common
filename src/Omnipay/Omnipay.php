@@ -6,7 +6,7 @@
 namespace Omnipay;
 
 use Omnipay\Common\GatewayFactory;
-
+use Omnipay\Common\Http\Client;
 /**
  * Omnipay class
  *
@@ -46,7 +46,7 @@ use Omnipay\Common\GatewayFactory;
  * @method static array  find()
  * @method static array  getSupportedGateways()
  * @codingStandardsIgnoreStart
- * @method static \Omnipay\Common\GatewayInterface create(string $class, \Guzzle\Http\ClientInterface $httpClient = null, \Symfony\Component\HttpFoundation\Request $httpRequest = null)
+ * @method static \Omnipay\Common\GatewayInterface create(string $class, Client $httpClient = null, \Symfony\Component\HttpFoundation\Request $httpRequest = null)
  * @codingStandardsIgnoreEnd
  *
  * @see Omnipay\Common\GatewayFactory
