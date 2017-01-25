@@ -182,5 +182,4 @@ class Client implements HttpClient, RequestFactory
 
         return $this->sendRequest($request);
     }
-
 }
