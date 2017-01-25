@@ -70,25 +70,6 @@ class GatewayFactory
     }
 
     /**
-     * Automatically find and register all officially supported gateways
-     *
-     * @return array An array of gateway names
-     */
-    public function find()
-    {
-        foreach ($this->getSupportedGateways() as $gateway) {
-            $class = Helper::getGatewayClassName($gateway);
-            if (class_exists($class)) {
-                $this->register($gateway);
-            }
-        }
-
-        ksort($this->gateways);
-
-        return $this->all();
-    }
-
-    /**
      * Create a new gateway instance
      *
      * @param string               $class       Gateway name
@@ -106,17 +87,5 @@ class GatewayFactory
         }
 
         return new $class($httpClient, $httpRequest);
-    }
-
-    /**
-     * Get a list of supported gateways which may be available
-     *
-     * @return array
-     */
-    public function getSupportedGateways()
-    {
-        $package = json_decode(file_get_contents(__DIR__.'/../../../composer.json'), true);
-
-        return $package['extra']['gateways'];
     }
 }
