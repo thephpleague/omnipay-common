@@ -5,8 +5,8 @@
 
 namespace Omnipay\Common;
 
-use Guzzle\Http\ClientInterface;
 use Omnipay\Common\Exception\RuntimeException;
+use Omnipay\Common\Http\Client;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 /**
@@ -70,34 +70,15 @@ class GatewayFactory
     }
 
     /**
-     * Automatically find and register all officially supported gateways
-     *
-     * @return array An array of gateway names
-     */
-    public function find()
-    {
-        foreach ($this->getSupportedGateways() as $gateway) {
-            $class = Helper::getGatewayClassName($gateway);
-            if (class_exists($class)) {
-                $this->register($gateway);
-            }
-        }
-
-        ksort($this->gateways);
-
-        return $this->all();
-    }
-
-    /**
      * Create a new gateway instance
      *
      * @param string               $class       Gateway name
-     * @param ClientInterface|null $httpClient  A Guzzle HTTP Client implementation
+     * @param Client|null $httpClient  A HTTP Client implementation
      * @param HttpRequest|null     $httpRequest A Symfony HTTP Request implementation
      * @throws RuntimeException                 If no such gateway is found
      * @return GatewayInterface                 An object of class $class is created and returned
      */
-    public function create($class, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
+    public function create($class, Client $httpClient = null, HttpRequest $httpRequest = null)
     {
         $class = Helper::getGatewayClassName($class);
 
@@ -106,17 +87,5 @@ class GatewayFactory
         }
 
         return new $class($httpClient, $httpRequest);
-    }
-
-    /**
-     * Get a list of supported gateways which may be available
-     *
-     * @return array
-     */
-    public function getSupportedGateways()
-    {
-        $package = json_decode(file_get_contents(__DIR__.'/../../../composer.json'), true);
-
-        return $package['extra']['gateways'];
     }
 }
