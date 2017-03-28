@@ -42,6 +42,9 @@
             "dev-master": "3.0.x-dev"
         }
     },
+    "suggest": {
+        "php-http/guzzle6-adapter": "Use the Guzzle adapter to send your requests."
+    },
     "scripts": {
         "test": "phpunit",
         "check-style": "phpcs -p --standard=PSR2 src/",
