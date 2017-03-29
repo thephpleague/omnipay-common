@@ -35,6 +35,7 @@
     },
     "require-dev": {
         "omnipay/tests": "^3",
+        "php-http/mock-client": "^1",
         "squizlabs/php_codesniffer": "^2.8.1"
     },
     "extra": {

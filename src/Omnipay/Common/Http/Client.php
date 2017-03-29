@@ -33,7 +33,26 @@ class Client implements HttpClient, RequestFactory
      * @param $method
      * @param $uri
      * @param array $headers
-     * @param null $body
+     * @param string|array|resource|StreamInterface|null $body
+     * @param string $protocolVersion
+     * @return ResponseInterface
+     */
+    public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
+    {
+        if (is_array($body)) {
+            $body = http_build_query($body, '', '&');
+        }
+
+        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+
+        return $this->sendRequest($request);
+    }
+
+    /**
+     * @param $method
+     * @param $uri
+     * @param array $headers
+     * @param string|resource|StreamInterface|null $body
      * @param string $protocolVersion
      * @return RequestInterface
      */
@@ -60,13 +79,7 @@ class Client implements HttpClient, RequestFactory
      */
     public function get($uri, array $headers = [])
     {
-        $request = $this->createRequest(
-            'GET',
-            $uri,
-            $headers
-        );
-
-        return $this->sendRequest($request);
+        return $this->send('GET', $uri, $headers);
     }
 
     /**
@@ -74,112 +87,11 @@ class Client implements HttpClient, RequestFactory
      *
      * @param UriInterface|string $uri
      * @param array $headers
-     * @param string|null|resource|StreamInterface $body
+     * @param string|array|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
     public function post($uri, array $headers = [], $body = null)
     {
-        $request = $this->createRequest(
-            'POST',
-            $uri,
-            $headers,
-            $body
-        );
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * Send a PUT request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @param string|null|resource|StreamInterface $body
-     * @return ResponseInterface
-     */
-    public function put($uri, array $headers = [], $body = null)
-    {
-        $request = $this->createRequest(
-            'PUT',
-            $uri,
-            $headers,
-            $body
-        );
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * Send a PATCH request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @param string|null|resource|StreamInterface $body
-     * @return ResponseInterface
-     */
-    public function patch($uri, array $headers = [], $body = null)
-    {
-        $request = $this->createRequest(
-            'PATCH',
-            $uri,
-            $headers,
-            $body
-        );
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * Send a DELETE request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @param string|null|resource|StreamInterface $body
-     * @return ResponseInterface
-     */
-    public function delete($uri, array $headers = [], $body = null)
-    {
-        $request = $this->createRequest(
-            'DELETE',
-            $uri,
-            $headers,
-            $body
-        );
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * Send a HEAD request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @return ResponseInterface
-     */
-    public function head($uri, array $headers = [])
-    {
-        $request = $this->createRequest(
-            'HEAD',
-            $uri,
-            $headers
-        );
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * Send a OPTIONS request.
-     *
-     * @param UriInterface|string $uri
-     * @return ResponseInterface
-     */
-    public function options($uri)
-    {
-        $request = $this->createRequest(
-            'OPTIONS',
-            $uri
-        );
-
-        return $this->sendRequest($request);
+        return $this->send('POST', $uri, $headers, $body);
     }
 }
