@@ -51,27 +51,6 @@ class ClientTest extends TestCase
         $client->send('GET', '/path');
     }
 
-    public function testSendConvertsNullHeaders()
-    {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
-        $client = new Client($mockClient, $mockFactory);
-
-        $request = new Request('POST', '/path', [], 'body');
-
-        $mockFactory->shouldReceive('createRequest')->withArgs([
-            'POST',
-            '/path',
-            [],
-            'body',
-            '1.1',
-        ])->andReturn($request);
-
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
-
-        $client->send('POST', '/path', null, 'body');
-    }
-
     public function testSendParsesArrayBody()
     {
         $mockClient = m::mock(HttpClient::class);
@@ -133,6 +112,6 @@ class ClientTest extends TestCase
 
         $mockClient->shouldReceive('sendRequest')->with($request)->once();
 
-        $client->post('/path', null, ['a' => 'b']);
+        $client->post('/path', [], ['a' => 'b']);
     }
 }

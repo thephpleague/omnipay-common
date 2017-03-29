@@ -32,17 +32,13 @@ class Client implements HttpClient, RequestFactory
     /**
      * @param $method
      * @param $uri
-     * @param null|array $headers
+     * @param array $headers
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion
      * @return ResponseInterface
      */
-    public function send($method, $uri, array $headers = null, $body = null, $protocolVersion = '1.1')
+    public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
-        if (is_null($headers)) {
-            $headers = [];
-        }
-
         if (is_array($body)) {
             $body = http_build_query($body, '', '&');
         }
@@ -78,10 +74,10 @@ class Client implements HttpClient, RequestFactory
      * Send a GET request.
      *
      * @param UriInterface|string $uri
-     * @param null|array $headers
+     * @param array $headers
      * @return ResponseInterface
      */
-    public function get($uri, array $headers = null)
+    public function get($uri, array $headers = [])
     {
         return $this->send('GET', $uri, $headers);
     }
@@ -90,11 +86,11 @@ class Client implements HttpClient, RequestFactory
      * Send a POST request.
      *
      * @param UriInterface|string $uri
-     * @param null|array $headers
+     * @param array $headers
      * @param string|array|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
-    public function post($uri, array $headers = null, $body = null)
+    public function post($uri, array $headers = [], $body = null)
     {
         return $this->send('POST', $uri, $headers, $body);
     }
