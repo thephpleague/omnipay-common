@@ -29,25 +29,6 @@ class ClientTest extends TestCase
          $this->assertEquals(['bar'], $request->getHeader('foo'));
     }
 
-    public function testCreateRequestNullHeaders()
-    {
-        $client = $this->getHttpClient();
-
-        $request = $client->createRequest('GET', '/path', null);
-
-        $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals([], $request->getHeaders());
-    }
-
-    public function testParsesArrayBody()
-    {
-        $client = $this->getHttpClient();
-
-        $request = $client->createRequest('GET', '/path', null, ['a'=>'1', 'b'=>2]);
-
-        $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals('a=1&b=2', (string) $request->getBody());
-    }
 
     public function testSend()
     {
@@ -69,6 +50,49 @@ class ClientTest extends TestCase
 
         $client->send('GET', '/path');
     }
+
+    public function testSendConvertsNullHeaders()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path', [], 'body');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+            [],
+            'body',
+            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+
+        $client->send('POST', '/path', null, 'body');
+    }
+
+    public function testSendParsesArrayBody()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path', [], 'a=1&b=2');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+            [],
+            'a=1&b=2',
+            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+
+        $client->send('POST', '/path', [], ['a'=>'1', 'b'=>2]);
+    }
+
 
     public function testGet()
     {
@@ -97,7 +121,7 @@ class ClientTest extends TestCase
         $mockFactory = m::mock(RequestFactory::class);
         $client = new Client($mockClient, $mockFactory);
 
-        $request = new Request('GET', '/path', [], 'a=b');
+        $request = new Request('POST', '/path', [], 'a=b');
 
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'POST',
