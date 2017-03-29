@@ -35,10 +35,33 @@ class Client implements HttpClient, RequestFactory
      * @param array $headers
      * @param null $body
      * @param string $protocolVersion
+     * @return ResponseInterface
+     */
+    public function send($method, $uri, array $headers = null, $body = null, $protocolVersion = '1.1')
+    {
+        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+
+        return $this->sendRequest($request);
+    }
+
+    /**
+     * @param $method
+     * @param $uri
+     * @param array $headers
+     * @param null $body
+     * @param string $protocolVersion
      * @return RequestInterface
      */
-    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
+    public function createRequest($method, $uri, array $headers = null, $body = null, $protocolVersion = '1.1')
     {
+        if (is_null($headers)) {
+            $headers = [];
+        }
+
+        if (is_array($body)) {
+            $body = http_build_query($body, '', '&');
+        }
+
         return $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
     }
 
@@ -58,15 +81,13 @@ class Client implements HttpClient, RequestFactory
      * @param array $headers
      * @return ResponseInterface
      */
-    public function get($uri, array $headers = [])
+    public function get($uri, array $headers = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'GET',
             $uri,
             $headers
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -77,16 +98,14 @@ class Client implements HttpClient, RequestFactory
      * @param string|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
-    public function post($uri, array $headers = [], $body = null)
+    public function post($uri, array $headers = null, $body = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'POST',
             $uri,
             $headers,
             $body
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -97,16 +116,14 @@ class Client implements HttpClient, RequestFactory
      * @param string|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
-    public function put($uri, array $headers = [], $body = null)
+    public function put($uri, array $headers = null, $body = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'PUT',
             $uri,
             $headers,
             $body
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -117,16 +134,14 @@ class Client implements HttpClient, RequestFactory
      * @param string|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
-    public function patch($uri, array $headers = [], $body = null)
+    public function patch($uri, array $headers = null, $body = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'PATCH',
             $uri,
             $headers,
             $body
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -137,16 +152,14 @@ class Client implements HttpClient, RequestFactory
      * @param string|null|resource|StreamInterface $body
      * @return ResponseInterface
      */
-    public function delete($uri, array $headers = [], $body = null)
+    public function delete($uri, array $headers = null, $body = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'DELETE',
             $uri,
             $headers,
             $body
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -156,15 +169,13 @@ class Client implements HttpClient, RequestFactory
      * @param array $headers
      * @return ResponseInterface
      */
-    public function head($uri, array $headers = [])
+    public function head($uri, array $headers = null)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'HEAD',
             $uri,
             $headers
         );
-
-        return $this->sendRequest($request);
     }
 
     /**
@@ -175,11 +186,9 @@ class Client implements HttpClient, RequestFactory
      */
     public function options($uri)
     {
-        $request = $this->createRequest(
+        return $this->send(
             'OPTIONS',
             $uri
         );
-
-        return $this->sendRequest($request);
     }
 }

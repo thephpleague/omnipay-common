@@ -5,7 +5,7 @@ namespace Omnipay\Common\Http;
 use Omnipay\Common\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 
-class Decoder
+class ResponseParser
 {
     /**
      * @param string|ResponseInterface $response
@@ -39,6 +39,7 @@ class Decoder
         }
         return $data === null ? [] : $data;
     }
+
     /**
      * Parse the XML response body and return a \SimpleXMLElement.
      *
