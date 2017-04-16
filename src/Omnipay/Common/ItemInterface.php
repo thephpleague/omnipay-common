@@ -29,7 +29,17 @@ interface ItemInterface
     public function getQuantity();
 
     /**
+     * Tax amount of the item
+     */
+    public function getTax();
+
+    /**
      * Price of the item
      */
     public function getPrice();
+
+    /**
+     * Full price of the item
+     */
+    public function getFullPrice();
 }
