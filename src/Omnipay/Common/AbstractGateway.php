@@ -340,6 +340,10 @@ abstract class AbstractGateway implements GatewayInterface
      */
     protected function getDefaultHttpRequest()
     {
+        HttpRequest::setFactory(function ($query, $request, $attributes, $cookies, $files, $server, $content) {
+            return new HttpRequest($query, $request, $attributes, $cookies, array(), $server, $content);
+        });
+
         return HttpRequest::createFromGlobals();
     }
 }
