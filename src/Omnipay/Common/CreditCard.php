@@ -1565,4 +1565,18 @@ class CreditCard
     {
         return $this->setParameter('gender', $value);
     }
+    
+    public function getMaskedNumber($maskSymbol = null, $showLast = 3)
+    {
+        $maskSymbol = $maskSymbol ?: 'X';
+        $showLast = max(0, $showLast);
+
+        if (mb_strlen($value) <= ($showLast + 1) * 2 || false == $showLast) {
+            $showRegExpPart = "";
+        } else {
+            $showRegExpPart = "(?!(.){0,$showLast}$)";
+        }
+
+        return preg_replace("/(?!^.?)[^-_\s]$showRegExpPart/u", $maskSymbol, $this->getNumber());
+    }
 }
