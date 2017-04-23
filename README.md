@@ -2,12 +2,23 @@
 
 **Core components for the Omnipay PHP payment processing library**
 
-[![Build Status](https://travis-ci.org/thephpleague/omnipay-common.png?branch=master)](https://travis-ci.org/thephpleague/omnipay-common)
-[![Latest Stable Version](https://poser.pugx.org/omnipay/common/version.png)](https://packagist.org/packages/omnipay/common)
-[![Total Downloads](https://poser.pugx.org/omnipay/common/d/total.png)](https://packagist.org/packages/omnipay/common)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
 processing library for PHP 5.3+. This package implements common classes required by Omnipay.
+
+## Documentation
+
+Please see http://omnipay.thephpleague.com/(http://omnipay.thephpleague.com/) for the installation & usage documentation.
+
+## Change log
+
+Please see [UPGRADE](UPGRADE.md) for more information on how to upgrade to the latest version.
 
 ## Support
 
@@ -21,3 +32,27 @@ you can subscribe to.
 
 If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/thephpleague/omnipay-common/issues),
 or better yet, fork the library and submit a pull request.
+
+
+## Security
+
+If you discover any security related issues, please email barryvdh@gmail.com instead of using the issue tracker.
+
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/omnipay/common.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/omnipay/common/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/omnipay/common.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/omnipay/common.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/omnipay/common.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/omnipay/common
+[link-travis]: https://travis-ci.org/omnipay/common
+[link-scrutinizer]: https://scrutinizer-ci.com/g/omnipay/common/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/omnipay/common
+[link-downloads]: https://packagist.org/packages/omnipay/common
+[link-contributors]: ../../contributors
