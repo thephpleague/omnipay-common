@@ -32,7 +32,7 @@ class ResponseParser
      */
     public static function json($response)
     {
-        $body = static::toString($response);
+        $body = self::toString($response);
 
         $data = json_decode($body, true);
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -60,7 +60,7 @@ class ResponseParser
      */
     public static function xml($response)
     {
-        $body = static::toString($response);
+        $body = self::toString($response);
 
         $errorMessage = null;
         $internalErrors = libxml_use_internal_errors(true);
@@ -77,9 +77,10 @@ class ResponseParser
         libxml_use_internal_errors($internalErrors);
         libxml_disable_entity_loader($disableEntities);
 
-        if ($errorMessage) {
+        if ($errorMessage !== null) {
             throw new RuntimeException('Unable to parse response body into XML: ' . $errorMessage);
         }
+
         return $xml;
     }
 }

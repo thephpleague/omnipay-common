@@ -8,6 +8,7 @@ namespace Omnipay\Common\Message;
 use Omnipay\Common\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpRedirectResponse;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Abstract Response
@@ -174,7 +175,7 @@ abstract class AbstractResponse implements ResponseInterface
     }
 
     /**
-     * @return HttpRedirectResponse
+     * @return HttpRedirectResponse|HttpResponse
      */
     public function getRedirectResponse()
     {
@@ -182,6 +183,7 @@ abstract class AbstractResponse implements ResponseInterface
             throw new RuntimeException('This response does not support redirection.');
         }
 
+        /** @var $this RedirectResponseInterface */
         if ('GET' === $this->getRedirectMethod()) {
             return HttpRedirectResponse::create($this->getRedirectUrl());
         } elseif ('POST' === $this->getRedirectMethod()) {

@@ -72,10 +72,10 @@ class Omnipay
     public static function getFactory()
     {
         if (is_null(static::$factory)) {
-            static::$factory = new GatewayFactory;
+            self::$factory = new GatewayFactory;
         }
 
-        return static::$factory;
+        return self::$factory;
     }
 
     /**
@@ -85,7 +85,7 @@ class Omnipay
      */
     public static function setFactory(GatewayFactory $factory = null)
     {
-        static::$factory = $factory;
+        self::$factory = $factory;
     }
 
     /**
@@ -111,7 +111,7 @@ class Omnipay
      */
     public static function __callStatic($method, $parameters)
     {
-        $factory = static::getFactory();
+        $factory = self::getFactory();
 
         return call_user_func_array(array($factory, $method), $parameters);
     }
