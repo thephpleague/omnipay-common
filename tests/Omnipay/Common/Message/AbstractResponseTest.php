@@ -7,6 +7,9 @@ use Omnipay\Tests\TestCase;
 
 class AbstractResponseTest extends TestCase
 {
+    /** @var  AbstractResponse */
+    protected $response;
+
     public function setUp()
     {
         $this->response = m::mock('\Omnipay\Common\Message\AbstractResponse')->makePartial();
@@ -32,6 +35,9 @@ class AbstractResponseTest extends TestCase
         $this->assertNull($this->response->getTransactionReference());
         $this->assertNull($this->response->getMessage());
         $this->assertNull($this->response->getCode());
+        $this->assertNull($this->response->getRedirectUrl());
+        $this->assertEquals('GET', $this->response->getRedirectMethod());
+        $this->assertEquals([], $this->response->getRedirectData());
     }
 
     /**

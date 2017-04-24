@@ -358,6 +358,13 @@ class CreditCardTest extends TestCase
         $this->assertEquals(';4242424242424242=15201269999944401?', $actual);
     }
 
+    public function testShouldReturnNoTrack()
+    {
+        $this->card->setTracks(null);
+        $actual = $this->card->getTrack2();
+        $this->assertNull($actual);
+    }
+
     public function testIssueNumber()
     {
         $this->card->setIssueNumber('12');
