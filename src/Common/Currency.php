@@ -82,6 +82,6 @@ final class Currency
      */
     public static function all()
     {
-        return require __DIR__.'/../../../resources/currencies.php';
+        return require __DIR__.'/../../resources/currencies.php';
     }
 }

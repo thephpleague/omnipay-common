@@ -23,8 +23,8 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Omnipay\\Common\\" : "src/" },
-        "classmap": ["src/Omnipay/Omnipay.php"]
+        "psr-4": { "Omnipay\\Common\\" : "src/Common" },
+        "classmap": ["src/Omnipay.php"]
     },
     "require": {
         "php": "^5.6|^7",
