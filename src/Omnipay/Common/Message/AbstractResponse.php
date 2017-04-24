@@ -172,7 +172,8 @@ abstract class AbstractResponse implements ResponseInterface
      *
      * @return string
      */
-    public function getRedirectMethod(){
+    public function getRedirectMethod()
+    {
         return 'GET';
     }
 
