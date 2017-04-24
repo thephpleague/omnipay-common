@@ -36,7 +36,8 @@
     "require-dev": {
         "omnipay/tests": "^3",
         "php-http/mock-client": "^1",
-        "squizlabs/php_codesniffer": "^2.8.1"
+        "squizlabs/php_codesniffer": "^2.8.1",
+        "moneyphp/iso-currencies": "^3.0"
     },
     "extra": {
         "branch-alias": {
@@ -49,7 +50,8 @@
     "scripts": {
         "test": "phpunit",
         "check-style": "phpcs -p --standard=PSR2 src/",
-        "fix-style": "phpcbf -p --standard=PSR2 src/"
+        "fix-style": "phpcbf -p --standard=PSR2 src/",
+        "currencies": "php update_currencies.php"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
