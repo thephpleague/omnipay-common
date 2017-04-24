@@ -8,7 +8,6 @@ namespace Omnipay\Common\Message;
 use Omnipay\Common\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpRedirectResponse;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Abstract Response
@@ -159,19 +158,45 @@ abstract class AbstractResponse implements ResponseInterface
     }
 
     /**
+     * Gets the redirect target url.
+     *
+     * @return string
+     */
+    public function getRedirectUrl()
+    {
+        return null;
+    }
+
+    /**
+     * Get the required redirect method (either GET or POST).
+     *
+     * @return string
+     */
+    public function getRedirectMethod(){
+        return 'GET';
+    }
+
+    /**
+     * Gets the redirect form data array, if the redirect method is POST.
+     *
+     * @return array
+     */
+    public function getRedirectData()
+    {
+        return [];
+    }
+
+    /**
      * Automatically perform any required redirect
      *
      * This method is meant to be a helper for simple scenarios. If you want to customize the
      * redirection page, just call the getRedirectUrl() and getRedirectData() methods directly.
-     *
-     * @codeCoverageIgnore
      *
      * @return void
      */
     public function redirect()
     {
         $this->getRedirectResponse()->send();
-        exit;
     }
 
     /**
@@ -183,7 +208,10 @@ abstract class AbstractResponse implements ResponseInterface
             throw new RuntimeException('This response does not support redirection.');
         }
 
-        /** @var $this RedirectResponseInterface */
+        if (empty($this->getRedirectUrl())) {
+            throw new RuntimeException('The given redirectUrl cannot be empty.');
+        }
+
         if ('GET' === $this->getRedirectMethod()) {
             return HttpRedirectResponse::create($this->getRedirectUrl());
         } elseif ('POST' === $this->getRedirectMethod()) {

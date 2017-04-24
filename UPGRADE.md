@@ -1,3 +1,6 @@
+## Upgrade apps from 2.x to 3.x
+ - The `redirect()` method no calls `exit()` after sending the content. This is up to the developer now.
+
 ## Upgrade Gateways from 2.x to 3.x
 
 The primary difference is the HTTP Client. We are now using HTTPlug (http://httplug.io/) but rely on our own interface.
