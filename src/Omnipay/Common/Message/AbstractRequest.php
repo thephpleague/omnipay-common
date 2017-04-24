@@ -301,7 +301,7 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * Validates and returns the formated amount.
+     * Validates and returns the formatted amount.
      *
      * @throws InvalidRequestException on any validation failure.
      * @return string The amount formatted to the correct number of decimal places for the selected currency.
@@ -311,17 +311,6 @@ abstract class AbstractRequest implements RequestInterface
         $amount = $this->getParameter('amount');
 
         if ($amount !== null) {
-            // Don't allow integers for currencies that support decimals.
-            // This is for legacy reasons - upgrades from v0.9
-            if ($this->getCurrencyDecimalPlaces() > 0) {
-                if (is_int($amount) || (is_string($amount) && false === strpos((string) $amount, '.'))) {
-                    throw new InvalidRequestException(
-                        'Please specify amount as a string or float, '
-                        . 'with decimal places (e.g. \'10.00\' to represent $10.00).'
-                    );
-                };
-            }
-
             $amount = $this->toFloat($amount);
 
             // Check for a negative amount.

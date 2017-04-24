@@ -179,27 +179,6 @@ class AbstractRequestTest extends TestCase
         $this->request->getAmount();
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
-     */
-    public function testAmountWithIntThrowsException()
-    {
-        // ambiguous value, avoid errors upgrading from v0.9
-        $this->assertSame($this->request, $this->request->setAmount(10));
-        $this->request->getAmount();
-    }
-
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
-     */
-    public function testAmountWithIntStringThrowsException()
-    {
-        // ambiguous value, avoid errors upgrading from v0.9
-        // Some currencies only take integers, so an integer (in a string) should be valid.
-        $this->assertSame($this->request, $this->request->setAmount('10'));
-        $this->request->getAmount();
-    }
-
     public function testGetAmountInteger()
     {
         $this->assertSame($this->request, $this->request->setAmount('13.66'));
