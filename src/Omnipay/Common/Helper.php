@@ -6,6 +6,8 @@
 namespace Omnipay\Common;
 
 use InvalidArgumentException;
+use BadMethodCallException;
+use ReflectionClass;
 
 /**
  * Helper class
@@ -83,8 +85,14 @@ class Helper
         if (is_array($parameters)) {
             foreach ($parameters as $key => $value) {
                 $method = 'set'.ucfirst(static::camelCase($key));
-                if (method_exists($target, $method)) {
+                try {
                     $target->$method($value);
+                } catch (BadMethodCallException $e) {
+                    $targetRef = new ReflectionClass($target);
+                    $trace     = $e->getTrace();
+                    if ($targetRef->getShortName() !== $trace[0]['class']) {
+                        throw $e;
+                    }
                 }
             }
         }
