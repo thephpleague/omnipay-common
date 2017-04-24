@@ -71,7 +71,7 @@ class Omnipay
      */
     public static function getFactory()
     {
-        if (is_null(static::$factory)) {
+        if (is_null(self::$factory)) {
             self::$factory = new GatewayFactory;
         }
 
