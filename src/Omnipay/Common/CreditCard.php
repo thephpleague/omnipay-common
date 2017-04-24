@@ -196,7 +196,7 @@ class CreditCard
      * @param array $parameters An associative array of parameters
      * @return CreditCard provides a fluent interface.
      */
-    public function initialize($parameters = null)
+    public function initialize(array $parameters = null)
     {
         $this->parameters = new ParameterBag;
 
@@ -595,35 +595,36 @@ class CreditCard
     /**
      * Get raw data for track 1 on the credit card magnetic strip.
      *
-     * @return string
+     * @return string|null
      */
     public function getTrack1()
     {
-        $track1 = null;
-        if ($tracks = $this->getTracks()) {
-            $pattern = '/\%B\d{1,19}\^.{2,26}\^\d{4}\d*\?/';
-            if (preg_match($pattern, $tracks, $matches) === 1) {
-                $track1 = $matches[0];
-            }
-        }
-        return $track1;
+        return $this->getTrackByPattern('/\%B\d{1,19}\^.{2,26}\^\d{4}\d*\?/');
     }
 
     /**
      * Get raw data for track 2 on the credit card magnetic strip.
      *
-     * @return string
+     * @return string|null
      */
     public function getTrack2()
     {
-        $track2 = null;
+        return $this->getTrackByPattern('/;\d{1,19}=\d{4}\d*\?/');
+    }
+
+    /**
+     * Get raw data for a track  on the credit card magnetic strip based on the pattern for track 1 or 2.
+     *
+     * @param $pattern
+     * @return string|null
+     */
+    protected function getTrackByPattern($pattern)
+    {
         if ($tracks = $this->getTracks()) {
-            $pattern = '/;\d{1,19}=\d{4}\d*\?/';
             if (preg_match($pattern, $tracks, $matches) === 1) {
-                $track2 = $matches[0];
+                return $matches[0];
             }
         }
-        return $track2;
     }
 
     /**
@@ -691,6 +692,19 @@ class CreditCard
     }
 
     /**
+     * Split the full name in the first and last name.
+     *
+     * @param $fullName
+     * @return array with first and lastname
+     */
+    protected function listFirstLastName($fullName)
+    {
+        $names = explode(' ', $fullName, 2);
+
+        return [$names[0], isset($names[1]) ? $names[1] : null];
+    }
+
+    /**
      * Sets the card billing name.
      *
      * @param string $value
@@ -698,9 +712,10 @@ class CreditCard
      */
     public function setBillingName($value)
     {
-        $names = explode(' ', $value, 2);
+        $names = $this->listFirstLastName($value);
+
         $this->setBillingFirstName($names[0]);
-        $this->setBillingLastName(isset($names[1]) ? $names[1] : null);
+        $this->setBillingLastName($names[1]);
 
         return $this;
     }
@@ -996,9 +1011,10 @@ class CreditCard
      */
     public function setShippingName($value)
     {
-        $names = explode(' ', $value, 2);
+        $names = $this->listFirstLastName($value);
+
         $this->setShippingFirstName($names[0]);
-        $this->setShippingLastName(isset($names[1]) ? $names[1] : null);
+        $this->setShippingLastName($names[1]);
 
         return $this;
     }
