@@ -42,7 +42,8 @@ class Helper
     protected static function convertToLowercase($str)
     {
         $explodedStr = explode('_', $str);
-
+        $lowercasedStr = [];
+        
         if (count($explodedStr) > 1) {
             foreach ($explodedStr as $value) {
                 $lowercasedStr[] = strtolower($value);
@@ -78,9 +79,9 @@ class Helper
      * @param mixed $target     The object to set parameters on
      * @param array $parameters An array of parameters to set
      */
-    public static function initialize($target, $parameters)
+    public static function initialize($target, array $parameters = null)
     {
-        if (is_array($parameters)) {
+        if ($parameters) {
             foreach ($parameters as $key => $value) {
                 $method = 'set'.ucfirst(static::camelCase($key));
                 if (method_exists($target, $method)) {

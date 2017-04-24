@@ -49,12 +49,6 @@ class HelperTest extends TestCase
         Helper::initialize($target, null);
     }
 
-    public function testInitializeIgnoresString()
-    {
-        $target = m::mock();
-        Helper::initialize($target, 'invalid');
-    }
-
     public function testInitializeCallsSetters()
     {
         $target = m::mock('\Omnipay\Common\CreditCard');

@@ -12,7 +12,7 @@ namespace Omnipay\Common;
  * currency codes and currency numbers relating to global currencies used
  * in the Omnipay system.
  */
-class Currency
+final class Currency
 {
     private $code;
     private $numeric;
