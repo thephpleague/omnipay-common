@@ -62,7 +62,7 @@ final class Currency
      * Find a specific currency
      *
      * @param  string $code The three letter currency code
-     * @return mixed  A Currency object, or null if no currency was found
+     * @return static|null  A Currency object, or null if no currency was found
      */
     public static function find($code)
     {

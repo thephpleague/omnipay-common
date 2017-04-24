@@ -392,7 +392,7 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Get the payment currency number.
      *
-     * @return integer
+     * @return string|null
      */
     public function getCurrencyNumeric()
     {
@@ -423,6 +423,7 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Format an amount for the payment currency.
      *
+     * @param double $amount
      * @return string
      */
     public function formatCurrency($amount)
