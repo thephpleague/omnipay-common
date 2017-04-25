@@ -324,7 +324,8 @@ abstract class AbstractRequest implements RequestInterface
             }
 
             // Check for rounding that may occur if too many significant decimal digits are supplied.
-            $decimal_count = strlen(substr(strrchr(sprintf('%.8g', $amount), '.'), 1));
+            $str_value = rtrim(number_format($amount, 8, '.', ''), '0');
+            $decimal_count = strlen(substr(strrchr($str_value, '.'), 1));
             if ($decimal_count > $this->getCurrencyDecimalPlaces()) {
                 throw new InvalidRequestException('Amount precision is too high for currency.');
             }
