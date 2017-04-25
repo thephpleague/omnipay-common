@@ -149,6 +149,15 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('0.01', $this->request->getAmount());
     }
 
+    // See https://github.com/thephpleague/omnipay-common/issues/143
+    public function testAmountPrecisionLargeNumbers()
+    {
+        $this->request->setCurrency('VND');
+
+        $this->assertSame($this->request, $this->request->setAmount('103500000'));
+        $this->assertSame('103500000', $this->request->getAmount());
+    }
+
     /**
      * @expectedException Omnipay\Common\Exception\InvalidRequestException
      *
