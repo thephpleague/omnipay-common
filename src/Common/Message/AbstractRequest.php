@@ -5,6 +5,7 @@
 
 namespace Omnipay\Common\Message;
 
+use Money\Number;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Currency;
 use Omnipay\Common\Exception\InvalidRequestException;
@@ -283,24 +284,6 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * Convert an amount into a float.
-     *
-     * @var string|int|float $value The value to convert.
-     * @throws InvalidRequestException on any validation failure.
-     * @return float The amount converted to a float.
-     */
-
-    public function toFloat($value)
-    {
-        try {
-            return Helper::toFloat($value);
-        } catch (InvalidArgumentException $e) {
-            // Throw old exception for legacy implementations.
-            throw new InvalidRequestException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
      * Validates and returns the formatted amount.
      *
      * @throws InvalidRequestException on any validation failure.
@@ -311,26 +294,25 @@ abstract class AbstractRequest implements RequestInterface
         $amount = $this->getParameter('amount');
 
         if ($amount !== null) {
-            $amount = $this->toFloat($amount);
+            $number = Number::fromString($amount);
 
             // Check for a negative amount.
-            if (!$this->negativeAmountAllowed && $amount < 0) {
+            if (!$this->negativeAmountAllowed && $number->isNegative()) {
                 throw new InvalidRequestException('A negative amount is not allowed.');
             }
 
             // Check for a zero amount.
-            if (!$this->zeroAmountAllowed && $amount === 0.0) {
+            if (!$this->zeroAmountAllowed && (string) $number == '0') {
                 throw new InvalidRequestException('A zero amount is not allowed.');
             }
 
             // Check for rounding that may occur if too many significant decimal digits are supplied.
-            $str_value = rtrim(number_format($amount, 8, '.', ''), '0');
-            $decimal_count = strlen(substr(strrchr($str_value, '.'), 1));
+            $decimal_count = strlen($number->getFractionalPart());
             if ($decimal_count > $this->getCurrencyDecimalPlaces()) {
                 throw new InvalidRequestException('Amount precision is too high for currency.');
             }
 
-            return $this->formatCurrency($amount);
+            return $this->formatCurrency((string) $number);
         }
     }
 

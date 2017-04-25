@@ -202,7 +202,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \InvalidArgumentException
      */
     public function testAmountThousandsSepThrowsException()
     {
@@ -211,20 +211,11 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \InvalidArgumentException
      */
     public function testAmountInvalidFormatThrowsException()
     {
         $this->assertSame($this->request, $this->request->setAmount('1.234.00'));
-        $this->request->getAmount();
-    }
-
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
-     */
-    public function testAmountInvalidTypeThrowsException()
-    {
-        $this->assertSame($this->request, $this->request->setAmount(true));
         $this->request->getAmount();
     }
 
