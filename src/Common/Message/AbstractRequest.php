@@ -5,7 +5,10 @@
 
 namespace Omnipay\Common\Message;
 
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
 use Money\Number;
+use Money\Parser\DecimalMoneyParser;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Currency;
 use Omnipay\Common\Exception\InvalidRequestException;
@@ -283,13 +286,7 @@ abstract class AbstractRequest implements RequestInterface
         return $this->setParameter('cardReference', $value);
     }
 
-    /**
-     * Validates and returns the formatted amount.
-     *
-     * @throws InvalidRequestException on any validation failure.
-     * @return string The amount formatted to the correct number of decimal places for the selected currency.
-     */
-    public function getAmount()
+    protected function getMoneyObject()
     {
         $amount = $this->getParameter('amount');
 
@@ -312,7 +309,29 @@ abstract class AbstractRequest implements RequestInterface
                 throw new InvalidRequestException('Amount precision is too high for currency.');
             }
 
-            return $this->formatCurrency((string) $number);
+            $currencies = new ISOCurrencies();
+            $moneyParser = new DecimalMoneyParser($currencies);
+            $currency = $this->getCurrency() ?: 'USD';
+
+            return $moneyParser->parse((string) $number, $currency);
+        }
+    }
+
+    /**
+     * Validates and returns the formatted amount.
+     *
+     * @throws InvalidRequestException on any validation failure.
+     * @return string The amount formatted to the correct number of decimal places for the selected currency.
+     */
+    public function getAmount()
+    {
+        $money = $this->getMoneyObject();
+        
+        if ($money !== null) {
+            $currencies = new ISOCurrencies();
+            $moneyFormatter = new DecimalMoneyFormatter($currencies);
+
+            return $moneyFormatter->format($money);
         }
     }
 
@@ -334,7 +353,11 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getAmountInteger()
     {
-        return (int) round($this->getAmount() * $this->getCurrencyDecimalFactor());
+        $money = $this->getMoneyObject();
+
+        if ($money !== null) {
+            return $money->getAmount();
+        }
     }
 
     /**

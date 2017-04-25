@@ -191,14 +191,14 @@ class AbstractRequestTest extends TestCase
     public function testGetAmountInteger()
     {
         $this->assertSame($this->request, $this->request->setAmount('13.66'));
-        $this->assertSame(1366, $this->request->getAmountInteger());
+        $this->assertSame('1366', $this->request->getAmountInteger());
     }
 
     public function testGetAmountIntegerNoDecimals()
     {
         $this->assertSame($this->request, $this->request->setCurrency('JPY'));
         $this->assertSame($this->request, $this->request->setAmount('1366'));
-        $this->assertSame(1366, $this->request->getAmountInteger());
+        $this->assertSame('1366', $this->request->getAmountInteger());
     }
 
     /**
