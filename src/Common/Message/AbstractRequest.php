@@ -326,7 +326,7 @@ abstract class AbstractRequest implements RequestInterface
     public function getAmount()
     {
         $money = $this->getMoneyObject();
-        
+
         if ($money !== null) {
             $currencies = new ISOCurrencies();
             $moneyFormatter = new DecimalMoneyFormatter($currencies);
