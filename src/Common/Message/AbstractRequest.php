@@ -418,7 +418,7 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getCurrencyNumeric()
     {
-        if ( ! $this->getCurrency()) {
+        if (! $this->getCurrency()) {
             return null;
         }
 
