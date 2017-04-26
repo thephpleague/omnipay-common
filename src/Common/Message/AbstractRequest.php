@@ -5,15 +5,13 @@
 
 namespace Omnipay\Common\Message;
 
-use Money\Currencies;
 use Money\Currencies\ISOCurrencies;
-use Money\Currency as MoneyCurrency;
+use Money\Currency;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
 use Money\Number;
 use Money\Parser\DecimalMoneyParser;
 use Omnipay\Common\CreditCard;
-use Omnipay\Common\Currency;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Helper;
@@ -96,7 +94,7 @@ abstract class AbstractRequest implements RequestInterface
     protected $response;
 
     /**
-     * @var Currencies
+     * @var ISOCurrencies
      */
     protected $currencies;
 
@@ -294,7 +292,7 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * @return Currencies
+     * @return ISOCurrencies
      */
     protected function getCurrencies()
     {
@@ -320,7 +318,7 @@ abstract class AbstractRequest implements RequestInterface
         if ($amount !== null) {
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
             $currencyCode = $this->getCurrency() ?: 'USD';
-            $currency = new MoneyCurrency($currencyCode);
+            $currency = new Currency($currencyCode);
 
             $number = Number::fromString($amount);
 
@@ -420,8 +418,14 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getCurrencyNumeric()
     {
-        if ($currency = Currency::find($this->getCurrency())) {
-            return $currency->getNumeric();
+        if ( ! $this->getCurrency()) {
+            return null;
+        }
+
+        $currency = new Currency($this->getCurrency());
+
+        if ($this->getCurrencies()->contains($currency)) {
+            return (string) $this->getCurrencies()->numericCodeFor($currency);
         }
     }
 
