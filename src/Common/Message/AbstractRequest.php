@@ -5,8 +5,13 @@
 
 namespace Omnipay\Common\Message;
 
+use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Formatter\DecimalMoneyFormatter;
+use Money\Money;
+use Money\Number;
+use Money\Parser\DecimalMoneyParser;
 use Omnipay\Common\CreditCard;
-use Omnipay\Common\Currency;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Helper;
@@ -14,7 +19,6 @@ use Omnipay\Common\Http\Client;
 use Omnipay\Common\ItemBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use InvalidArgumentException;
 
 /**
  * Abstract Request
@@ -88,6 +92,11 @@ abstract class AbstractRequest implements RequestInterface
      * @var ResponseInterface
      */
     protected $response;
+
+    /**
+     * @var ISOCurrencies
+     */
+    protected $currencies;
 
     /**
      * @var bool
@@ -283,20 +292,56 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * Convert an amount into a float.
-     *
-     * @var string|int|float $value The value to convert.
-     * @throws InvalidRequestException on any validation failure.
-     * @return float The amount converted to a float.
+     * @return ISOCurrencies
      */
-
-    public function toFloat($value)
+    protected function getCurrencies()
     {
-        try {
-            return Helper::toFloat($value);
-        } catch (InvalidArgumentException $e) {
-            // Throw old exception for legacy implementations.
-            throw new InvalidRequestException($e->getMessage(), $e->getCode(), $e);
+        if ($this->currencies === null) {
+            $this->currencies = new ISOCurrencies();
+        }
+
+        return $this->currencies;
+    }
+
+    /**
+     * @return null|Money
+     * @throws InvalidRequestException
+     */
+    public function getMoney()
+    {
+        $amount = $this->getParameter('amount');
+
+        if ($amount instanceof Money) {
+            return $amount;
+        }
+
+        if ($amount !== null) {
+            $moneyParser = new DecimalMoneyParser($this->getCurrencies());
+            $currencyCode = $this->getCurrency() ?: 'USD';
+            $currency = new Currency($currencyCode);
+
+            $number = Number::fromString($amount);
+
+            // Check for rounding that may occur if too many significant decimal digits are supplied.
+            $decimal_count = strlen($number->getFractionalPart());
+            $subunit = $this->getCurrencies()->subunitFor($currency);
+            if ($decimal_count > $subunit) {
+                throw new InvalidRequestException('Amount precision is too high for currency.');
+            }
+
+            $money = $moneyParser->parse((string) $number, $currency->getCode());
+
+            // Check for a negative amount.
+            if (!$this->negativeAmountAllowed && $money->isNegative()) {
+                throw new InvalidRequestException('A negative amount is not allowed.');
+            }
+
+            // Check for a zero amount.
+            if (!$this->zeroAmountAllowed && $money->isZero()) {
+                throw new InvalidRequestException('A zero amount is not allowed.');
+            }
+
+            return $money;
         }
     }
 
@@ -308,29 +353,12 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getAmount()
     {
-        $amount = $this->getParameter('amount');
+        $money = $this->getMoney();
 
-        if ($amount !== null) {
-            $amount = $this->toFloat($amount);
+        if ($money !== null) {
+            $moneyFormatter = new DecimalMoneyFormatter($this->getCurrencies());
 
-            // Check for a negative amount.
-            if (!$this->negativeAmountAllowed && $amount < 0) {
-                throw new InvalidRequestException('A negative amount is not allowed.');
-            }
-
-            // Check for a zero amount.
-            if (!$this->zeroAmountAllowed && $amount === 0.0) {
-                throw new InvalidRequestException('A zero amount is not allowed.');
-            }
-
-            // Check for rounding that may occur if too many significant decimal digits are supplied.
-            $str_value = rtrim(number_format($amount, 8, '.', ''), '0');
-            $decimal_count = strlen(substr(strrchr($str_value, '.'), 1));
-            if ($decimal_count > $this->getCurrencyDecimalPlaces()) {
-                throw new InvalidRequestException('Amount precision is too high for currency.');
-            }
-
-            return $this->formatCurrency($amount);
+            return $moneyFormatter->format($money);
         }
     }
 
@@ -352,7 +380,11 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getAmountInteger()
     {
-        return (int) round($this->getAmount() * $this->getCurrencyDecimalFactor());
+        $money = $this->getMoney();
+
+        if ($money !== null) {
+            return $money->getAmount();
+        }
     }
 
     /**
@@ -386,44 +418,15 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function getCurrencyNumeric()
     {
-        if ($currency = Currency::find($this->getCurrency())) {
-            return $currency->getNumeric();
-        }
-    }
-
-    /**
-     * Get the number of decimal places in the payment currency.
-     *
-     * @return integer
-     */
-    public function getCurrencyDecimalPlaces()
-    {
-        if ($currency = Currency::find($this->getCurrency())) {
-            return $currency->getDecimals();
+        if (! $this->getCurrency()) {
+            return null;
         }
 
-        return 2;
-    }
+        $currency = new Currency($this->getCurrency());
 
-    private function getCurrencyDecimalFactor()
-    {
-        return pow(10, $this->getCurrencyDecimalPlaces());
-    }
-
-    /**
-     * Format an amount for the payment currency.
-     *
-     * @param double $amount
-     * @return string
-     */
-    public function formatCurrency($amount)
-    {
-        return number_format(
-            $amount,
-            $this->getCurrencyDecimalPlaces(),
-            '.',
-            ''
-        );
+        if ($this->getCurrencies()->contains($currency)) {
+            return (string) $this->getCurrencies()->numericCodeFor($currency);
+        }
     }
 
     /**
