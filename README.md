@@ -14,7 +14,7 @@ processing library for PHP 5.3+. This package implements common classes required
 
 ## Documentation
 
-Please see http://omnipay.thephpleague.com/(http://omnipay.thephpleague.com/) for the installation & usage documentation.
+Please see [https://omnipay.thephpleague.com/](https://omnipay.thephpleague.com/) for the installation & usage documentation.
 
 ## Change log
 
