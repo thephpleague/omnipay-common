@@ -11,9 +11,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Client implements HttpClient, RequestFactory
+class Client implements RequestFactory
 {
     /**
+     * The Http Client which implements `public function sendRequest(RequestInterface $request)`
+     *
      * @var HttpClient
      */
     private $httpClient;
@@ -23,7 +25,7 @@ class Client implements HttpClient, RequestFactory
      */
     private $requestFactory;
 
-    public function __construct(HttpClient $httpClient = null, RequestFactory $requestFactory = null)
+    public function __construct(/* HttpClient */ $httpClient = null, RequestFactory $requestFactory = null)
     {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
