@@ -21,22 +21,19 @@ class ResponseParser
     }
 
     /**
-     * Parse the JSON response body and return an array
-     *
-     * Copied from Response->json() in Guzzle3 (copyright @mtdowling)
-     * @link https://github.com/guzzle/guzzle3/blob/v3.9.3/src/Guzzle/Http/Message/Response.php
+     * Decodes a JSON string,
      *
      * @param  string|ResponseInterface $response
-     * @throws RuntimeException if the response body is not in JSON format
-     * @return array|string|int|bool|float
+     * @param  bool $assoc
+     * @return mixed
      */
-    public static function json($response)
+    public static function json($response, $assoc = false, $depth = 512, $options = 0)
     {
-        $body = self::toString($response);
+        $json = self::toString($response);
 
-        $data = json_decode($body, true);
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new RuntimeException('Unable to parse response body into JSON: ' . json_last_error());
+        $data = json_decode($json, $assoc, $depth, $options);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('json_decode error: ' . json_last_error());
         }
 
         return $data === null ? [] : $data;
@@ -78,7 +75,7 @@ class ResponseParser
         libxml_disable_entity_loader($disableEntities);
 
         if ($errorMessage !== null) {
-            throw new RuntimeException('Unable to parse response body into XML: ' . $errorMessage);
+            throw new \InvalidArgumentException('SimpleXML error: ' . $errorMessage);
         }
 
         return $xml;

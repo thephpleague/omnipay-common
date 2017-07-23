@@ -3,14 +3,13 @@
 namespace Omnipay\Common\Http;
 
 use GuzzleHttp\Psr7\Response;
-use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Tests\TestCase;
 
 class ResponseParserTest extends TestCase
 {
     public function testParsesJsonString()
     {
-        $data = ResponseParser::json('{"Baz":"Bar"}');
+        $data = ResponseParser::json('{"Baz":"Bar"}', true);
 
         $this->assertEquals(array('Baz' => 'Bar'), $data);
     }
@@ -21,16 +20,25 @@ class ResponseParserTest extends TestCase
 
         $data = ResponseParser::json($response);
 
+        $this->assertEquals((object) array('Baz' => 'Bar'), $data);
+    }
+
+    public function testParsesJsonResponseAssoc()
+    {
+        $response = new Response(200, [], '{"Baz":"Bar"}');
+
+        $data = ResponseParser::json($response, true);
+
         $this->assertEquals(array('Baz' => 'Bar'), $data);
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Unable to parse response body into JSON: 4
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage json_decode error: 4
      */
     public function testParsesJsonResponseException()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $response = new Response(200, [], 'FooBar');
 
@@ -56,8 +64,8 @@ class ResponseParserTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Unable to parse response body into XML: String could not be parsed as XML
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage SimpleXML error: String could not be parsed as XML
      */
     public function testParsesXmlResponseException()
     {

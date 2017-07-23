@@ -41,13 +41,72 @@ class Client implements RequestFactory
      */
     public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
-        if (is_array($body)) {
-            $body = http_build_query($body, '', '&');
+        if (!is_null($body) && !is_string($body)) {
+            $body = $this->encodeFormData($body);
         }
 
         $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
         return $this->sendRequest($request);
+    }
+
+    /**
+     * Send data encoded as JSON and return the decoded response
+     *
+     * @param $method
+     * @param $uri
+     * @param array $headers
+     * @param array $data
+     * @param string $protocolVersion
+     * @return mixed
+     */
+    public function json($method, $uri, $headers = [], array $data = null, $protocolVersion = '1.1')
+    {
+        $body = $this->encodeJson($data);
+
+        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+
+        // Add default Content-Type header when not set.
+        if (! $request->hasHeader('Content-Type')) {
+            $request = $request->withHeader('Content-Type', 'application/json');
+        }
+
+        // Accept JSON responses
+        if (! $request->hasHeader('Accept')) {
+            $request = $request->withHeader('Accept', 'application/json');
+        }
+
+        $response = $this->sendRequest($request);
+
+        return ResponseParser::json($response, true);
+    }
+
+    /**
+     * Send data and
+     *
+     * @param $method
+     * @param $uri
+     * @param array $headers
+     * @param null $body
+     * @param string $protocolVersion
+     * @return \SimpleXMLElement
+     */
+    public function xml($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
+    {
+        if (!is_null($body) && !is_string($body)) {
+            $body = $this->encodeFormData($body);
+        }
+
+        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+
+        // Accept XML responses
+        if (! $request->hasHeader('Accept')) {
+            $request = $request->withHeader('Accept', 'application/xml');
+        }
+
+        $response = $this->sendRequest($request);
+
+        return ResponseParser::xml($response);
     }
 
     /**
@@ -95,5 +154,21 @@ class Client implements RequestFactory
     public function post($uri, array $headers = [], $body = null)
     {
         return $this->send('POST', $uri, $headers, $body);
+    }
+
+    protected function encodeFormData($data)
+    {
+        return http_build_query($data, '', '&');
+    }
+
+    protected function encodeJson($value)
+    {
+        $body = json_encode($value);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('json_decode error: ' . json_last_error_msg());
+        }
+
+        return $body;
     }
 }

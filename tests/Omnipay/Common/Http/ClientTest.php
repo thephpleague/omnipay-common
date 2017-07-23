@@ -2,11 +2,13 @@
 
 namespace Omnipay\Common\Http;
 
+use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use Omnipay\Tests\TestCase;
+use Psr\Http\Message\RequestInterface;
 
 class ClientTest extends TestCase
 {
@@ -114,4 +116,85 @@ class ClientTest extends TestCase
 
         $client->post('/path', [], ['a' => 'b']);
     }
+
+    public function testJson()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path');
+        $response = new Response(200, [], '{"foo":"bar"}');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+            [],
+            '{"a":"b"}',
+            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')->with(\Mockery::on(function (RequestInterface $request) {
+            return $request->getHeaderLine('Accept') === 'application/json'
+                && $request->getHeaderLine('Content-Type') === 'application/json';
+        }))->once()->andReturn($response);
+
+        $result = $client->json('POST', '/path', [], ['a' => 'b']);
+
+        $this->assertSame(['foo' => 'bar'], $result);
+    }
+
+    public function testJsonCustomContentEncoding()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path', ['content-type' => 'text/html']);
+        $response = new Response(200, [], '{"foo":"bar"}');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+            ['content-type' => 'text/html'],
+            '{"a":"b"}',
+            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')->with(\Mockery::on(function (RequestInterface $request) {
+            return $request->getHeaderLine('Content-Type') === 'text/html';
+        }))->once()->andReturn($response);
+
+        $result = $client->json('POST', '/path', ['content-type' => 'text/html'], ['a' => 'b']);
+
+        $this->assertSame(['foo' => 'bar'], $result);
+    }
+
+    public function testXml()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path');
+        $response = new Response(200, [], '<Foo><Baz>Bar</Baz></Foo>');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+            [],
+            'a=b',
+            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')->with(\Mockery::on(function (RequestInterface $request) {
+            return $request->getHeaderLine('Accept') == 'application/xml';
+        }))->once()->andReturn($response);
+
+        $result = $client->xml('POST', '/path', [], ['a' => 'b']);
+
+        $this->assertInstanceOf('SimpleXMLElement', $result);
+        $this->assertEquals('Bar', (string) $result->Baz);
+    }
+
 }
