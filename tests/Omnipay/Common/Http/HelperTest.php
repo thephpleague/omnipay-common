@@ -5,29 +5,54 @@ namespace Omnipay\Common\Http;
 use GuzzleHttp\Psr7\Response;
 use Omnipay\Tests\TestCase;
 
-class ResponseParserTest extends TestCase
+class HelperTest extends TestCase
 {
-    public function testParsesJsonString()
+    public function testEncodesFormData()
     {
-        $data = ResponseParser::json('{"Baz":"Bar"}', true);
+        $data = Helper::formDataEncode(array('Baz' => 'Bar', 'Foo' => 'Qux'));
+
+        $this->assertEquals('Baz=Bar&Foo=Qux', $data);
+    }
+
+    public function testEncodesJsonArray()
+    {
+        $data = Helper::jsonEncode(array('Baz' => 'Bar'));
+
+        $this->assertEquals('{"Baz":"Bar"}', $data);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage json_decode error: Malformed UTF-8 characters, possibly incorrectly encode
+     */
+    public function testEncodesJsonException()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Helper::jsonEncode("\xB1\x31");
+    }
+
+    public function testDecodesJsonString()
+    {
+        $data = Helper::jsonDecode('{"Baz":"Bar"}', true);
 
         $this->assertEquals(array('Baz' => 'Bar'), $data);
     }
 
-    public function testParsesJsonResponse()
+    public function testDecodesJsonResponse()
     {
         $response = new Response(200, [], '{"Baz":"Bar"}');
 
-        $data = ResponseParser::json($response);
+        $data = Helper::jsonDecode($response);
 
         $this->assertEquals((object) array('Baz' => 'Bar'), $data);
     }
 
-    public function testParsesJsonResponseAssoc()
+    public function testDecodesJsonResponseAssoc()
     {
         $response = new Response(200, [], '{"Baz":"Bar"}');
 
-        $data = ResponseParser::json($response, true);
+        $data = Helper::jsonDecode($response, true);
 
         $this->assertEquals(array('Baz' => 'Bar'), $data);
     }
@@ -36,28 +61,28 @@ class ResponseParserTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage json_decode error: 4
      */
-    public function testParsesJsonResponseException()
+    public function testDecodesJsonResponseException()
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $response = new Response(200, [], 'FooBar');
 
-        ResponseParser::json($response);
+        Helper::jsonDecode($response);
     }
 
-    public function testParsesXmlString()
+    public function testDecodesXmlString()
     {
-        $data = ResponseParser::xml('<Foo><Baz>Bar</Baz></Foo>');
+        $data = Helper::xmlDecode('<Foo><Baz>Bar</Baz></Foo>');
 
         $this->assertInstanceOf('SimpleXMLElement', $data);
         $this->assertEquals('Bar', (string) $data->Baz);
     }
 
-    public function testParsesXmlResponse()
+    public function testDecodesXmlResponse()
     {
         $response = new Response(200, [], '<Foo><Baz>Bar</Baz></Foo>');
 
-        $data = ResponseParser::xml($response);
+        $data = Helper::xmlDecode($response);
 
         $this->assertInstanceOf('SimpleXMLElement', $data);
         $this->assertEquals('Bar', (string) $data->Baz);
@@ -67,11 +92,11 @@ class ResponseParserTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage SimpleXML error: String could not be parsed as XML
      */
-    public function testParsesXmlResponseException()
+    public function testDecodesXmlResponseException()
     {
         $response = new Response(200, [], '<abc');
 
-        ResponseParser::xml($response);
+        Helper::xmlDecode($response);
     }
 
     /**
@@ -84,7 +109,7 @@ class ResponseParserTest extends TestCase
         $oldCwd = getcwd();
         chdir(__DIR__);
         try {
-            $xml = ResponseParser::xml($response);
+            $xml = Helper::xmlDecode($response);
             chdir($oldCwd);
             $this->markTestIncomplete('Did not throw the expected exception! XML resolved as: ' . $xml->asXML());
         } catch (\Exception $e) {

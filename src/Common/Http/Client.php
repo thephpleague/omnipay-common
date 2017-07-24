@@ -42,7 +42,7 @@ class Client implements RequestFactory
     public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
         if (!is_null($body) && !is_string($body)) {
-            $body = $this->encodeFormData($body);
+            $body = Helper::formDataEncode($body);
         }
 
         $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
@@ -58,11 +58,11 @@ class Client implements RequestFactory
      * @param array $headers
      * @param array $data
      * @param string $protocolVersion
-     * @return mixed
+     * @return array
      */
     public function json($method, $uri, $headers = [], array $data = null, $protocolVersion = '1.1')
     {
-        $body = $this->encodeJson($data);
+        $body = Helper::jsonEncode($data);
 
         $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
@@ -78,7 +78,7 @@ class Client implements RequestFactory
 
         $response = $this->sendRequest($request);
 
-        return ResponseParser::json($response, true);
+        return Helper::jsonDecode($response, true) ?: [];
     }
 
     /**
@@ -94,7 +94,7 @@ class Client implements RequestFactory
     public function xml($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
         if (!is_null($body) && !is_string($body)) {
-            $body = $this->encodeFormData($body);
+            $body = Helper::formDataEncode($body);
         }
 
         $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
@@ -106,7 +106,7 @@ class Client implements RequestFactory
 
         $response = $this->sendRequest($request);
 
-        return ResponseParser::xml($response);
+        return Helper::xmlDecode($response);
     }
 
     /**
@@ -154,21 +154,5 @@ class Client implements RequestFactory
     public function post($uri, array $headers = [], $body = null)
     {
         return $this->send('POST', $uri, $headers, $body);
-    }
-
-    protected function encodeFormData($data)
-    {
-        return http_build_query($data, '', '&');
-    }
-
-    protected function encodeJson($value)
-    {
-        $body = json_encode($value);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException('json_decode error: ' . json_last_error_msg());
-        }
-
-        return $body;
     }
 }
