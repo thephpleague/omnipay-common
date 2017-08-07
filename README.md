@@ -56,3 +56,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-code-quality]: https://scrutinizer-ci.com/g/thephpleague/omnipay-common
 [link-downloads]: https://packagist.org/packages/omnipay/common
 [link-contributors]: ../../contributors
+
