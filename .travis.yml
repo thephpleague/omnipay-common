@@ -23,16 +23,11 @@ env:
 matrix:
   include:
     - php: 5.6
-      env: setup=lowest
-        - setup=lowest
-        - symfony="^2.1"
+      env: setup=lowest symfony="^2.1"
     - php: 5.6
-        - setup=lowest
-        - symfony="^3"
+    - env: setup=lowest symfony="^3"
     - php: 7.2
-      env:
-        - setup=lowest
-        - symfony="^4"
+      env: setup=lowest symfony="^4"
 
 install:
   - if [[ $symfony != '*' ]]; then travis_retry composer require symfony/http-foundation:${symfony} --no-update --no-interaction; fi
