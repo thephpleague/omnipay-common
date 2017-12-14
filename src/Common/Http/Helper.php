@@ -5,7 +5,7 @@ namespace Omnipay\Common\Http;
 use Omnipay\Common\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 
-class ResponseParser
+class Helper
 {
     /**
      * @param string|ResponseInterface $response
@@ -21,25 +21,50 @@ class ResponseParser
     }
 
     /**
-     * Parse the JSON response body and return an array
-     *
-     * Copied from Response->json() in Guzzle3 (copyright @mtdowling)
-     * @link https://github.com/guzzle/guzzle3/blob/v3.9.3/src/Guzzle/Http/Message/Response.php
-     *
-     * @param  string|ResponseInterface $response
-     * @throws RuntimeException if the response body is not in JSON format
-     * @return array|string|int|bool|float
+     * @param $data
+     * @return string
      */
-    public static function json($response)
+    public static function formDataEncode($data)
     {
-        $body = self::toString($response);
+        return http_build_query($data, '', '&');
+    }
 
-        $data = json_decode($body, true);
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new RuntimeException('Unable to parse response body into JSON: ' . json_last_error());
+    /**
+     * @param  $value
+     * @param  int $options
+     * @param  int $depth
+     * @return string
+     */
+    public static function jsonEncode($value, $options = 0, $depth = 512)
+    {
+        $body = json_encode($value, $options, $depth);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('json_decode error: ' . json_last_error_msg());
         }
 
-        return $data === null ? [] : $data;
+        return $body;
+    }
+
+    /**
+     * Decodes a JSON string,
+     *
+     * @param  string|ResponseInterface $response
+     * @param  bool $assoc
+     * @param  int $depth
+     * @param  int $options
+     * @return mixed
+     */
+    public static function jsonDecode($response, $assoc = false, $depth = 512, $options = 0)
+    {
+        $json = self::toString($response);
+
+        $data = json_decode($json, $assoc, $depth, $options);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('json_decode error: ' . json_last_error());
+        }
+
+        return $data;
     }
 
     /**
@@ -58,7 +83,7 @@ class ResponseParser
      * @link http://websec.io/2012/08/27/Preventing-XXE-in-PHP.html
      *
      */
-    public static function xml($response)
+    public static function xmlDecode($response)
     {
         $body = self::toString($response);
 
@@ -78,7 +103,7 @@ class ResponseParser
         libxml_disable_entity_loader($disableEntities);
 
         if ($errorMessage !== null) {
-            throw new RuntimeException('Unable to parse response body into XML: ' . $errorMessage);
+            throw new \InvalidArgumentException('SimpleXML error: ' . $errorMessage);
         }
 
         return $xml;
