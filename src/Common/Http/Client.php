@@ -37,7 +37,7 @@ class Client implements RequestFactory
      * @param array $headers
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion
-     * @return ResponseInterface
+     * @return Response
      */
     public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
     {
@@ -65,11 +65,13 @@ class Client implements RequestFactory
 
     /**
      * @param  RequestInterface $request
-     * @return ResponseInterface
+     * @return Response
      */
     public function sendRequest(RequestInterface $request)
     {
-        return $this->httpClient->sendRequest($request);
+        $response = $this->httpClient->sendRequest($request);
+
+        return new Response($response);
     }
 
     /**
@@ -77,7 +79,7 @@ class Client implements RequestFactory
      *
      * @param UriInterface|string $uri
      * @param array $headers
-     * @return ResponseInterface
+     * @return Response
      */
     public function get($uri, array $headers = [])
     {
@@ -90,7 +92,7 @@ class Client implements RequestFactory
      * @param UriInterface|string $uri
      * @param array $headers
      * @param string|array|null|resource|StreamInterface $body
-     * @return ResponseInterface
+     * @return Response
      */
     public function post($uri, array $headers = [], $body = null)
     {

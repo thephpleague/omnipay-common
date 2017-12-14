@@ -4,9 +4,11 @@ namespace Omnipay\Common\Http;
 
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use Omnipay\Tests\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 class ClientTest extends TestCase
 {
@@ -46,9 +48,12 @@ class ClientTest extends TestCase
             '1.1',
         ])->andReturn($request);
 
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+        $mockClient->shouldReceive('sendRequest')->with($request)->once()->andReturn(new Response);
 
-        $client->send('GET', '/path');
+        $response = $client->send('GET', '/path');
+
+        $this->assertInstanceOf(\Omnipay\Common\Http\Response::class, $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
     public function testSendParsesArrayBody()
@@ -67,7 +72,7 @@ class ClientTest extends TestCase
             '1.1',
         ])->andReturn($request);
 
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+        $mockClient->shouldReceive('sendRequest')->with($request)->once()->andReturn(new Response);
 
         $client->send('POST', '/path', [], ['a'=>'1', 'b'=>2]);
     }
@@ -89,7 +94,7 @@ class ClientTest extends TestCase
             '1.1',
         ])->andReturn($request);
 
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+        $mockClient->shouldReceive('sendRequest')->with($request)->once()->andReturn(new Response);
 
         $client->get('/path');
     }
@@ -110,7 +115,7 @@ class ClientTest extends TestCase
             '1.1',
         ])->andReturn($request);
 
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+        $mockClient->shouldReceive('sendRequest')->with($request)->once()->andReturn(new Response);
 
         $client->post('/path', [], ['a' => 'b']);
     }
