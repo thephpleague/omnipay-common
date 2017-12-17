@@ -2,14 +2,16 @@
 
 namespace Omnipay\Common\Http;
 
+use Http\Message\Decorator\ResponseDecorator;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Omnipay\Common\Exception\RuntimeException;
 
 class Response implements ResponseInterface
 {
+    use ResponseDecorator;
+
     /** @var ResponseInterface  */
-    private $response;
+    private $message;
 
     /**
      * Decorate a PSR-7 Response object
@@ -18,7 +20,7 @@ class Response implements ResponseInterface
      */
     public function __construct(ResponseInterface $response)
     {
-        $this->response = $response;
+        $this->message = $response;
     }
 
     /**
@@ -81,142 +83,5 @@ class Response implements ResponseInterface
         }
 
         return $xml;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function getProtocolVersion()
-    {
-        return $this->response->getProtocolVersion();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withProtocolVersion($version)
-    {
-        $response = clone $this;
-
-        $response->response = $this->response->withProtocolVersion($version);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeaders()
-    {
-        return $this->response->getHeaders();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function hasHeader($name)
-    {
-        return $this->response->hasHeader($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeader($name)
-    {
-        return $this->response->getHeader($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeaderLine($name)
-    {
-        return $this->getHeaderLine($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withHeader($name, $value)
-    {
-        $response = clone $this;
-
-        $response->response = $response->response->withHeader($name, $value);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withAddedHeader($name, $value)
-    {
-        $response = clone $this;
-
-        $response->response = $response->response->withAddedHeader($name, $value);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withoutHeader($name)
-    {
-        $response = clone $this;
-
-        $response->response = $response->response->withoutHeader($name);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getBody()
-    {
-        return $this->response->getBody();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withBody(StreamInterface $body)
-    {
-        $response = clone $this;
-
-        $response->response = $response->response->withBody($body);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getStatusCode()
-    {
-        return $this->response->getStatusCode();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function withStatus($code, $reasonPhrase = '')
-    {
-        $response = clone $this;
-
-        $response->response = $response->response->withStatus($code, $reasonPhrase);
-
-        return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getReasonPhrase()
-    {
-        $this->response->getReasonPhrase();
     }
 }
