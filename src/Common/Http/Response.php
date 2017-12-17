@@ -10,9 +10,6 @@ class Response implements ResponseInterface
 {
     use ResponseDecorator;
 
-    /** @var ResponseInterface  */
-    private $message;
-
     /**
      * Decorate a PSR-7 Response object
      *
