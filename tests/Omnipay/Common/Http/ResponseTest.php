@@ -2,54 +2,38 @@
 
 namespace Omnipay\Common\Http;
 
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Response as HttpResponse;
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Tests\TestCase;
 
-class ResponseParserTest extends TestCase
+class ResponseTest extends TestCase
 {
-    public function testParsesJsonString()
+    public function testJsonResponse()
     {
-        $data = ResponseParser::json('{"Baz":"Bar"}');
+        $response = new HttpResponse(200, [], '{"Baz":"Bar"}');
+
+        $data = (new Response($response))->json();
 
         $this->assertEquals(array('Baz' => 'Bar'), $data);
     }
 
-    public function testParsesJsonResponse()
-    {
-        $response = new Response(200, [], '{"Baz":"Bar"}');
-
-        $data = ResponseParser::json($response);
-
-        $this->assertEquals(array('Baz' => 'Bar'), $data);
-    }
 
     /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage Unable to parse response body into JSON: 4
      */
-    public function testParsesJsonResponseException()
+    public function testJsonResponseException()
     {
-        $this->expectException(RuntimeException::class);
+        $response = new HttpResponse(200, [], 'FooBar');
 
-        $response = new Response(200, [], 'FooBar');
-
-        ResponseParser::json($response);
+        (new Response($response))->json();
     }
 
-    public function testParsesXmlString()
+    public function testXmlResponse()
     {
-        $data = ResponseParser::xml('<Foo><Baz>Bar</Baz></Foo>');
+        $response = new HttpResponse(200, [], '<Foo><Baz>Bar</Baz></Foo>');
 
-        $this->assertInstanceOf('SimpleXMLElement', $data);
-        $this->assertEquals('Bar', (string) $data->Baz);
-    }
-
-    public function testParsesXmlResponse()
-    {
-        $response = new Response(200, [], '<Foo><Baz>Bar</Baz></Foo>');
-
-        $data = ResponseParser::xml($response);
+        $data = (new Response($response))->xml();
 
         $this->assertInstanceOf('SimpleXMLElement', $data);
         $this->assertEquals('Bar', (string) $data->Baz);
@@ -59,11 +43,11 @@ class ResponseParserTest extends TestCase
      * @expectedException RuntimeException
      * @expectedExceptionMessage Unable to parse response body into XML: String could not be parsed as XML
      */
-    public function testParsesXmlResponseException()
+    public function testXmlResponseException()
     {
-        $response = new Response(200, [], '<abc');
+        $response = new HttpResponse(200, [], '<abc');
 
-        ResponseParser::xml($response);
+        (new Response($response))->xml();
     }
 
     /**
@@ -72,11 +56,11 @@ class ResponseParserTest extends TestCase
     public function testPreventsComplexExternalEntities()
     {
         $xml = '<?xml version="1.0"?><!DOCTYPE scan[<!ENTITY test SYSTEM "php://filter/read=convert.base64-encode/resource=ResponseTest.php">]><scan>&test;</scan>';
-        $response = new Response(200, [], $xml);
+        $response = new HttpResponse(200, [], $xml);
         $oldCwd = getcwd();
         chdir(__DIR__);
         try {
-            $xml = ResponseParser::xml($response);
+            $xml = (new Response($response))->xml();
             chdir($oldCwd);
             $this->markTestIncomplete('Did not throw the expected exception! XML resolved as: ' . $xml->asXML());
         } catch (\Exception $e) {

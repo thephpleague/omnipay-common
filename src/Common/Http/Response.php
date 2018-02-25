@@ -2,22 +2,22 @@
 
 namespace Omnipay\Common\Http;
 
-use Omnipay\Common\Exception\RuntimeException;
+use Http\Message\Decorator\ResponseDecorator;
 use Psr\Http\Message\ResponseInterface;
+use Omnipay\Common\Exception\RuntimeException;
 
-class ResponseParser
+class Response implements ResponseInterface
 {
-    /**
-     * @param string|ResponseInterface $response
-     * @return string
-     */
-    private static function toString($response)
-    {
-        if ($response instanceof ResponseInterface) {
-            return $response->getBody()->__toString();
-        }
+    use ResponseDecorator;
 
-        return (string) $response;
+    /**
+     * Decorate a PSR-7 Response object
+     *
+     * @param ResponseInterface $response
+     */
+    public function __construct(ResponseInterface $response)
+    {
+        $this->message = $response;
     }
 
     /**
@@ -26,13 +26,12 @@ class ResponseParser
      * Copied from Response->json() in Guzzle3 (copyright @mtdowling)
      * @link https://github.com/guzzle/guzzle3/blob/v3.9.3/src/Guzzle/Http/Message/Response.php
      *
-     * @param  string|ResponseInterface $response
      * @throws RuntimeException if the response body is not in JSON format
      * @return array|string|int|bool|float
      */
-    public static function json($response)
+    public function json()
     {
-        $body = self::toString($response);
+        $body = $this->getBody()->__toString();
 
         $data = json_decode($body, true);
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -52,15 +51,14 @@ class ResponseParser
      * Copied from Response->xml() in Guzzle3 (copyright @mtdowling)
      * @link https://github.com/guzzle/guzzle3/blob/v3.9.3/src/Guzzle/Http/Message/Response.php
      *
-     * @param  string|ResponseInterface $response
      * @return \SimpleXMLElement
      * @throws RuntimeException if the response body is not in XML format
      * @link http://websec.io/2012/08/27/Preventing-XXE-in-PHP.html
      *
      */
-    public static function xml($response)
+    public function xml()
     {
-        $body = self::toString($response);
+        $body = $this->getBody()->__toString();
 
         $errorMessage = null;
         $internalErrors = libxml_use_internal_errors(true);
