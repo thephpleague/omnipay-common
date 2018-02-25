@@ -383,7 +383,7 @@ abstract class AbstractRequest implements RequestInterface
         $money = $this->getMoney();
 
         if ($money !== null) {
-            return $money->getAmount();
+            return (int) $money->getAmount();
         }
     }
 
