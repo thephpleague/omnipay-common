@@ -57,7 +57,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The number parameter is required
+     * @expectedExceptionMessage The credit card number is required
      */
     public function testValidateNumberRequired()
     {
@@ -67,7 +67,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiryMonth parameter is required
+     * @expectedExceptionMessage The expiration month is required
      */
     public function testValidateExpiryMonthRequired()
     {
@@ -77,7 +77,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiryYear parameter is required
+     * @expectedExceptionMessage The expiration year is required
      */
     public function testValidateExpiryYearRequired()
     {
