@@ -274,9 +274,15 @@ class CreditCard
      */
     public function validate()
     {
-        foreach (array('number', 'expiryMonth', 'expiryYear') as $key) {
+        $requiredParameters = array(
+            'number' => 'credit card number',
+            'expiryMonth' => 'expiration month',
+            'expiryYear' => 'expiration year'
+        );
+
+        foreach ($requiredParameters as $key => $val) {
             if (!$this->getParameter($key)) {
-                throw new InvalidCreditCardException("The $key parameter is required");
+                throw new InvalidCreditCardException("The $val is required");
             }
         }
 
