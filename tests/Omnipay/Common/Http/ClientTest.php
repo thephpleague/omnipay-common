@@ -2,6 +2,7 @@
 
 namespace Omnipay\Common\Http;
 
+use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
@@ -18,18 +19,6 @@ class ClientTest extends TestCase
         $this->assertAttributeInstanceOf(RequestFactory::class, 'requestFactory', $client);
     }
 
-    public function testCreateRequest()
-    {
-         $client = $this->getHttpClient();
-
-         $request = $client->createRequest('GET', '/path', ['foo' => 'bar']);
-
-         $this->assertInstanceOf(Request::class, $request);
-         $this->assertEquals('/path', $request->getUri());
-         $this->assertEquals(['bar'], $request->getHeader('foo'));
-    }
-
-
     public function testSend()
     {
         $mockClient = m::mock(HttpClient::class);
@@ -37,6 +26,7 @@ class ClientTest extends TestCase
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
+        $response = new Response();
 
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
@@ -46,8 +36,12 @@ class ClientTest extends TestCase
             '1.1',
         ])->andReturn($request);
 
-        $mockClient->shouldReceive('sendRequest')->with($request)->once();
+        $mockClient->shouldReceive('sendRequest')
+            ->with($request)
+            ->andReturn($response)
+            ->once();
 
-        $client->request('GET', '/path');
+        $this->assertSame($response, $client->request('GET', '/path'));
+
     }
 }

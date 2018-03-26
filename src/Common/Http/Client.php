@@ -2,6 +2,7 @@
 
 namespace Omnipay\Common\Http;
 
+use function GuzzleHttp\Psr7\str;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
@@ -11,10 +12,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Client implements RequestFactory
+class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
+     * Note: Will be changed to PSR-18 when released
      *
      * @var HttpClient
      */
@@ -39,32 +41,15 @@ class Client implements RequestFactory
      * @param string $protocolVersion
      * @return ResponseInterface
      */
-    public function request($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
-    {
-        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+    public function request(
+        string $method,
+        $uri,
+        array $headers = [],
+        $body = null,
+        string $protocolVersion = '1.1'
+    ) : ResponseInterface {
+        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * @param $method
-     * @param $uri
-     * @param array $headers
-     * @param string|resource|StreamInterface|null $body
-     * @param string $protocolVersion
-     * @return RequestInterface
-     */
-    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
-    {
-        return $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
-    }
-
-    /**
-     * @param  RequestInterface $request
-     * @return ResponseInterface
-     */
-    public function sendRequest(RequestInterface $request)
-    {
         return $this->httpClient->sendRequest($request);
     }
 }
