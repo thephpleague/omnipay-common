@@ -6,6 +6,7 @@
 namespace Omnipay\Common;
 
 use Omnipay\Common\Http\Client;
+use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
@@ -49,7 +50,7 @@ abstract class AbstractGateway implements GatewayInterface
     protected $parameters;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $httpClient;
 
@@ -61,10 +62,10 @@ abstract class AbstractGateway implements GatewayInterface
     /**
      * Create a new gateway instance
      *
-     * @param Client          $httpClient  A HTTP client to make API calls with
+     * @param ClientInterface          $httpClient  A HTTP client to make API calls with
      * @param HttpRequest     $httpRequest A Symfony HTTP request object
      */
-    public function __construct(Client $httpClient = null, HttpRequest $httpRequest = null)
+    public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
     {
         $this->httpClient = $httpClient ?: $this->getDefaultHttpClient();
         $this->httpRequest = $httpRequest ?: $this->getDefaultHttpRequest();
@@ -326,7 +327,7 @@ abstract class AbstractGateway implements GatewayInterface
     /**
      * Get the global default HTTP client.
      *
-     * @return Client
+     * @return ClientInterface
      */
     protected function getDefaultHttpClient()
     {
