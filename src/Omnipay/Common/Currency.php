@@ -112,6 +112,7 @@ class Currency
             'VUV' => array('numeric' => '548', 'decimals' => 0),
             'WST' => array('numeric' => '882', 'decimals' => 2),
             'ZAR' => array('numeric' => '710', 'decimals' => 2),
+            'XOF' => array('numeric' => '740', 'decimals' => 0),
         );
     }
 }
