@@ -2,6 +2,8 @@
 
 namespace Omnipay\Common\Http;
 
+use Psr\Http\Client\Exception\NetworkException;
+use Psr\Http\Client\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -16,6 +18,9 @@ interface ClientInterface
      * @param array                                $headers
      * @param resource|string|StreamInterface|null $body
      * @param string                               $protocolVersion
+     *
+     * @throws RequestException when the HTTP client is passed a request that is invalid and cannot be sent.
+     * @throws NetworkException if there is an error with the network or the remote server cannot be reached.
      *
      * @return ResponseInterface
      */

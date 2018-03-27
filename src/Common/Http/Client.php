@@ -7,6 +7,8 @@ use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
+use Omnipay\Common\Http\Exception\NetworkException;
+use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -39,6 +41,10 @@ class Client implements ClientInterface
      * @param array $headers
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion
+     *
+     * @throws \Psr\Http\Client\Exception\NetworkException
+     * @throws \Psr\Http\Client\Exception\RequestException
+     *
      * @return ResponseInterface
      */
     public function request(
@@ -50,6 +56,23 @@ class Client implements ClientInterface
     ) : ResponseInterface {
         $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
-        return $this->httpClient->sendRequest($request);
+        return $this->sendRequest($request);
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws \Psr\Http\Client\Exception\NetworkException
+     * @throws \Psr\Http\Client\Exception\RequestException
+     */
+    private function sendRequest(RequestInterface $request)
+    {
+        try {
+            return $this->httpClient->sendRequest($request);
+        } catch (\Http\Client\Exception\NetworkException $networkException) {
+            throw new NetworkException($networkException->getMessage(), $request, $networkException);
+        } catch (\Exception $exception) {
+            throw new RequestException($exception->getMessage(), $request, $exception);
+        }
     }
 }
