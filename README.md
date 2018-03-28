@@ -10,7 +10,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements common classes required by Omnipay.
+processing library for PHP. This package implements common classes required by Omnipay.
 
 ## Documentation
 
