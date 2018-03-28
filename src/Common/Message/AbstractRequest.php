@@ -308,9 +308,9 @@ abstract class AbstractRequest implements RequestInterface
      * @return null|Money
      * @throws InvalidRequestException
      */
-    public function getMoney()
+    public function getMoney($amount = null)
     {
-        $amount = $this->getParameter('amount');
+        $amount = $amount !== null ? $amount : $this->getParameter('amount');
 
         if ($amount instanceof Money) {
             return $amount;
@@ -428,6 +428,36 @@ abstract class AbstractRequest implements RequestInterface
         if ($this->getCurrencies()->contains($currency)) {
             return (string) $this->getCurrencies()->numericCodeFor($currency);
         }
+    }
+
+    /**
+     * Get the number of decimal places in the payment currency.
+     *
+     * @return integer
+     */
+    public function getCurrencyDecimalPlaces()
+    {
+        if ($this->getCurrency()) {
+            $currency = new Currency($this->getCurrency());
+            if ($this->getCurrencies()->contains($currency)) {
+                return $this->getCurrencies()->subunitFor($currency);
+            }
+        }
+
+        return 2;
+    }
+
+    /**
+     * Format an amount for the payment currency.
+     *
+     * @return string
+     */
+    public function formatCurrency($amount)
+    {
+        $money = $this->getMoney($amount);
+        $formatter = new DecimalMoneyFormatter($this->getCurrencies());
+
+        return $formatter->format($money);
     }
 
     /**
