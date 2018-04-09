@@ -330,7 +330,7 @@ abstract class AbstractRequest implements RequestInterface
                 throw new InvalidRequestException('Amount precision is too high for currency.');
             }
 
-            $money = $moneyParser->parse((string) $number, $currency->getCode());
+            $money = $moneyParser->parse((string) $number, $currency);
 
             // Check for a negative amount.
             if (!$this->negativeAmountAllowed && $money->isNegative()) {
