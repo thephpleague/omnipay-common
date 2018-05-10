@@ -308,13 +308,9 @@ abstract class AbstractRequest implements RequestInterface
      * @return null|Money
      * @throws InvalidRequestException
      */
-    public function getMoney($amount = null)
+    private function getMoney($amount = null)
     {
         $amount = $amount !== null ? $amount : $this->getParameter('amount');
-
-        if ($amount instanceof Money) {
-            return $amount;
-        }
 
         if ($amount !== null) {
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
