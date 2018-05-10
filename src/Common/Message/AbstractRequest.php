@@ -305,17 +305,23 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
+     * @param  string|int|null $amount
      * @return null|Money
      * @throws InvalidRequestException
      */
     private function getMoney($amount = null)
     {
+        $currencyCode = $this->getCurrency() ?: 'USD';
+        $currency = new Currency($currencyCode);
+
         $amount = $amount !== null ? $amount : $this->getParameter('amount');
 
-        if ($amount !== null) {
+        if ($amount === null) {
+            return null;
+        } elseif (is_integer($amount)) {
+            $money = new Money($amount, $currency);
+        } else {
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
-            $currencyCode = $this->getCurrency() ?: 'USD';
-            $currency = new Currency($currencyCode);
 
             $number = Number::fromString($amount);
 
@@ -327,19 +333,19 @@ abstract class AbstractRequest implements RequestInterface
             }
 
             $money = $moneyParser->parse((string) $number, $currency);
-
-            // Check for a negative amount.
-            if (!$this->negativeAmountAllowed && $money->isNegative()) {
-                throw new InvalidRequestException('A negative amount is not allowed.');
-            }
-
-            // Check for a zero amount.
-            if (!$this->zeroAmountAllowed && $money->isZero()) {
-                throw new InvalidRequestException('A zero amount is not allowed.');
-            }
-
-            return $money;
         }
+
+        // Check for a negative amount.
+        if (!$this->negativeAmountAllowed && $money->isNegative()) {
+            throw new InvalidRequestException('A negative amount is not allowed.');
+        }
+
+        // Check for a zero amount.
+        if (!$this->zeroAmountAllowed && $money->isZero()) {
+            throw new InvalidRequestException('A zero amount is not allowed.');
+        }
+
+        return $money;
     }
 
     /**
@@ -362,12 +368,12 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Sets the payment amount.
      *
-     * @param string $value
+     * @param string|null $value
      * @return AbstractRequest Provides a fluent interface
      */
     public function setAmount($value)
     {
-        return $this->setParameter('amount', $value);
+        return $this->setParameter('amount', $value !== null ? (string) $value : null);
     }
 
     /**
@@ -382,6 +388,17 @@ abstract class AbstractRequest implements RequestInterface
         if ($money !== null) {
             return (int) $money->getAmount();
         }
+    }
+
+    /**
+     * Sets the payment amount as integer.
+     *
+     * @param int $value
+     * @return AbstractRequest Provides a fluent interface
+     */
+    public function setAmountInteger($value)
+    {
+        return $this->setParameter('amount', (int) $value);
     }
 
     /**
@@ -446,11 +463,12 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Format an amount for the payment currency.
      *
+     * @param string $amount
      * @return string
      */
     public function formatCurrency($amount)
     {
-        $money = $this->getMoney($amount);
+        $money = $this->getMoney((string) $amount);
         $formatter = new DecimalMoneyFormatter($this->getCurrencies());
 
         return $formatter->format($money);

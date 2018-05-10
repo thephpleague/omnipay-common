@@ -197,6 +197,13 @@ class AbstractRequestTest extends TestCase
         $this->assertSame(1366, $this->request->getAmountInteger());
     }
 
+    public function testSetAmountInteger()
+    {
+        $this->assertSame($this->request, $this->request->setAmountInteger(1366));
+        $this->assertSame(1366, $this->request->getAmountInteger());
+        $this->assertSame('13.66', $this->request->getAmount());
+    }
+
     public function testGetAmountIntegerNoDecimals()
     {
         $this->assertSame($this->request, $this->request->setCurrency('JPY'));
@@ -408,6 +415,13 @@ class AbstractRequestTest extends TestCase
         $this->request->setToken('asdf');
 
         $this->assertNull($this->request->validate('testMode', 'token'));
+    }
+
+    public function testCanValidateAmountInteger()
+    {
+        $this->request->setAmountInteger(1);
+
+        $this->assertNull($this->request->validate('amount'));
     }
 
     /**
