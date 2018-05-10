@@ -218,7 +218,13 @@ abstract class AbstractRequest implements RequestInterface
     public function validate()
     {
         foreach (func_get_args() as $key) {
-            $value = $this->parameters->get($key);
+            // For amount, both the regular amount and amount_integer can be set
+            if ($key === 'amount') {
+                $value = $this->parameters->get('amount', $this->parameters->get('amount_integer'));
+            } else {
+                $value = $this->parameters->get($key);
+            }
+
             if (! isset($value)) {
                 throw new InvalidRequestException("The $key parameter is required");
             }
@@ -305,17 +311,27 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
+     * @param  string|null $forceAmount
      * @return null|Money
      * @throws InvalidRequestException
      */
     private function getMoney($amount = null)
     {
-        $amount = $amount !== null ? $amount : $this->getParameter('amount');
+        $currencyCode = $this->getCurrency() ?: 'USD';
+        $currency = new Currency($currencyCode);
 
-        if ($amount !== null) {
+        if ($amount === null && $this->getParameter('amount_integer') !== null) {
+            $amountInteger = $this->getParameter('amount_integer');
+
+            $money = new Money($amountInteger, $currency);
+        } else {
+            $amount = $amount !== null ? $amount : $this->getParameter('amount');
+
+            if ($amount === null) {
+                return null;
+            }
+
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
-            $currencyCode = $this->getCurrency() ?: 'USD';
-            $currency = new Currency($currencyCode);
 
             $number = Number::fromString($amount);
 
@@ -327,19 +343,19 @@ abstract class AbstractRequest implements RequestInterface
             }
 
             $money = $moneyParser->parse((string) $number, $currency);
-
-            // Check for a negative amount.
-            if (!$this->negativeAmountAllowed && $money->isNegative()) {
-                throw new InvalidRequestException('A negative amount is not allowed.');
-            }
-
-            // Check for a zero amount.
-            if (!$this->zeroAmountAllowed && $money->isZero()) {
-                throw new InvalidRequestException('A zero amount is not allowed.');
-            }
-
-            return $money;
         }
+
+        // Check for a negative amount.
+        if (!$this->negativeAmountAllowed && $money->isNegative()) {
+            throw new InvalidRequestException('A negative amount is not allowed.');
+        }
+
+        // Check for a zero amount.
+        if (!$this->zeroAmountAllowed && $money->isZero()) {
+            throw new InvalidRequestException('A zero amount is not allowed.');
+        }
+
+        return $money;
     }
 
     /**
@@ -382,6 +398,17 @@ abstract class AbstractRequest implements RequestInterface
         if ($money !== null) {
             return (int) $money->getAmount();
         }
+    }
+
+    /**
+     * Sets the payment amount as integer.
+     *
+     * @param int $value
+     * @return AbstractRequest Provides a fluent interface
+     */
+    public function setAmountInteger($value)
+    {
+        return $this->setParameter('amount_integer', $value);
     }
 
     /**
