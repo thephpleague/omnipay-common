@@ -37,6 +37,13 @@ interface ResponseInterface extends MessageInterface
     public function isRedirect();
 
     /**
+     * Is the transaction unfinished/uncertain/not credited yet?
+     *
+     * @return boolean
+     */
+    public function isPending();
+
+    /**
      * Is the transaction cancelled by the user?
      *
      * @return boolean
