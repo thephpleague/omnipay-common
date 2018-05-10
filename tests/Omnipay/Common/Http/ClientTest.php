@@ -9,7 +9,6 @@ use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use Omnipay\Tests\TestCase;
-use Psr\Http\Client\Exception\RequestException;
 
 class ClientTest extends TestCase
 {
@@ -68,7 +67,7 @@ class ClientTest extends TestCase
             ->with($request)
             ->andThrow(new \Exception('Something went wrong'));
 
-        $this->expectException(RequestException::class);
+        $this->expectException(\Omnipay\Common\Http\Exception\RequestException::class);
         $this->expectExceptionMessage('Something went wrong');
 
         $client->request('GET', '/path');
@@ -95,7 +94,7 @@ class ClientTest extends TestCase
             ->with($request)
             ->andThrow(new NetworkException('Something went wrong', $request));
 
-        $this->expectException(\Psr\Http\Client\Exception\NetworkException::class);
+        $this->expectException(\Omnipay\Common\Http\Exception\NetworkException::class);
         $this->expectExceptionMessage('Something went wrong');
 
         $client->request('GET', '/path');

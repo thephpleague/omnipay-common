@@ -2,8 +2,8 @@
 
 namespace Omnipay\Common\Http;
 
-use Psr\Http\Client\Exception\NetworkException;
-use Psr\Http\Client\Exception\RequestException;
+use Omnipay\Common\Http\Exception\NetworkException;
+use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;

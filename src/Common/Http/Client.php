@@ -41,11 +41,8 @@ class Client implements ClientInterface
      * @param array $headers
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion
-     *
-     * @throws \Psr\Http\Client\Exception\NetworkException
-     * @throws \Psr\Http\Client\Exception\RequestException
-     *
      * @return ResponseInterface
+     * @throws \Http\Client\Exception
      */
     public function request(
         string $method,
@@ -62,8 +59,7 @@ class Client implements ClientInterface
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
-     * @throws \Psr\Http\Client\Exception\NetworkException
-     * @throws \Psr\Http\Client\Exception\RequestException
+     * @throws \Http\Client\Exception
      */
     private function sendRequest(RequestInterface $request)
     {
