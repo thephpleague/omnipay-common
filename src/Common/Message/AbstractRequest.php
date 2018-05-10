@@ -171,7 +171,7 @@ abstract class AbstractRequest implements RequestInterface
      *
      * @param string $key The parameter key
      * @param mixed $value The value to set
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      * @throws RuntimeException if a request parameter is modified after the request has been sent.
      */
     protected function setParameter($key, $value)
@@ -199,7 +199,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the test mode of the request.
      *
      * @param boolean $value True for test mode on.
-     * @return AbstractRequest
+     * @return $this
      */
     public function setTestMode($value)
     {
@@ -239,7 +239,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the card.
      *
      * @param CreditCard $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setCard($value)
     {
@@ -264,7 +264,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the card token.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setToken($value)
     {
@@ -285,7 +285,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the card reference.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setCardReference($value)
     {
@@ -369,7 +369,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the payment amount.
      *
      * @param string|null $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setAmount($value)
     {
@@ -394,7 +394,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the payment amount as integer.
      *
      * @param int $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setAmountInteger($value)
     {
@@ -415,7 +415,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the payment currency code.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setCurrency($value)
     {
@@ -488,7 +488,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the request description.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setDescription($value)
     {
@@ -511,7 +511,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the transaction ID.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setTransactionId($value)
     {
@@ -535,7 +535,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the transaction reference.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setTransactionReference($value)
     {
@@ -556,7 +556,7 @@ abstract class AbstractRequest implements RequestInterface
      * Set the items in this order
      *
      * @param ItemBag|array $items An array of items in this order
-     * @return AbstractRequest
+     * @return $this
      */
     public function setItems($items)
     {
@@ -581,7 +581,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the client IP address.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setClientIp($value)
     {
@@ -602,7 +602,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the request return URL.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setReturnUrl($value)
     {
@@ -623,7 +623,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the request cancel URL.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setCancelUrl($value)
     {
@@ -644,7 +644,7 @@ abstract class AbstractRequest implements RequestInterface
      * Sets the request notify URL.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setNotifyUrl($value)
     {
@@ -671,7 +671,7 @@ abstract class AbstractRequest implements RequestInterface
      * the bank where an account is held (separate from the card brand).
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setIssuer($value)
     {
@@ -698,7 +698,7 @@ abstract class AbstractRequest implements RequestInterface
      * multiple payment providers with a single API.
      *
      * @param string $value
-     * @return AbstractRequest Provides a fluent interface
+     * @return $this
      */
     public function setPaymentMethod($value)
     {

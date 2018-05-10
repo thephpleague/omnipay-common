@@ -194,7 +194,7 @@ class CreditCard
      * If any unknown parameters passed, they will be ignored.
      *
      * @param array $parameters An associative array of parameters
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function initialize(array $parameters = null)
     {
@@ -230,7 +230,7 @@ class CreditCard
      *
      * @param string $key Parameter key
      * @param mixed $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     protected function setParameter($key, $value)
     {
@@ -246,7 +246,7 @@ class CreditCard
      *
      * @param string $key Parameter key, e.g. 'expiryYear'
      * @param mixed $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     protected function setYearParameter($key, $value)
     {
@@ -313,7 +313,7 @@ class CreditCard
      * Set Card Title.
      *
      * @param string $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setTitle($value)
     {
@@ -337,7 +337,7 @@ class CreditCard
      * Set Card First Name (Billing and Shipping).
      *
      * @param string $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setFirstName($value)
     {
@@ -361,7 +361,7 @@ class CreditCard
      * Set Card Last Name (Billing and Shipping).
      *
      * @param string $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setLastName($value)
     {
@@ -385,7 +385,7 @@ class CreditCard
      * Set Card Name (Billing and Shipping).
      *
      * @param string $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setName($value)
     {
@@ -412,7 +412,7 @@ class CreditCard
      * it's safe to pass in strings such as "4444-3333 2222 1111" etc.
      *
      * @param string $value Parameter value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setNumber($value)
     {
@@ -473,7 +473,7 @@ class CreditCard
      * Sets the card expiry month.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setExpiryMonth($value)
     {
@@ -494,7 +494,7 @@ class CreditCard
      * Sets the card expiry year.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setExpiryYear($value)
     {
@@ -527,7 +527,7 @@ class CreditCard
      * Sets the card start month.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setStartMonth($value)
     {
@@ -548,7 +548,7 @@ class CreditCard
      * Sets the card start year.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setStartYear($value)
     {
@@ -581,7 +581,7 @@ class CreditCard
      * Sets the card CVV.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setCvv($value)
     {
@@ -638,7 +638,7 @@ class CreditCard
      * transactions.
      *
      * @param $value
-     * @return CreditCard
+     * @return $this
      */
     public function setTracks($value)
     {
@@ -659,7 +659,7 @@ class CreditCard
      * Sets the card issue number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setIssueNumber($value)
     {
@@ -680,7 +680,7 @@ class CreditCard
      * Sets the card billing title.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingTitle($value)
     {
@@ -714,7 +714,7 @@ class CreditCard
      * Sets the card billing name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingName($value)
     {
@@ -740,7 +740,7 @@ class CreditCard
      * Sets the first part of the card billing name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingFirstName($value)
     {
@@ -761,7 +761,7 @@ class CreditCard
      * Sets the last part of the card billing name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingLastName($value)
     {
@@ -782,7 +782,7 @@ class CreditCard
      * Sets the billing company name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingCompany($value)
     {
@@ -803,7 +803,7 @@ class CreditCard
      * Sets the billing address, line 1.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingAddress1($value)
     {
@@ -824,7 +824,7 @@ class CreditCard
      * Sets the billing address, line 2.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingAddress2($value)
     {
@@ -845,7 +845,7 @@ class CreditCard
      * Sets billing city.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingCity($value)
     {
@@ -866,7 +866,7 @@ class CreditCard
      * Sets the billing postcode.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingPostcode($value)
     {
@@ -887,7 +887,7 @@ class CreditCard
      * Sets the billing state.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingState($value)
     {
@@ -908,7 +908,7 @@ class CreditCard
      * Sets the billing country name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingCountry($value)
     {
@@ -929,7 +929,7 @@ class CreditCard
      * Sets the billing phone number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingPhone($value)
     {
@@ -950,7 +950,7 @@ class CreditCard
      * Sets the billing phone number extension.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingPhoneExtension($value)
     {
@@ -971,7 +971,7 @@ class CreditCard
      * Sets the billing fax number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBillingFax($value)
     {
@@ -992,7 +992,7 @@ class CreditCard
      * Sets the title of the card shipping name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingTitle($value)
     {
@@ -1013,7 +1013,7 @@ class CreditCard
      * Sets the card shipping name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingName($value)
     {
@@ -1039,7 +1039,7 @@ class CreditCard
      * Sets the first part of the card shipping name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingFirstName($value)
     {
@@ -1060,7 +1060,7 @@ class CreditCard
      * Sets the last part of the card shipping name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingLastName($value)
     {
@@ -1081,7 +1081,7 @@ class CreditCard
      * Sets the shipping company name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingCompany($value)
     {
@@ -1102,7 +1102,7 @@ class CreditCard
      * Sets the shipping address, line 1.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingAddress1($value)
     {
@@ -1123,7 +1123,7 @@ class CreditCard
      * Sets the shipping address, line 2.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingAddress2($value)
     {
@@ -1144,7 +1144,7 @@ class CreditCard
      * Sets the shipping city.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingCity($value)
     {
@@ -1165,7 +1165,7 @@ class CreditCard
      * Sets the shipping postcode.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingPostcode($value)
     {
@@ -1186,7 +1186,7 @@ class CreditCard
      * Sets the shipping state.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingState($value)
     {
@@ -1207,7 +1207,7 @@ class CreditCard
      * Sets the shipping country.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingCountry($value)
     {
@@ -1228,7 +1228,7 @@ class CreditCard
      * Sets the shipping phone number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingPhone($value)
     {
@@ -1249,7 +1249,7 @@ class CreditCard
      * Sets the shipping phone number extension.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingPhoneExtension($value)
     {
@@ -1270,7 +1270,7 @@ class CreditCard
      * Sets the shipping fax number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setShippingFax($value)
     {
@@ -1291,7 +1291,7 @@ class CreditCard
      * Sets the billing and shipping address, line 1.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setAddress1($value)
     {
@@ -1315,7 +1315,7 @@ class CreditCard
      * Sets the billing and shipping address, line 2.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setAddress2($value)
     {
@@ -1339,7 +1339,7 @@ class CreditCard
      * Sets the billing and shipping city.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setCity($value)
     {
@@ -1363,7 +1363,7 @@ class CreditCard
      * Sets the billing and shipping postcode.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setPostcode($value)
     {
@@ -1387,7 +1387,7 @@ class CreditCard
      * Sets the billing and shipping state.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setState($value)
     {
@@ -1411,7 +1411,7 @@ class CreditCard
      * Sets the billing and shipping country.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setCountry($value)
     {
@@ -1435,7 +1435,7 @@ class CreditCard
      * Sets the billing and shipping phone number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setPhone($value)
     {
@@ -1459,7 +1459,7 @@ class CreditCard
      * Sets the billing and shipping phone number extension.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setPhoneExtension($value)
     {
@@ -1483,7 +1483,7 @@ class CreditCard
      * Sets the billing and shipping fax number.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setFax($value)
     {
@@ -1507,7 +1507,7 @@ class CreditCard
      * Sets the billing and shipping company name.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setCompany($value)
     {
@@ -1531,7 +1531,7 @@ class CreditCard
      * Sets the cardholder's email address.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setEmail($value)
     {
@@ -1554,7 +1554,7 @@ class CreditCard
      * Sets the cardholder's birthday.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setBirthday($value)
     {
@@ -1581,7 +1581,7 @@ class CreditCard
      * Sets the cardholder's gender.
      *
      * @param string $value
-     * @return CreditCard provides a fluent interface.
+     * @return $this
      */
     public function setGender($value)
     {
