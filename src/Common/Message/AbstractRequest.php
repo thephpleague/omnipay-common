@@ -218,13 +218,7 @@ abstract class AbstractRequest implements RequestInterface
     public function validate()
     {
         foreach (func_get_args() as $key) {
-            // For amount, both the regular amount and amount_integer can be set
-            if ($key === 'amount') {
-                $value = $this->parameters->get('amount', $this->parameters->get('amount_integer'));
-            } else {
-                $value = $this->parameters->get($key);
-            }
-
+            $value = $this->parameters->get($key);
             if (! isset($value)) {
                 throw new InvalidRequestException("The $key parameter is required");
             }
@@ -320,17 +314,13 @@ abstract class AbstractRequest implements RequestInterface
         $currencyCode = $this->getCurrency() ?: 'USD';
         $currency = new Currency($currencyCode);
 
-        if ($amount === null && $this->getParameter('amount_integer') !== null) {
-            $amountInteger = $this->getParameter('amount_integer');
+        $amount = $amount !== null ? $amount : $this->getParameter('amount');
 
-            $money = new Money($amountInteger, $currency);
+        if ($amount === null) {
+            return null;
+        } elseif (is_integer($amount)) {
+            $money = new Money($amount, $currency);
         } else {
-            $amount = $amount !== null ? $amount : $this->getParameter('amount');
-
-            if ($amount === null) {
-                return null;
-            }
-
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
 
             $number = Number::fromString($amount);
@@ -378,12 +368,12 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Sets the payment amount.
      *
-     * @param string $value
+     * @param string|null $value
      * @return AbstractRequest Provides a fluent interface
      */
     public function setAmount($value)
     {
-        return $this->setParameter('amount', $value);
+        return $this->setParameter('amount', $value !== null ? (string) $value : null);
     }
 
     /**
@@ -408,7 +398,7 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function setAmountInteger($value)
     {
-        return $this->setParameter('amount_integer', $value);
+        return $this->setParameter('amount', (int) $value);
     }
 
     /**
@@ -473,11 +463,12 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Format an amount for the payment currency.
      *
+     * @param string $amount
      * @return string
      */
     public function formatCurrency($amount)
     {
-        $money = $this->getMoney($amount);
+        $money = $this->getMoney((string) $amount);
         $formatter = new DecimalMoneyFormatter($this->getCurrencies());
 
         return $formatter->format($money);
