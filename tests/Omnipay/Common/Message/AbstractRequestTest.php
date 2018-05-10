@@ -417,13 +417,6 @@ class AbstractRequestTest extends TestCase
         $this->assertNull($this->request->validate('testMode', 'token'));
     }
 
-    public function testCanValidateAmount()
-    {
-        $this->request->setAmount('1.00');
-
-        $this->assertNull($this->request->validate('amount'));
-    }
-
     public function testCanValidateAmountInteger()
     {
         $this->request->setAmountInteger(1);

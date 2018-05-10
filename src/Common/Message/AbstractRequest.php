@@ -305,7 +305,7 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
-     * @param  string|null $forceAmount
+     * @param  string|int|null $amount
      * @return null|Money
      * @throws InvalidRequestException
      */
