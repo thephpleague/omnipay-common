@@ -9,6 +9,9 @@ use Omnipay\Tests\TestCase;
 
 class AbstractRequestTest extends TestCase
 {
+    /** @var AbstractRequest */
+    protected $request;
+
     public function setUp()
     {
         $this->request = m::mock('\Omnipay\Common\Message\AbstractRequest')->makePartial();
@@ -116,7 +119,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      * @expectedExceptionMessage A zero amount is not allowed.
      */
     public function testAmountZeroNotAllowed()
@@ -159,7 +162,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      *
      * We still want to catch obvious fractions of the minor units that are
      * not precision errors at a much lower level.
@@ -178,7 +181,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testGetAmountNoDecimalsRounding()
     {
@@ -220,7 +223,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountNegativeStringThrowsException()
     {
@@ -229,7 +232,7 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAmountNegativeFloatThrowsException()
     {
