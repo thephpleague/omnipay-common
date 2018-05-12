@@ -3,6 +3,8 @@
 namespace Omnipay\Common\Message;
 
 use Mockery as m;
+use Money\Currency;
+use Money\Money;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\ItemBag;
 use Omnipay\Tests\TestCase;
@@ -245,6 +247,18 @@ class AbstractRequestTest extends TestCase
     {
         $this->assertSame($this->request, $this->request->setAmount(-123.00));
         $this->request->getAmount();
+    }
+
+    public function testMoney()
+    {
+        $money = new Money(12345, new Currency('EUR'));
+        $this->assertSame($this->request, $this->request->setMoney($money));
+
+        $this->request->validate('amount', 'currency');
+        
+        $this->assertSame('123.45', $this->request->getAmount());
+        $this->assertSame(12345, $this->request->getAmountInteger());
+        $this->assertSame('EUR', $this->request->getCurrency());
     }
 
     public function testCurrency()
