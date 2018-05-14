@@ -50,6 +50,9 @@ class CreditCardTest extends TestCase
         $this->assertSame(2016, $parameters['expiryYear']);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testValidateFixture()
     {
         $this->card->validate();

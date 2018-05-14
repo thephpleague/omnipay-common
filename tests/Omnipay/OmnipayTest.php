@@ -10,6 +10,8 @@ class OmnipayTest extends TestCase
     public function tearDown()
     {
         Omnipay::setFactory(null);
+
+        parent::tearDown();
     }
 
     public function testGetFactory()
