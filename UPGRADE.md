@@ -1,5 +1,7 @@
 ## Upgrade apps from 2.x to 3.x
  - The `redirect()` method no calls `exit()` after sending the content. This is up to the developer now.
+ - It is now possible to use `setAmountInteger(integer $value)` and `setMoney(Money $money)`
+ - HTTPPlug is used. Guzzle will be installed when using `omnipay/omnipay`, otherwise you need to required your own implementation (see http://docs.php-http.org/en/latest/clients.html)
 
 ## Upgrade Gateways from 2.x to 3.x
 
@@ -18,6 +20,40 @@ Gateways should not rely on Guzzle or other clients directly.
 - `$body` should be a string (eg. `http_build_query($data)` or `json_encode($data)` instead of just `$data`).
 - The `$headers` parameters should be an `array` (not `null`, but can be empty)
 
-Note: Prior to stable release, the goal is to migrate to PSR-18, once completed. 
-This will not change the gateway implementations.
+Examples:
+```php
+// V2 XML:
+ $response = $this->httpClient->post($this->endpoint, null, $data)->send();
+ $result = $httpResponse->xml();
+
+// V3 XML:
+ $response = $this->httpClient->request('POST', $this->endpoint, [], http_build_query($data));
+ $result = simplexml_load_string($httpResponse->getBody()->getContents());
+```
+
+```php
+// Example JSON request:
+
+ $response = $this->httpClient->request('POST', $this->endpoint, [
+     'Accept' => 'application/json',
+     'Content-Type' => 'application/json',
+ ], json_encode($data));
+ 
+ $result = json_decode($response->getBody()->getContents(), true);
+```
+
+#### Testing
+
+PHPUnit is upgraded to PHPUnit 6. Common issues:
+
+```php
+// PHPUnit 5:
+$this->setExpectedException($class, $message);
+
+// PHPUnit 6:
+$this->expectException($class);
+$this->expectExceptionMessage($message);
+```
+
+Tests that do not perform any assertions, will be marked as risky. This can be avoided by annotating them with ` @doesNotPerformAssertions`
 
