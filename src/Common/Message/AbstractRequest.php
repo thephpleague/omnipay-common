@@ -318,6 +318,8 @@ abstract class AbstractRequest implements RequestInterface
 
         if ($amount === null) {
             return null;
+        } elseif ($amount instanceof Money) {
+            $money = $amount;
         } elseif (is_integer($amount)) {
             $money = new Money($amount, $currency);
         } else {
@@ -399,6 +401,21 @@ abstract class AbstractRequest implements RequestInterface
     public function setAmountInteger($value)
     {
         return $this->setParameter('amount', (int) $value);
+    }
+
+    /**
+     * Sets the payment amount as integer.
+     *
+     * @param Money $value
+     * @return $this
+     */
+    public function setMoney(Money $value)
+    {
+        $currency = $value->getCurrency()->getCode();
+
+        $this->setCurrency($currency);
+
+        return $this->setParameter('amount', $value);
     }
 
     /**
