@@ -8,6 +8,7 @@ use Mockery as m;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
+use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
 
 class ClientTest extends TestCase
@@ -98,5 +99,42 @@ class ClientTest extends TestCase
         $this->expectExceptionMessage('Something went wrong');
 
         $client->request('GET', '/path');
+    }
+
+    public function testSendExceptionGetRequest()
+    {
+        $mockClient = m::mock(HttpClient::class);
+        $mockFactory = m::mock(RequestFactory::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('GET', '/path');
+        $response = new Response();
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'GET',
+            '/path',
+            [],
+            null,
+            '1.1',
+        ])->andReturn($request);
+
+        $exception = new \Exception('Something went wrong');
+
+        $mockClient->shouldReceive('sendRequest')
+            ->with($request)
+            ->andThrow($exception);
+
+        $this->expectException(\Omnipay\Common\Http\Exception\RequestException::class);
+        $this->expectExceptionMessage('Something went wrong');
+
+
+        try {
+            $client->request('GET', '/path');
+        } catch (RequestException $e) {
+            $this->assertSame($request, $e->getRequest());
+            $this->assertSame($exception, $e->getPrevious());
+
+            throw $e;
+        }
     }
 }

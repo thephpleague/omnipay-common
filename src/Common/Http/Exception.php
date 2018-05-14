@@ -26,6 +26,6 @@ abstract class Exception extends \RuntimeException
      */
     public function getRequest(): RequestInterface
     {
-        return $this->getRequest();
+        return $this->request;
     }
 }
