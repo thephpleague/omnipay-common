@@ -302,6 +302,12 @@ class AbstractRequestTest extends TestCase
         $this->assertSame($this->request, $this->request->setCurrency('JPY'));
         $this->assertSame(0, $this->request->getCurrencyDecimalPlaces());
     }
+
+    public function testCurrencyDecimalsDefault()
+    {
+        $this->assertSame(2, $this->request->getCurrencyDecimalPlaces());
+    }
+
     public function testFormatCurrency()
     {
         $this->assertSame('1234.00', $this->request->formatCurrency(1234));
