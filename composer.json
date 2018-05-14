@@ -57,7 +57,7 @@
         }
     },
     "suggest": {
-        "php-http/guzzle6-adapter": "Use the Guzzle adapter to send your requests."
+        "omnipay/omnipay": "The default Omnipay package provides a default HTTP Adapter."
     },
     "scripts": {
         "test": "phpunit",
