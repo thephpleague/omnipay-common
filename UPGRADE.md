@@ -2,7 +2,7 @@
  - The `redirect()` method no calls `exit()` after sending the content. This is up to the developer now.
  - It is now possible to use `setAmountInteger(integer $value)` and `setMoney(Money $money)`
  - HTTPPlug is used. Guzzle will be installed when using `omnipay/omnipay`, otherwise you need to required your own implementation (see http://docs.php-http.org/en/latest/clients.html)
-
+ - The package is renamed from `omnipay/omnipay` to `league/omnipay` and no longer installs all gateways by default.
 ## Upgrade Gateways from 2.x to 3.x
 
 The primary difference is the HTTP Client. We are now using HTTPlug (http://httplug.io/) but rely on our own interface.

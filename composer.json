@@ -57,7 +57,7 @@
         }
     },
     "suggest": {
-        "omnipay/omnipay": "The default Omnipay package provides a default HTTP Adapter."
+        "league/omnipay": "The default Omnipay package provides a default HTTP Adapter."
     },
     "scripts": {
         "test": "phpunit",
