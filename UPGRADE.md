@@ -46,6 +46,7 @@ Examples:
 
 PHPUnit is upgraded to PHPUnit 6. Common issues:
 
+- `setExpectedException()` is removed
 ```php
 // PHPUnit 5:
 $this->setExpectedException($class, $message);
@@ -55,5 +56,7 @@ $this->expectException($class);
 $this->expectExceptionMessage($message);
 ```
 
-Tests that do not perform any assertions, will be marked as risky. This can be avoided by annotating them with ` @doesNotPerformAssertions`
+- Tests that do not perform any assertions, will be marked as risky. This can be avoided by annotating them with ` @doesNotPerformAssertions`
+
+- You should remove the `Mockery\Adapter\Phpunit\TestListener` in phpunit.xml.dist
 
