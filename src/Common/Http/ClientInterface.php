@@ -25,10 +25,10 @@ interface ClientInterface
      * @return ResponseInterface
      */
     public function request(
-        string $method,
+        $method,
         $uri,
         array $headers = [],
         $body = null,
-        string $protocolVersion = '1.1'
-    ) : ResponseInterface;
+        $protocolVersion = '1.1'
+    );
 }

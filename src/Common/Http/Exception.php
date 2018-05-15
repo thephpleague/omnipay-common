@@ -10,7 +10,7 @@ abstract class Exception extends \RuntimeException
     /** @var RequestInterface  */
     protected $request;
 
-    public function __construct(string $message, RequestInterface $request, Throwable $previous = null)
+    public function __construct($message, RequestInterface $request, Throwable $previous = null)
     {
         $this->request = $request;
 
@@ -24,7 +24,7 @@ abstract class Exception extends \RuntimeException
      *
      * @return RequestInterface
      */
-    public function getRequest(): RequestInterface
+    public function getRequest()
     {
         return $this->request;
     }

@@ -45,12 +45,12 @@ class Client implements ClientInterface
      * @throws \Http\Client\Exception
      */
     public function request(
-        string $method,
+        $method,
         $uri,
         array $headers = [],
         $body = null,
-        string $protocolVersion = '1.1'
-    ) : ResponseInterface {
+        $protocolVersion = '1.1'
+    ) {
         $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
         return $this->sendRequest($request);
