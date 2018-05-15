@@ -38,7 +38,7 @@
         "classmap": ["src/Omnipay.php"]
     },
     "require": {
-        "php": "^7.1",
+        "php": "^5.6|^7",
         "php-http/client-implementation": "^1",
         "php-http/message": "^1.5",
         "php-http/discovery": "^1.2.1",
