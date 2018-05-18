@@ -44,10 +44,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  */
 abstract class AbstractGateway implements GatewayInterface
 {
-    /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
-     */
-    protected $parameters;
+    use ParametersTrait;
 
     /**
      * @var ClientInterface
@@ -112,35 +109,6 @@ abstract class AbstractGateway implements GatewayInterface
     public function getDefaultParameters()
     {
         return array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters->all();
-    }
-
-    /**
-     * @param  string $key
-     * @return mixed
-     */
-    public function getParameter($key)
-    {
-        return $this->parameters->get($key);
-    }
-
-    /**
-     * @param  string $key
-     * @param  mixed  $value
-     * @return $this
-     */
-    public function setParameter($key, $value)
-    {
-        $this->parameters->set($key, $value);
-
-        return $this;
     }
 
     /**

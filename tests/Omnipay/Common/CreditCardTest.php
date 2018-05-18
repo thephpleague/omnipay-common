@@ -2,6 +2,7 @@
 
 namespace Omnipay\Common;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Tests\TestCase;
 
 class CreditCardTest extends TestCase
