@@ -16,10 +16,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class Item implements ItemInterface
 {
-    /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
-     */
-    protected $parameters;
+    use ParametersTrait;
 
     /**
      * Create a new item with the specified parameters
@@ -42,26 +39,6 @@ class Item implements ItemInterface
         $this->parameters = new ParameterBag;
 
         Helper::initialize($this, $parameters);
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters()
-    {
-        return $this->parameters->all();
-    }
-
-    protected function getParameter($key)
-    {
-        return $this->parameters->get($key);
-    }
-
-    protected function setParameter($key, $value)
-    {
-        $this->parameters->set($key, $value);
 
         return $this;
     }
