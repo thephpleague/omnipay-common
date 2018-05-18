@@ -138,6 +138,23 @@ class CreditCardTest extends TestCase
         $this->assertFalse($this->card->addSupportedBrand('omniexpress', '/^9\d{12}(\d{3})?$/'));
     }
 
+    /**
+     * @expectedException  \Omnipay\Common\Exception\InvalidRequestException
+     * @expectedExceptionMessage The title parameter is required
+     */
+    public function testValidateTitle()
+    {
+        $this->card->validate('title');
+    }
+
+    /**
+     * @expectedException  \Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function testValidateMultiple()
+    {
+        $this->card->validate('title', 'gender');
+    }
+
     public function testTitle()
     {
         $this->card->setTitle('Mr.');

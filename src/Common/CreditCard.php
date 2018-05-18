@@ -93,7 +93,9 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class CreditCard
 {
-    use ParametersTrait;
+    use ParametersTrait {
+        validate as traitValidate;
+    }
 
     const BRAND_VISA = 'visa';
     const BRAND_MASTERCARD = 'mastercard';
@@ -230,11 +232,21 @@ class CreditCard
      * Generally if you want to validate the credit card yourself with custom error
      * messages, you should use your framework's validation library, not this method.
      *
+     * @param array $args
      * @return void
      * @throws Exception\InvalidRequestException
      * @throws InvalidCreditCardException
      */
-    public function validate()
+    public function validate(...$args)
+    {
+        if (!empty($args)) {
+            $this->traitValidate(...$args);
+        } else {
+            $this->validateCreditcard();
+        }
+    }
+
+    private function validateCreditcard()
     {
         $requiredParameters = array(
             'number' => 'credit card number',
