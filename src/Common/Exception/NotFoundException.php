@@ -9,7 +9,7 @@ namespace Omnipay\Common\Exception;
  */
 class NotFoundException extends \Exception implements OmnipayException
 {
-    public function __construct($message = "Resource not found on payment gateway", $code = 404, $previous = null)
+    public function __construct($message = "Resource not found on payment gateway", $code = 0, $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
