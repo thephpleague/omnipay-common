@@ -3,11 +3,11 @@
 namespace Omnipay\Common\Exception;
 
 /**
- * Not Found Exception
+ * Resource Not Found Exception
  *
  * Thrown when the requested resource is not found on payment gateway
  */
-class NotFoundException extends \Exception implements OmnipayException
+class ResourceNotFoundException extends \Exception implements OmnipayException
 {
     public function __construct($message = "Resource not found on payment gateway", $code = 0, $previous = null)
     {
