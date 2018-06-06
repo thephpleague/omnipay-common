@@ -109,6 +109,11 @@ class AbstractGatewayTest extends TestCase
         $this->assertFalse($this->gateway->supportsCompletePurchase());
     }
 
+    public function testSupportsFetchTransaction()
+    {
+        $this->assertFalse($this->gateway->supportsFetchTransaction());
+    }
+
     public function testSupportsRefund()
     {
         $this->assertFalse($this->gateway->supportsRefund());
