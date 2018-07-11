@@ -196,6 +196,16 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
+     * Supports Fetch Transaction
+     *
+     * @return boolean True if this gateway supports the fetchTransaction() method
+     */
+    public function supportsFetchTransaction()
+    {
+        return method_exists($this, 'fetchTransaction');
+    }
+
+    /**
      * Supports Refund
      *
      * @return boolean True if this gateway supports the refund() method
