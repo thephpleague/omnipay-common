@@ -11,7 +11,6 @@ namespace Omnipay\Common;
  * This interface class defines the standard functions that any
  * Omnipay gateway needs to define.
  *
- * @see AbstractGateway
  *
  * @method \Omnipay\Common\Message\NotificationInterface acceptNotification(array $options = array()) (Optional method)
  *         Receive and handle an instant payment notification (IPN)

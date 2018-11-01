@@ -62,8 +62,6 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  *   // now do something with the $myResponse object, test for success, etc.
  * </code>
  *
- * @see RequestInterface
- * @see AbstractResponse
  */
 abstract class AbstractRequest implements RequestInterface
 {

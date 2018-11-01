@@ -151,7 +151,6 @@ class CreditCard
      * Note: The fact that this class knows about a particular card brand does not imply
      * that your gateway supports it.
      *
-     * @see self::$supported_cards
      * @return array
      */
     public function getSupportedBrands()

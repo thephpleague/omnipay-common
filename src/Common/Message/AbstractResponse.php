@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
  *   // now do something with the $myResponse object, test for success, etc.
  * </code>
  *
- * @see ResponseInterface
  */
 abstract class AbstractResponse implements ResponseInterface
 {

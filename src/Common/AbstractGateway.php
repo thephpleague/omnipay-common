@@ -40,7 +40,6 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  *
  * For further code examples see the *omnipay-example* repository on github.
  *
- * @see GatewayInterface
  */
 abstract class AbstractGateway implements GatewayInterface
 {
@@ -290,7 +289,6 @@ abstract class AbstractGateway implements GatewayInterface
      *   $myRequest = $gw->myRequest($someParameters);
      * </code>
      *
-     * @see \Omnipay\Common\Message\AbstractRequest
      * @param string $class The request class name
      * @param array $parameters
      * @return \Omnipay\Common\Message\AbstractRequest
