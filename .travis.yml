@@ -30,9 +30,8 @@ matrix:
       env: setup=lowest symfony="^3"
     - php: 7.1
       env: setup=lowest symfony="^4"
-
-allow_failures:
-  - php: 7.4snapshot
+  allow_failures:
+    - php: 7.4snapshot
     
 install:
   - if [[ $symfony != '*' ]]; then travis_retry composer require symfony/http-foundation:${symfony} --no-update --no-interaction; fi
