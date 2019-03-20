@@ -6,10 +6,10 @@ use GuzzleHttp\Psr7\Response;
 use Http\Client\Exception\NetworkException;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class ClientTest extends TestCase
 {
@@ -17,14 +17,14 @@ class ClientTest extends TestCase
     {
         $client = new Client();
 
-        $this->assertAttributeInstanceOf(HttpClient::class, 'httpClient', $client);
-        $this->assertAttributeInstanceOf(RequestFactory::class, 'requestFactory', $client);
+        $this->assertAttributeInstanceOf(ClientInterface::class, 'httpClient', $client);
+        $this->assertAttributeInstanceOf(RequestFactoryInterface::class, 'requestFactory', $client);
     }
 
     public function testSend()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
+        $mockClient = m::mock(ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
@@ -33,9 +33,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -49,8 +46,8 @@ class ClientTest extends TestCase
 
     public function testSendException()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
+        $mockClient = m::mock(ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
@@ -59,9 +56,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -76,8 +70,8 @@ class ClientTest extends TestCase
 
     public function testSendNetworkException()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
+        $mockClient = m::mock(ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
@@ -86,9 +80,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -103,8 +94,8 @@ class ClientTest extends TestCase
 
     public function testSendExceptionGetRequest()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
+        $mockClient = m::mock(ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
@@ -113,9 +104,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $exception = new \Exception('Something went wrong');

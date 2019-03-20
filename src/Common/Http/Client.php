@@ -2,37 +2,34 @@
 
 namespace Omnipay\Common\Http;
 
-use function GuzzleHttp\Psr7\str;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\RequestFactory;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Client\ClientInterface as Psr18ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface as Psr17RequestFactoryInterface;
 
-class Client implements ClientInterface
+final class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
-     * Note: Will be changed to PSR-18 when released
      *
-     * @var HttpClient
+     * @var Psr18ClientInterface
      */
     private $httpClient;
 
     /**
-     * @var RequestFactory
+     * @var Psr17RequestFactoryInterface
      */
     private $requestFactory;
 
-    public function __construct($httpClient = null, RequestFactory $requestFactory = null)
+    public function __construct($httpClient = null, $requestFactory = null)
     {
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
+        $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
     }
 
     /**
@@ -51,7 +48,17 @@ class Client implements ClientInterface
         $body = null,
         $protocolVersion = '1.1'
     ) {
-        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
+        $request = $this->requestFactory
+            ->createRequest($method, $uri)
+            ->withProtocolVersion($protocolVersion);
+
+        if ($body) {
+            $request = $request->withBody($body);
+        }
+
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
 
         return $this->sendRequest($request);
     }
@@ -59,7 +66,7 @@ class Client implements ClientInterface
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
-     * @throws \Http\Client\Exception
+     * @throws NetworkException|RequestException
      */
     private function sendRequest(RequestInterface $request)
     {
@@ -67,7 +74,7 @@ class Client implements ClientInterface
             return $this->httpClient->sendRequest($request);
         } catch (\Http\Client\Exception\NetworkException $networkException) {
             throw new NetworkException($networkException->getMessage(), $request, $networkException);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             throw new RequestException($exception->getMessage(), $request, $exception);
         }
     }
