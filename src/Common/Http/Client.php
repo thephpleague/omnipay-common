@@ -12,7 +12,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Client\ClientInterface as Psr18ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface as Psr17RequestFactoryInterface;
 
-final class Client implements ClientInterface
+class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
