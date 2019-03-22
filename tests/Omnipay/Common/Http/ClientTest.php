@@ -61,7 +61,7 @@ class ClientTest extends TestCase
                     return false;
                 }
 
-                if ($request->getBody()->getContents() !== '{foo:bar}') {
+                if ((string) $request->getBody() !== '{foo:bar}') {
                     return false;
                 }
 
