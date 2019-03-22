@@ -12,9 +12,11 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Http\Message\RequestFactory;
 use Psr\Http\Message\RequestFactoryInterface as Psr17RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Client\ClientInterface as Psr18ClientInterface;
 
 class Client implements ClientInterface
@@ -31,10 +33,42 @@ class Client implements ClientInterface
      */
     private $requestFactory;
 
-    public function __construct($httpClient = null, $requestFactory = null)
-    {
+    /**
+     * @var StreamFactoryInterface
+     */
+    private $streamFactory;
+
+    /**
+     * @var UriFactoryInterface
+     */
+    private $uriFactory;
+
+    public function __construct(
+        $httpClient = null,
+        $requestFactory = null,
+        $streamFactory = null,
+        $uriFactory = null
+    ) {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
+        $this->uriFactory = $uriFactory;
+    }
+
+    /**
+     * DRY factory getter
+     * Loads a factory into memory only if requested
+     *
+     * @param $propertyName camelCased property name
+     * @return factory set in constructor, otherwise the discovered by default
+     */
+    private function getFactory(string $propertyName)
+    {
+        if (empty($this->{$propertyName})) {
+            $this->{$propertyName} = Psr17FactoryDiscovery::{'find' . ucfirst($propertyName)}();
+        }
+
+        return $this->{$propertyName};
     }
 
     protected function getHttpClient()
@@ -51,6 +85,10 @@ class Client implements ClientInterface
 
     protected function getRequestFactory()
     {
+        // TODO: After dropping MessageFactoryDiscovery support
+        // replace contents of this function with the following line:
+        // return $this->getFactory('requestFactory');
+
         if (empty($this->requestFactory)) {
             try {
                 $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
@@ -61,7 +99,33 @@ class Client implements ClientInterface
         return $this->requestFactory;
     }
 
+    protected function getStreamFactory(): StreamFactoryInterface
+    {
+        return $this->getFactory('streamFactory');
+    }
+
+    protected function getUriFactory(): UriFactoryInterface
+    {
+        return $this->getFactory('uriFactory');
+    }
+
+    public function createRequest(string $method, $uri): RequestInterface
+    {
+        return $this->getRequestFactory()->createRequest($method, $uri);
+    }
+
+    public function createStream(string $content): StreamInterface
+    {
+        return $this->getStreamFactory()->createStream($content);
+    }
+
+    public function createUri(string $uri): UriInterface
+    {
+        return $this->getUriFactory()->createUri($method, $uri);
+    }
+
     /**
+     * @deprecated 4.0.0 use createRequest() directly instead
      * @param $method
      * @param $uri
      * @param array $headers
@@ -96,6 +160,7 @@ class Client implements ClientInterface
     }
 
     /**
+     * @deprecated 4.0.0 future versions will not use current exceptions
      * @param RequestInterface $request
      * @return ResponseInterface
      * @throws NetworkException|RequestException
