@@ -13,14 +13,6 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 class ClientTest extends TestCase
 {
-    public function testEmptyConstruct()
-    {
-        $client = new Client();
-
-        $this->assertAttributeInstanceOf(ClientInterface::class, 'httpClient', $client);
-        $this->assertAttributeInstanceOf(RequestFactoryInterface::class, 'requestFactory', $client);
-    }
-
     public function testSend()
     {
         $mockClient = m::mock(ClientInterface::class);
