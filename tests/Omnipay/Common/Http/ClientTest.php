@@ -33,6 +33,9 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
+            [],
+            null,
+            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -56,6 +59,9 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
+            [],
+            null,
+            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -80,6 +86,9 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
+            [],
+            null,
+            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -104,6 +113,9 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
+            [],
+            null,
+            '1.1',
         ])->andReturn($request);
 
         $exception = new \Exception('Something went wrong');
