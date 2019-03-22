@@ -10,18 +10,11 @@ use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
 
 class ClientTest extends TestCase
 {
-    public function testEmptyConstruct()
-    {
-        $client = new Client();
-
-        $this->assertAttributeInstanceOf(ClientInterface::class, 'httpClient', $client);
-        $this->assertAttributeInstanceOf(RequestFactoryInterface::class, 'requestFactory', $client);
-    }
-
-    public function testSend()
+    public function testSendGet()
     {
         $mockClient = m::mock(ClientInterface::class);
         $mockFactory = m::mock(RequestFactoryInterface::class);
@@ -41,7 +34,48 @@ class ClientTest extends TestCase
             ->once();
 
         $this->assertSame($response, $client->request('GET', '/path'));
+    }
 
+    public function testSendPostJson()
+    {
+        $mockClient = m::mock(ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path');
+        $response = new Response();
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')
+            ->with(m::on(function (RequestInterface $request) {
+
+                if ($request->getMethod() !== 'POST') {
+                    return false;
+                }
+
+                if ($request->getHeader('Content-Type') !== ['application/json']) {
+                    return false;
+                }
+
+                if ($request->getBody()->getContents() !== '{foo:bar}') {
+                    return false;
+                }
+
+                return true;
+            }))
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request(
+            'POST',
+            '/path',
+            ['Content-Type' => 'application/json'],
+            '{foo:bar}'
+        ));
     }
 
     public function testSendException()
