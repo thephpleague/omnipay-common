@@ -11,8 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Client\ClientInterface as HttpClientInterface;
-use Psr\Http\Message\RequestFactoryInterface as RequestFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class Client implements ClientInterface
 {
@@ -33,10 +32,11 @@ class Client implements ClientInterface
      */
     private $streamFactory;
 
-    public function __construct($httpClient = null, $requestFactory = null)
+    public function __construct($httpClient = null, $requestFactory = null, $streamFactory = null)
     {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     private function getHttpClient() : HttpClientInterface
