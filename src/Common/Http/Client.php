@@ -14,7 +14,7 @@ use Psr\Http\Client\ClientInterface as HttpClientInterface;
 use Psr\Http\Message\RequestFactoryInterface as RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 
-final class Client implements ClientInterface
+class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
