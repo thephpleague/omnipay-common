@@ -70,10 +70,10 @@ class Client implements ClientInterface
      * @param $method
      * @param $uri
      * @param array $headers
-     * @param string|array|resource|StreamInterface|null $body
+     * @param string|null $body
      * @param string $protocolVersion
      * @return ResponseInterface
-     * @throws \Http\Client\Exception
+     * @throws NetworkException|RequestException
      */
     public function request(
         $method,
@@ -86,9 +86,9 @@ class Client implements ClientInterface
             ->createRequest($method, $uri)
             ->withProtocolVersion($protocolVersion);
 
-        if ($body) {
-            $stream = $this->getStreamFactory()->createStream($body);
-            $request = $request->withBody($stream);
+        if ($body !== null && $body !== '' && is_string($body)) {
+            $body = $this->getStreamFactory()->createStream($body);
+            $request = $request->withBody($body);
         }
 
         foreach ($headers as $name => $value) {
