@@ -16,6 +16,20 @@ use InvalidArgumentException;
 class Helper
 {
     /**
+     * Sets the account gateway suffix so that a namespace might
+     * look like '\Omnipay\Test\Account\Gateway'
+     * @var string
+     */
+    protected static $accountNamespaceSuffix = 'Account';
+
+    /**
+     * Sets the user gateway suffix so that a namespace might
+     * look like '\Omnipay\Test\User\Gateway'
+     * @var string
+     */
+    protected static $userNamespaceSuffix = 'User';
+
+    /**
      * Convert a string to camelCase. Strings already in camelCase will not be harmed.
      *
      * @param  string  $str The input string
@@ -138,5 +152,119 @@ class Helper
         }
 
         return '\\Omnipay\\'.$shortName.'Gateway';
+    }
+
+    /**
+     * Gets the gateway name for account processes
+     *
+     * @param  string $shortName the short gateway name
+     * @return string  the full namespaced gateway class name
+     */
+    public static function getAccountGatewayClassName($shortName)
+    {
+        return self::gatewayClassNameModify(
+            self::getGatewayClassName($shortName),
+            self::$accountNamespaceSuffix
+        );
+    }
+
+    /**
+     * Gets the gateway name for user processes
+     *
+     * @param  string $shortName the short gateway name
+     * @return string  the full namespaced gateway class name
+     */
+    public static function getUserGatewayClassName($shortName)
+    {
+        return self::gatewayClassNameModify(
+            self::getGatewayClassName($shortName),
+            self::$userNamespaceSuffix
+        );
+    }
+
+    /**
+     * Appends to the namespace of the gateway class name
+     *
+     * @param  string $classname  the full classname
+     * @param  string $appendWith what to add to the classname just before \\Gateway
+     * @return string
+     */
+    public static function gatewayClassNameModify($classname, $appendWith = '')
+    {
+        $replaceWith = '\\Gateway';
+        if (!empty($appendWith)) {
+            $replaceWith = '\\' . $appendWith . $replaceWith;
+        }
+
+        return preg_replace('/\\\Gateway/', $replaceWith, $classname);
+    }
+
+    /**
+     * gets the shortname for an account gateway
+     *
+     * @param  string $className the full classname
+     * @return string
+     */
+    public static function getAccountGatewayShortName($className)
+    {
+        return self::replaceGatewaySuffix(
+            $className,
+            self::$accountNamespaceSuffix
+        );
+    }
+
+    /**
+     * Get's the shortname for a user gateway
+     *
+     * @param  string $className the full classname
+     * @return string
+     */
+    public static function getUserGatewayShortName($className)
+    {
+        return self::replaceGatewaySuffix(
+            $className,
+            self::$userNamespaceSuffix
+        );
+    }
+
+    /**
+     * Replaces the gateway suffix if one had been appended with gatewayClassNameModify
+     *
+     * @param  string $classname  the full classname
+     * @param  string $appended   the string that had been added to the classname just before \\Gateway
+     * @return string
+     */
+    public static function replaceGatewaySuffix($className, $appended = '')
+    {
+        // trim any leading backslashes
+        $testClassName = ltrim($className, '\\');
+
+        $suffix = '\\Gateway';
+
+        if (!empty($appended)) {
+            // first add our
+            if (0 !== strpos($appended, '\\')) {
+                $appended = '\\' . $appended;
+            }
+
+            $suffix = $appended . $suffix;
+        }
+
+        if (0 === strpos($testClassName, 'Omnipay\\')) {
+            return trim(
+                str_replace(
+                    '\\',
+                    '_',
+                    substr(
+                        $testClassName,
+                        8,
+                        -(strlen($suffix))
+                    )
+                ),
+                '_'
+            );
+        }
+
+        return $className;
     }
 }
