@@ -9,7 +9,8 @@ use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
-abstract class AbstractGenericGateway implements GatewayInterface {
+abstract class AbstractGenericGateway implements GatewayInterface
+{
 
     use ParametersTrait;
 
