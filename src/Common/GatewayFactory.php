@@ -145,6 +145,7 @@ class GatewayFactory
      * @param  HttpRequest|null     $httpRequest A Symfony HTTP Request implementation
      * @return object               the new class, what ever it might be
      */
+    // phpcs:ignore
     protected static function resolveClass($class, $helperMethod, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
     {
         $class = Helper::$helperMethod($class);
