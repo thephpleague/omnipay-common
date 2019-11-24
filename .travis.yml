@@ -30,6 +30,8 @@ matrix:
       env: setup=lowest symfony="^3"
     - php: 7.1
       env: setup=lowest symfony="^4"
+    - php: 7.2
+      env: setup=lowest symfony="^5"
   allow_failures:
     - php: 7.4snapshot
     
