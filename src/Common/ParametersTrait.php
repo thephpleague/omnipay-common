@@ -31,11 +31,14 @@ trait ParametersTrait
     /**
      * Get one parameter.
      *
+     * @param string $key     The key
+     * @param mixed  $default The default value if the parameter key does not exist
+     *
      * @return mixed A single parameter value.
      */
-    protected function getParameter($key)
+    protected function getParameter($key, $default = null)
     {
-        return $this->parameters->get($key);
+        return $this->parameters->get($key, $default);
     }
 
     /**
