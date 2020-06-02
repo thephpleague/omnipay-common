@@ -93,8 +93,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class CreditCard
 {
-    use ParametersTrait;
-
     const BRAND_VISA = 'visa';
     const BRAND_MASTERCARD = 'mastercard';
     const BRAND_DISCOVER = 'discover';
@@ -134,6 +132,13 @@ class CreditCard
         self::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
         self::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
     );
+
+    /**
+     * Internal storage of all of the card parameters.
+     *
+     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     */
+    protected $parameters;
 
     /**
      * Create a new CreditCard object using the specified parameters
@@ -200,6 +205,40 @@ class CreditCard
     }
 
     /**
+     * Get all parameters.
+     *
+     * @return array An associative array of parameters.
+     */
+    public function getParameters()
+    {
+        return $this->parameters->all();
+    }
+
+    /**
+     * Get one parameter.
+     *
+     * @return mixed A single parameter value.
+     */
+    protected function getParameter($key)
+    {
+        return $this->parameters->get($key);
+    }
+
+    /**
+     * Set one parameter.
+     *
+     * @param string $key Parameter key
+     * @param mixed $value Parameter value
+     * @return $this
+     */
+    protected function setParameter($key, $value)
+    {
+        $this->parameters->set($key, $value);
+
+        return $this;
+    }
+
+    /**
      * Set the credit card year.
      *
      * The input value is normalised to a 4 digit number.
@@ -229,9 +268,8 @@ class CreditCard
      * Generally if you want to validate the credit card yourself with custom error
      * messages, you should use your framework's validation library, not this method.
      *
-     * @return void
-     * @throws Exception\InvalidRequestException
      * @throws InvalidCreditCardException
+     * @return void
      */
     public function validate()
     {
@@ -259,6 +297,7 @@ class CreditCard
             throw new InvalidCreditCardException('Card number should have 12 to 19 digits');
         }
     }
+
     /**
      * Get Card Title.
      *
