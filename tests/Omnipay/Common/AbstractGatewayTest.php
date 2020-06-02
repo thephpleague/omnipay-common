@@ -10,9 +10,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AbstractGatewayTest extends TestCase
 {
+    /** @var \Omnipay\Common\AbstractGateway */
+    protected $gateway;
+
     public function setUp()
     {
-        $this->gateway = m::mock('\Omnipay\Common\AbstractGateway')->makePartial();
+        $this->gateway = new AbstractGatewayTest_MockAbstractGateway();
         $this->gateway->initialize();
     }
 
@@ -26,11 +29,12 @@ class AbstractGatewayTest extends TestCase
 
     public function testGetShortName()
     {
-        $this->assertSame('\\'.get_class($this->gateway), $this->gateway->getShortName());
+        $this->assertSame('Common_AbstractGatewayTest_MockAbstract', $this->gateway->getShortName());
     }
 
     public function testInitializeDefaults()
     {
+        $this->gateway = m::mock('\Omnipay\Common\AbstractGateway')->makePartial();
         $defaults = array(
             'currency' => 'AUD', // fixed default type
             'username' => array('joe', 'fred'), // enum default type
@@ -49,6 +53,7 @@ class AbstractGatewayTest extends TestCase
 
     public function testInitializeParameters()
     {
+        $this->gateway = m::mock('\Omnipay\Common\AbstractGateway')->makePartial();
         $this->gateway->shouldReceive('getDefaultParameters')->once()
             ->andReturn(array('currency' => 'AUD'));
 
@@ -70,6 +75,15 @@ class AbstractGatewayTest extends TestCase
         $this->gateway->setTestMode(true);
 
         $this->assertSame(array('testMode' => true), $this->gateway->getParameters());
+    }
+
+    public function testSetSetParameter()
+    {
+        $token = 'foobar';
+
+        $this->gateway->setParameter('token', $token);
+
+        $this->assertEquals($token, $this->gateway->getParameter('token'));
     }
 
     public function testTestMode()
