@@ -16,7 +16,7 @@ class AbstractRequestTest extends TestCase
 
     public function setUp()
     {
-        $this->request = m::mock('\Omnipay\Common\Message\AbstractRequest')->makePartial();
+        $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize();
     }
 
@@ -467,6 +467,7 @@ class AbstractRequestTest extends TestCase
 
     public function testSend()
     {
+        $this->request = m::mock('\Omnipay\Common\Message\AbstractRequest')->makePartial();
         $response = m::mock('\Omnipay\Common\Message\ResponseInterface');
         $data = array('request data');
 
