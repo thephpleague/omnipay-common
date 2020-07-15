@@ -43,12 +43,18 @@ class HelperTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testInitializeIgnoresNull()
     {
         $target = m::mock();
         Helper::initialize($target, null);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testInitializeCallsSetters()
     {
         $target = m::mock('\Omnipay\Common\CreditCard');
@@ -58,6 +64,9 @@ class HelperTest extends TestCase
         Helper::initialize($target, array('name' => 'adrian', 'number' => '1234'));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testInitializeIgnoresInvalidParameters()
     {
         $target = m::mock('\Omnipay\Common\CreditCard');

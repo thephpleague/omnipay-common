@@ -10,7 +10,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements common classes required by Omnipay.
+processing library for PHP. This package implements common classes required by Omnipay.
 
 ## Documentation
 
@@ -45,13 +45,13 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/omnipay/common.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/omnipay/common/master.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/thephpleague/omnipay-common/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/thephpleague/omnipay-common.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/thephpleague/omnipay-common.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/omnipay/common.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/omnipay/common
-[link-travis]: https://travis-ci.org/omnipay/common
+[link-travis]: https://travis-ci.org/thephpleague/omnipay-common
 [link-scrutinizer]: https://scrutinizer-ci.com/g/thephpleague/omnipay-common/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/thephpleague/omnipay-common
 [link-downloads]: https://packagist.org/packages/omnipay/common

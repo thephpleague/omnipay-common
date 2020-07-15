@@ -6,7 +6,7 @@
 namespace Omnipay\Common;
 
 use Omnipay\Common\Exception\RuntimeException;
-use Omnipay\Common\Http\Client;
+use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 /**
@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
  *   $gateway = Omnipay::create('ExpressGateway');
  * </code>
  *
- * @see Omnipay\Omnipay
  */
 class GatewayFactory
 {
@@ -73,12 +72,12 @@ class GatewayFactory
      * Create a new gateway instance
      *
      * @param string               $class       Gateway name
-     * @param Client|null $httpClient  A HTTP Client implementation
+     * @param ClientInterface|null $httpClient  A HTTP Client implementation
      * @param HttpRequest|null     $httpRequest A Symfony HTTP Request implementation
      * @throws RuntimeException                 If no such gateway is found
      * @return GatewayInterface                 An object of class $class is created and returned
      */
-    public function create($class, Client $httpClient = null, HttpRequest $httpRequest = null)
+    public function create($class, ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
     {
         $class = Helper::getGatewayClassName($class);
 
