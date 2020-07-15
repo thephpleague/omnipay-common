@@ -2,6 +2,7 @@
 
 namespace Omnipay\Common;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Tests\TestCase;
 
 class CreditCardTest extends TestCase
@@ -50,6 +51,9 @@ class CreditCardTest extends TestCase
         $this->assertSame(2016, $parameters['expiryYear']);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testValidateFixture()
     {
         $this->card->validate();
@@ -57,7 +61,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The number parameter is required
+     * @expectedExceptionMessage The credit card number is required
      */
     public function testValidateNumberRequired()
     {
@@ -67,7 +71,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiryMonth parameter is required
+     * @expectedExceptionMessage The expiration month is required
      */
     public function testValidateExpiryMonthRequired()
     {
@@ -77,7 +81,7 @@ class CreditCardTest extends TestCase
 
     /**
      * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiryYear parameter is required
+     * @expectedExceptionMessage The expiration year is required
      */
     public function testValidateExpiryYearRequired()
     {

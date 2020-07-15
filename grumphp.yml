@@ -9,7 +9,7 @@ parameters:
             always_execute: false
         phpcs:
             standard: PSR2
-            show_warnings: false
+            warning_severity: ~
             ignore_patterns:
               - tests/
             triggered_by: [php]

@@ -4,6 +4,9 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
 
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
@@ -17,15 +20,28 @@ cache:
 env:
   global:
     - setup=basic
+    - symfony="*"
 
 matrix:
   include:
     - php: 5.6
-      env: setup=lowest
-    - php: 7.0
-      env: setup=lowest
-
+      env: setup=lowest symfony="^2.1"
+    - php: 5.6
+      env: setup=lowest symfony="^3"
+    - php: 7.1
+      env: setup=lowest symfony="^4"
+    - php: 7.2
+      env: setup=lowest symfony="^5"
+    - php: 7.3
+      env: setup=lowest symfony="^5"
+    - php: 7.4
+      env: setup=lowest symfony="^5"
+  allow_failures:	   
+    - php: 5.6
+    - php: 7.4
+    
 install:
+  - if [[ $symfony != '*' ]]; then travis_retry composer require symfony/http-foundation:${symfony} --no-update --no-interaction; fi
   - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 

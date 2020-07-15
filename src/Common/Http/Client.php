@@ -2,19 +2,23 @@
 
 namespace Omnipay\Common\Http;
 
+use function GuzzleHttp\Psr7\str;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
+use Omnipay\Common\Http\Exception\NetworkException;
+use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class Client implements RequestFactory
+class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
+     * Note: Will be changed to PSR-18 when released
      *
      * @var HttpClient
      */
@@ -25,7 +29,7 @@ class Client implements RequestFactory
      */
     private $requestFactory;
 
-    public function __construct(/* HttpClient */ $httpClient = null, RequestFactory $requestFactory = null)
+    public function __construct($httpClient = null, RequestFactory $requestFactory = null)
     {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
@@ -38,62 +42,33 @@ class Client implements RequestFactory
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion
      * @return ResponseInterface
+     * @throws \Http\Client\Exception
      */
-    public function send($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
-    {
-        if (is_array($body)) {
-            $body = http_build_query($body, '', '&');
-        }
-
-        $request = $this->createRequest($method, $uri, $headers, $body, $protocolVersion);
+    public function request(
+        $method,
+        $uri,
+        array $headers = [],
+        $body = null,
+        $protocolVersion = '1.1'
+    ) {
+        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
         return $this->sendRequest($request);
     }
 
     /**
-     * @param $method
-     * @param $uri
-     * @param array $headers
-     * @param string|resource|StreamInterface|null $body
-     * @param string $protocolVersion
-     * @return RequestInterface
-     */
-    public function createRequest($method, $uri, array $headers = [], $body = null, $protocolVersion = '1.1')
-    {
-        return $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
-    }
-
-    /**
-     * @param  RequestInterface $request
+     * @param RequestInterface $request
      * @return ResponseInterface
+     * @throws \Http\Client\Exception
      */
-    public function sendRequest(RequestInterface $request)
+    private function sendRequest(RequestInterface $request)
     {
-        return $this->httpClient->sendRequest($request);
-    }
-
-    /**
-     * Send a GET request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @return ResponseInterface
-     */
-    public function get($uri, array $headers = [])
-    {
-        return $this->send('GET', $uri, $headers);
-    }
-
-    /**
-     * Send a POST request.
-     *
-     * @param UriInterface|string $uri
-     * @param array $headers
-     * @param string|array|null|resource|StreamInterface $body
-     * @return ResponseInterface
-     */
-    public function post($uri, array $headers = [], $body = null)
-    {
-        return $this->send('POST', $uri, $headers, $body);
+        try {
+            return $this->httpClient->sendRequest($request);
+        } catch (\Http\Client\Exception\NetworkException $networkException) {
+            throw new NetworkException($networkException->getMessage(), $request, $networkException);
+        } catch (\Exception $exception) {
+            throw new RequestException($exception->getMessage(), $request, $exception);
+        }
     }
 }
