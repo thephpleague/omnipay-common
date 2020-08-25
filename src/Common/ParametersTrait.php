@@ -55,7 +55,7 @@ trait ParametersTrait
      * If any unknown parameters passed, they will be ignored.
      *
      * @param array $parameters An associative array of parameters
-     * @return $this.
+     * @return $this
      */
     public function initialize(array $parameters = [])
     {
