@@ -86,6 +86,18 @@ class AbstractGatewayTest extends TestCase
         $this->assertEquals($token, $this->gateway->getParameter('token'));
     }
 
+    public function testGetParameterWithDefaultValue()
+    {
+        $default = 'foo';
+
+        $this->assertEquals($default, $this->gateway->getParameter('foobar', $default));
+    }
+
+    public function testGetParameterWithoutDefaultValueIsEqualsToNull()
+    {
+        $this->assertEquals(null, $this->gateway->getParameter('foobar'));
+    }
+
     public function testTestMode()
     {
         $this->assertSame($this->gateway, $this->gateway->setTestMode(true));
@@ -195,6 +207,11 @@ class AbstractGatewayTest_MockAbstractGateway extends AbstractGateway
 
 class AbstractGatewayTest_MockAbstractRequest extends AbstractRequest
 {
-    public function getData() {}
-    public function sendData($data) {}
+    public function getData()
+    {
+    }
+
+    public function sendData($data)
+    {
+    }
 }
