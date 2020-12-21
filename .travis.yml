@@ -41,7 +41,7 @@ matrix:
     - php: 7.4
 
 before_install:
-  - travis_retry composer self-update --1
+  - travis_retry composer remove --dev phpro/grumphp
 
 install:
   - if [[ $symfony != '*' ]]; then travis_retry composer require symfony/http-foundation:${symfony} --no-update --no-interaction; fi
