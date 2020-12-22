@@ -51,7 +51,7 @@ install:
 
 script:
   - vendor/bin/phpcs --standard=PSR2 src/
-  - vendor/bin/phpunit --coverage-text  --coverage-clover=coverage.clover
+  - vendor/bin/phpunit -d "xdebug.mode=coverage" --coverage-text  --coverage-clover=coverage.clover
 
 after_script:
   - |
