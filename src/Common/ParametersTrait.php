@@ -31,12 +31,13 @@ trait ParametersTrait
     /**
      * Get one parameter.
      *
-     * @param  string $key Parameter key
+     * @param string $key Parameter key
+     * @param null $default
      * @return mixed A single parameter value.
      */
-    protected function getParameter($key)
+    protected function getParameter($key, $default = null)
     {
-        return $this->parameters->get($key);
+        return $this->parameters->get($key, $default);
     }
 
     /**
@@ -77,7 +78,7 @@ trait ParametersTrait
     {
         foreach ($args as $key) {
             $value = $this->parameters->get($key);
-            if (! isset($value)) {
+            if (!isset($value)) {
                 throw new InvalidRequestException("The $key parameter is required");
             }
         }

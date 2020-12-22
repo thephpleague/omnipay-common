@@ -61,8 +61,8 @@ abstract class AbstractGateway implements GatewayInterface
     /**
      * Create a new gateway instance
      *
-     * @param ClientInterface          $httpClient  A HTTP client to make API calls with
-     * @param HttpRequest     $httpRequest A Symfony HTTP request object
+     * @param ClientInterface $httpClient A HTTP client to make API calls with
+     * @param HttpRequest $httpRequest A Symfony HTTP request object
      */
     public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
     {
@@ -84,7 +84,7 @@ abstract class AbstractGateway implements GatewayInterface
     /**
      * Initialize this gateway with default parameters
      *
-     * @param  array $parameters
+     * @param array $parameters
      * @return $this
      */
     public function initialize(array $parameters = array())
@@ -114,17 +114,18 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
-     * @param  string $key
+     * @param string $key
+     * @param null $default
      * @return mixed
      */
-    public function getParameter($key)
+    public function getParameter($key, $default = null)
     {
-        return $this->traitGetParameter($key);
+        return $this->traitGetParameter($key, $default);
     }
 
     /**
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed $value
      * @return $this
      */
     public function setParameter($key, $value)
@@ -141,7 +142,7 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
-     * @param  boolean $value
+     * @param boolean $value
      * @return $this
      */
     public function setTestMode($value)
@@ -158,7 +159,7 @@ abstract class AbstractGateway implements GatewayInterface
     }
 
     /**
-     * @param  string $value
+     * @param string $value
      * @return $this
      */
     public function setCurrency($value)
