@@ -78,6 +78,25 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('1234', $card->getNumber());
     }
 
+    public function testCustomer()
+    {
+        // no type checking on card parameter
+        $card = new CreditCard;
+        $this->assertSame($this->request, $this->request->setCustomer($card));
+        $this->assertSame($card, $this->request->getCustomer());
+    }
+
+    public function testSetCustomerWithArray()
+    {
+        // passing array should create CreditCard object
+        $this->assertSame($this->request, $this->request->setCustomer(array('first_name' => 'Barry')));
+
+        $customer = $this->request->getCustomer();
+        $customer->validate('billingFirstName');
+        $this->assertInstanceOf('\Omnipay\Common\CreditCard', $customer);
+        $this->assertSame('Barry', $customer->getName());
+    }
+
     public function testToken()
     {
         $this->assertSame($this->request, $this->request->setToken('12345'));

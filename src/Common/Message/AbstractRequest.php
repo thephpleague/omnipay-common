@@ -205,6 +205,31 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
+     * Get the customer object.
+     *
+     * @return CreditCard
+     */
+    public function getCustomer()
+    {
+        return $this->getParameter('card');
+    }
+
+    /**
+     * Sets the customer object.
+     *
+     * @param CreditCard $value
+     * @return $this
+     */
+    public function setCustomer($value)
+    {
+        if ($value && !$value instanceof CreditCard) {
+            $value = new CreditCard($value);
+        }
+
+        return $this->setParameter('card', $value);
+    }
+
+    /**
      * Get the card token.
      *
      * @return string
