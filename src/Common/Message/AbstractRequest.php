@@ -192,12 +192,12 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Sets the card.
      *
-     * @param CreditCard $value
+     * @param CreditCard|array|null $value
      * @return $this
      */
     public function setCard($value)
     {
-        if ($value && !$value instanceof CreditCard) {
+        if (!$value instanceof CreditCard) {
             $value = new CreditCard($value);
         }
 
@@ -308,17 +308,19 @@ abstract class AbstractRequest implements RequestInterface
      * Validates and returns the formatted amount.
      *
      * @throws InvalidRequestException on any validation failure.
-     * @return string The amount formatted to the correct number of decimal places for the selected currency.
+     * @return string|null The amount formatted to the correct number of decimal places for the selected currency.
      */
     public function getAmount()
     {
         $money = $this->getMoney();
 
-        if ($money !== null) {
-            $moneyFormatter = new DecimalMoneyFormatter($this->getCurrencies());
-
-            return $moneyFormatter->format($money);
+        if ($money === null) {
+            return null;
         }
+
+        $moneyFormatter = new DecimalMoneyFormatter($this->getCurrencies());
+
+        return $moneyFormatter->format($money);
     }
 
     /**
@@ -335,15 +337,17 @@ abstract class AbstractRequest implements RequestInterface
     /**
      * Get the payment amount as an integer.
      *
-     * @return integer
+     * @return integer|null
      */
     public function getAmountInteger()
     {
         $money = $this->getMoney();
 
-        if ($money !== null) {
-            return (int) $money->getAmount();
+        if ($money === null) {
+            return null;
         }
+
+        return (int) $money->getAmount();
     }
 
     /**
@@ -412,6 +416,8 @@ abstract class AbstractRequest implements RequestInterface
         if ($this->getCurrencies()->contains($currency)) {
             return (string) $this->getCurrencies()->numericCodeFor($currency);
         }
+
+        return null;
     }
 
     /**

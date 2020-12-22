@@ -255,7 +255,7 @@ class CreditCard
             throw new InvalidCreditCardException('Card number is invalid');
         }
 
-        if (!is_null($this->getNumber()) && !preg_match('/^\d{12,19}$/i', $this->getNumber())) {
+        if ($this->getNumber() !== '' && !preg_match('/^\d{12,19}$/i', $this->getNumber())) {
             throw new InvalidCreditCardException('Card number should have 12 to 19 digits');
         }
     }
@@ -408,7 +408,7 @@ class CreditCard
      *
      * Iterates through known/supported card brands to determine the brand of this card
      *
-     * @return string
+     * @return string|null
      */
     public function getBrand()
     {
@@ -417,6 +417,8 @@ class CreditCard
                 return $brand;
             }
         }
+
+        return null;
     }
 
     /**
@@ -476,7 +478,7 @@ class CreditCard
     /**
      * Get the card start month.
      *
-     * @return string
+     * @return int
      */
     public function getStartMonth()
     {
@@ -581,7 +583,7 @@ class CreditCard
     /**
      * Get raw data for a track  on the credit card magnetic strip based on the pattern for track 1 or 2.
      *
-     * @param $pattern
+     * @param string $pattern
      * @return string|null
      */
     protected function getTrackByPattern($pattern)
@@ -591,13 +593,15 @@ class CreditCard
                 return $matches[0];
             }
         }
+
+        return null;
     }
 
     /**
      * Sets raw data from all tracks on the credit card magnetic strip. Used by gateways that support card-present
      * transactions.
      *
-     * @param $value
+     * @param string $value
      * @return $this
      */
     public function setTracks($value)
@@ -660,8 +664,8 @@ class CreditCard
     /**
      * Split the full name in the first and last name.
      *
-     * @param $fullName
-     * @return array with first and lastname
+     * @param string $fullName
+     * @return Array with first and lastname
      */
     protected function listFirstLastName($fullName)
     {

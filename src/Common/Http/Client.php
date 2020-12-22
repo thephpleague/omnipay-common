@@ -36,8 +36,8 @@ class Client implements ClientInterface
     }
 
     /**
-     * @param $method
-     * @param $uri
+     * @param string $method
+     * @param string $uri
      * @param array $headers
      * @param string|array|resource|StreamInterface|null $body
      * @param string $protocolVersion

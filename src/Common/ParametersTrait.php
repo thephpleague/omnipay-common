@@ -70,7 +70,7 @@ trait ParametersTrait
      * This method is called internally by gateways to avoid wasting time with an API call
      * when the request is clearly invalid.
      *
-     * @param string ... a variable length list of required parameters
+     * @param string ...$args A variable length list of required parameters
      * @throws InvalidRequestException
      */
     public function validate(...$args)
