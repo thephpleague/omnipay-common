@@ -43,6 +43,8 @@ matrix:
 before_install:
   # Revert to Composer v1
   - composer self-update --1
+  # Enable Xdebug coverage mode
+  - echo 'xdebug.mode="coverage"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 install:
   - if [[ $symfony != '*' ]]; then travis_retry composer require symfony/http-foundation:${symfony} --no-update --no-interaction; fi
@@ -51,7 +53,7 @@ install:
 
 script:
   - vendor/bin/phpcs --standard=PSR2 src/
-  - vendor/bin/phpunit -d "xdebug.mode=coverage" --coverage-text  --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-text  --coverage-clover=coverage.clover
 
 after_script:
   - |
