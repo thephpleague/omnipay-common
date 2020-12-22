@@ -665,7 +665,7 @@ class CreditCard
      * Split the full name in the first and last name.
      *
      * @param string $fullName
-     * @return Array with first and lastname
+     * @return array{string, string|null} With first and lastname
      */
     protected function listFirstLastName($fullName)
     {
