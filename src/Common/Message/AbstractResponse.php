@@ -153,7 +153,7 @@ abstract class AbstractResponse implements ResponseInterface
      */
     public function getTransactionId()
     {
-        return null;
+        return $this->request->getTransactionId();
     }
 
     /**
