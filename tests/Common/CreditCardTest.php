@@ -59,52 +59,47 @@ class CreditCardTest extends TestCase
         $this->card->validate();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The credit card number is required
-     */
     public function testValidateNumberRequired()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('The credit card number is required');
+
         $this->card->setNumber(null);
         $this->card->validate();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiration month is required
-     */
     public function testValidateExpiryMonthRequired()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('The expiration month is required');
+
         $this->card->setExpiryMonth(null);
         $this->card->validate();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage The expiration year is required
-     */
     public function testValidateExpiryYearRequired()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('The expiration year is required');
+
         $this->card->setExpiryYear(null);
         $this->card->validate();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage Card has expired
-     */
     public function testValidateExpiryDate()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('Card has expired');
+
         $this->card->setExpiryYear(gmdate('Y')-1);
         $this->card->validate();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage Card number is invalid
-     */
     public function testValidateNumber()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('Card number is invalid');
+
         $this->card->setNumber('4111111111111110');
         $this->card->validate();
     }
@@ -112,7 +107,7 @@ class CreditCardTest extends TestCase
     public function testGetSupportedBrands()
     {
         $brands = $this->card->getSupportedBrands();
-        $this->assertInternalType('array', $brands);
+        $this->assertIsArray($brands);
         $this->assertArrayHasKey(CreditCard::BRAND_VISA, $brands);
     }
 
@@ -671,22 +666,20 @@ class CreditCardTest extends TestCase
         $this->assertEquals('female', $this->card->getGender());
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage Card number is invalid
-     */
     public function testInvalidLuhn()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('Card number is invalid');
+
         $this->card->setNumber('43');
         $this->card->validate();
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidCreditCardException
-     * @expectedExceptionMessage Card number should have 12 to 19 digits
-     */
     public function testInvalidShortCard()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidCreditCardException::class);
+        $this->expectExceptionMessage('Card number should have 12 to 19 digits');
+
         $this->card->setNumber('4440');
         $this->card->validate();
     }

@@ -48,12 +48,12 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('1.23', $this->request->getAmount());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\RuntimeException
-     * @expectedExceptionMessage Request cannot be modified after it has been sent!
-     */
     public function testInitializeAfterRequestSent()
     {
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage("Request cannot be modified after it has been sent!");
+
+
         $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->send();
 
@@ -120,12 +120,11 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('0.00', $this->request->getAmount());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     * @expectedExceptionMessage A zero amount is not allowed.
-     */
     public function testAmountZeroNotAllowed()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+        $this->expectExceptionMessage('A zero amount is not allowed.');
+
         $this->changeProtectedProperty('zeroAmountAllowed', false);
         $this->request->setAmount('0.00');
         $this->request->getAmount();
@@ -164,13 +163,14 @@ class AbstractRequestTest extends TestCase
     }
 
     /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      *
      * We still want to catch obvious fractions of the minor units that are
      * not precision errors at a much lower level.
      */
     public function testAmountPrecisionTooHigh()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->assertSame($this->request, $this->request->setAmount('123.005'));
         $this->assertSame('123.005', $this->request->getAmount());
     }
@@ -182,11 +182,10 @@ class AbstractRequestTest extends TestCase
         $this->assertSame('1366', $this->request->getAmount());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testGetAmountNoDecimalsRounding()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         // There will not be any rounding; the amount is sent as requested or not at all.
         $this->assertSame($this->request, $this->request->setAmount('136.5'));
         $this->assertSame($this->request, $this->request->setCurrency('JPY'));
@@ -219,11 +218,10 @@ class AbstractRequestTest extends TestCase
         $this->assertSame(1366, $this->request->getAmountInteger());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAmountThousandsSepThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->assertSame($this->request, $this->request->setAmount('1,234.00'));
         $this->request->getAmount();
     }
@@ -233,24 +231,24 @@ class AbstractRequestTest extends TestCase
      */
     public function testAmountInvalidFormatThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->assertSame($this->request, $this->request->setAmount('1.234.00'));
         $this->request->getAmount();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testAmountNegativeStringThrowsException()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->assertSame($this->request, $this->request->setAmount('-123.00'));
         $this->request->getAmount();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testAmountNegativeFloatThrowsException()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->assertSame($this->request, $this->request->setAmount(-123.00));
         $this->request->getAmount();
     }
@@ -423,12 +421,11 @@ class AbstractRequestTest extends TestCase
         $this->assertEquals($expected, $this->request->getParameters());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\RuntimeException
-     * @expectedExceptionMessage Request cannot be modified after it has been sent!
-     */
     public function testSetParameterAfterRequestSent()
     {
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Request cannot be modified after it has been sent!');
+
         $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->send();
 
@@ -450,11 +447,10 @@ class AbstractRequestTest extends TestCase
         $this->assertNull($this->request->validate('amount'));
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testInvalidParametersThrowsException()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->request->setTestMode(true);
 
         $this->request->validate('testMode', 'token');
@@ -477,12 +473,11 @@ class AbstractRequestTest extends TestCase
         $this->assertSame($response, $this->request->send());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\RuntimeException
-     * @expectedExceptionMessage You must call send() before accessing the Response!
-     */
     public function testGetResponseBeforeRequestSent()
     {
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage('You must call send() before accessing the Response!');
+
         $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->getResponse();
     }
