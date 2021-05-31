@@ -10,7 +10,7 @@ class CreditCardTest extends TestCase
     /** @var CreditCard */
     private $card;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->card = new CreditCard;
         $this->card->setNumber('4111111111111111');

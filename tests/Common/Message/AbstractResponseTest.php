@@ -10,7 +10,7 @@ class AbstractResponseTest extends TestCase
     /** @var  AbstractResponse */
     protected $response;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->response = m::mock('\Omnipay\Common\Message\AbstractResponse')->makePartial();
     }

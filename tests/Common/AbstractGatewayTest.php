@@ -13,7 +13,7 @@ class AbstractGatewayTest extends TestCase
     /** @var \Omnipay\Common\AbstractGateway */
     protected $gateway;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->gateway = new AbstractGatewayTest_MockAbstractGateway();
         $this->gateway->initialize();

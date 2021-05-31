@@ -14,7 +14,7 @@ class AbstractRequestTest extends TestCase
     /** @var AbstractRequest */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new AbstractRequestTest_MockAbstractRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize();

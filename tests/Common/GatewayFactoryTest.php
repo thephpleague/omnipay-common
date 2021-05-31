@@ -7,12 +7,12 @@ use Omnipay\Tests\TestCase;
 
 class GatewayFactoryTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         m::mock('alias:Omnipay\\SpareChange\\TestGateway');
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->factory = new GatewayFactory;
     }

@@ -7,3 +7,4 @@ phpunit.xml
 reports/
 documents/
 .idea
+.phpunit.result.cache
