@@ -1,3 +1,4 @@
+build
 /vendor
 composer.lock
 composer.phar
@@ -6,3 +7,4 @@ phpunit.xml
 reports/
 documents/
 .idea
+.phpunit.result.cache

@@ -7,12 +7,12 @@ use Omnipay\Tests\TestCase;
 
 class GatewayFactoryTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         m::mock('alias:Omnipay\\SpareChange\\TestGateway');
     }
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->factory = new GatewayFactory;
     }
@@ -53,12 +53,11 @@ class GatewayFactoryTest extends TestCase
         $this->assertInstanceOf('\\Omnipay\\SpareChange\\TestGateway', $gateway);
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\RuntimeException
-     * @expectedExceptionMessage Class '\Omnipay\Invalid\Gateway' not found
-     */
     public function testCreateInvalid()
     {
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage("Class '\Omnipay\Invalid\Gateway' not found");
+
         $gateway = $this->factory->create('Invalid');
     }
 }

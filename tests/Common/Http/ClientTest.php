@@ -13,13 +13,6 @@ use Omnipay\Tests\TestCase;
 
 class ClientTest extends TestCase
 {
-    public function testEmptyConstruct()
-    {
-        $client = new Client();
-
-        $this->assertAttributeInstanceOf(HttpClient::class, 'httpClient', $client);
-        $this->assertAttributeInstanceOf(RequestFactory::class, 'requestFactory', $client);
-    }
 
     public function testSend()
     {

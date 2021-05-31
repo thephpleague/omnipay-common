@@ -7,7 +7,7 @@ use Omnipay\Tests\TestCase;
 
 class OmnipayTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown() : void
     {
         Omnipay::setFactory(null);
 
