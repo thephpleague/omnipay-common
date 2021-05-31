@@ -37,6 +37,10 @@
         "psr-4": { "Omnipay\\Common\\" : "src/Common" },
         "classmap": ["src/Omnipay.php"]
     },
+    "autoload-dev": {
+        "psr-4": { "Omnipay\\Common\\" : "tests/Common" },
+        "classmap": ["tests/OmnipayTest.php"]
+    },
     "require": {
         "php": "^5.6|^7|^8",
         "php-http/client-implementation": "^1",
