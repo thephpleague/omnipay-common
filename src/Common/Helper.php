@@ -127,10 +127,13 @@ class Helper
      */
     public static function getGatewayClassName($shortName)
     {
-        if (0 === strpos($shortName, '\\')) {
+        // If the class starts with \ or Omnipay\, assume it's a FQCN
+        if (0 === strpos($shortName, '\\') || 0 === strpos($shortName, 'Omnipay\\')) {
             return $shortName;
         }
-        if (0 === strpos($shortName, 'Omnipay\\')) {
+
+        // Check if the class exists and implements the Gateway Interface, if so -> FCQN
+        if (is_subclass_of($shortName, GatewayInterface::class, true)) {
             return $shortName;
         }
 
