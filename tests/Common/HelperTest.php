@@ -143,4 +143,10 @@ class HelperTest extends TestCase
         $class = Helper::getGatewayClassName('PayPal_Express');
         $this->assertEquals('\\Omnipay\\PayPal\\ExpressGateway', $class);
     }
+
+    public function testGetGatewayClassNameFQCN()
+    {
+        $class = Helper::getGatewayClassName('Omnipay\Stripe\PaymentIntentsGateway');
+        $this->assertEquals('Omnipay\Stripe\PaymentIntentsGateway', $class);
+    }
 }
