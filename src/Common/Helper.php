@@ -122,12 +122,15 @@ class Helper
      *      PayPal\Express      => \Omnipay\PayPal\ExpressGateway
      *      PayPal_Express      => \Omnipay\PayPal\ExpressGateway
      *
-     * @param  string  $shortName The short gateway name
+     * @param  string  $shortName The short gateway name or the FQCN
      * @return string  The fully namespaced gateway class name
      */
     public static function getGatewayClassName($shortName)
     {
         if (0 === strpos($shortName, '\\')) {
+            return $shortName;
+        }
+        if (0 === strpos($shortName, 'Omnipay\\')) {
             return $shortName;
         }
 
