@@ -12,7 +12,6 @@ use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
 
 class Client implements ClientInterface
 {

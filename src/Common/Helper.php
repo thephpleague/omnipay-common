@@ -5,8 +5,6 @@
 
 namespace Omnipay\Common;
 
-use InvalidArgumentException;
-
 /**
  * Helper class
  *

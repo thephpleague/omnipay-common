@@ -6,7 +6,6 @@ use Mockery as m;
 use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Tests\TestCase;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AbstractGatewayTest extends TestCase
 {
