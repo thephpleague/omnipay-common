@@ -78,7 +78,7 @@ class ItemBag implements \IteratorAggregate, \Countable
      *
      * @return \ArrayIterator An \ArrayIterator instance
      */
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->items);
     }
