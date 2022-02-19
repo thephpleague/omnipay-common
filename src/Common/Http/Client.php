@@ -2,7 +2,6 @@
 
 namespace Omnipay\Common\Http;
 
-use function GuzzleHttp\Psr7\str;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
@@ -12,7 +11,6 @@ use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
 
 class Client implements ClientInterface
 {
