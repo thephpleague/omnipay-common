@@ -212,11 +212,13 @@ abstract class AbstractResponse implements ResponseInterface
 
         $hiddenFields = '';
         foreach ($this->getRedirectData() as $key => $value) {
-            $hiddenFields .= sprintf(
-                '<input type="hidden" name="%1$s" value="%2$s" />',
-                htmlentities($key, ENT_QUOTES, 'UTF-8', false),
-                htmlentities($value, ENT_QUOTES, 'UTF-8', false)
-            )."\n";
+            if (!is_null($value)) {
+                $hiddenFields .= sprintf(
+                    '<input type="hidden" name="%1$s" value="%2$s" />',
+                    htmlentities($key, ENT_QUOTES, 'UTF-8', false),
+                    htmlentities($value, ENT_QUOTES, 'UTF-8', false)
+                  )."\n";
+            }
         }
 
         $output = '<!DOCTYPE html>
