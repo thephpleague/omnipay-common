@@ -4,7 +4,7 @@
 
 [![PHPUnit tests](https://github.com/thephpleague/omnipay-common/actions/workflows/phpunit.yml/badge.svg)](https://github.com/thephpleague/omnipay-common/actions/workflows/phpunit.yml)
 [![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
+[![Software License][ico-license]](LICENSE)
 [![Total Downloads][ico-downloads]][link-downloads]
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
@@ -21,10 +21,10 @@ Please see [UPGRADE](UPGRADE.md) for more information on how to upgrade to the l
 ## Support
 
 If you are having general issues with Omnipay, we suggest posting on
-[Stack Overflow](http://stackoverflow.com/). Be sure to add the
-[omnipay tag](http://stackoverflow.com/questions/tagged/omnipay) so it can be easily found.
+[Stack Overflow](https://stackoverflow.com/). Be sure to add the
+[omnipay tag](https://stackoverflow.com/questions/tagged/omnipay) so it can be easily found.
 
-If you want to keep up to date with release anouncements, discuss ideas for the project,
+If you want to keep up to date with release announcements, discuss ideas for the project,
 or ask more detailed questions, there is also a [mailing list](https://groups.google.com/forum/#!forum/omnipay) which
 you can subscribe to.
 
@@ -39,14 +39,11 @@ If you discover any security related issues, please email barryvdh@gmail.com ins
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/omnipay/common.svg?style=flat
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
-[ico-build]: https://img.shields.io/travis/thephpleague/omnipay-common/master.svg?style=flat
 [ico-downloads]: https://img.shields.io/packagist/dt/omnipay/common.svg?style=flat
 
 [link-packagist]: https://packagist.org/packages/omnipay/common
-[link-travis]: https://travis-ci.org/thephpleague/omnipay-common
 [link-downloads]: https://packagist.org/packages/omnipay/common
-[link-contributors]: ../../contributors
