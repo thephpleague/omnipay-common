@@ -10,12 +10,11 @@ jobs:
   phpunit:
     name: "PHPUnit tests"
 
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
         dependencies:
-          - "lowest"
           - "highest"
         php-version:
           - "7.2"
@@ -25,8 +24,10 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
-        operating-system:
-          - "ubuntu-latest"
+
+        include:
+          - php-version: '7.2'
+            dependencies: "lowest"
 
     steps:
       - name: "Checkout"
@@ -42,11 +43,11 @@ jobs:
 
       - name: "Install lowest dependencies"
         if: ${{ matrix.dependencies == 'lowest' }}
-        run: "composer update --prefer-lowest --no-interaction --no-progress --no-suggest"
+        run: "composer update --prefer-lowest --no-interaction --no-progress"
 
       - name: "Install highest dependencies"
         if: ${{ matrix.dependencies == 'highest' }}
-        run: "composer update --no-interaction --no-progress --no-suggest"
+        run: "composer update --no-interaction --no-progress"
 
       - name: "Tests"
         run: "vendor/bin/phpunit"
