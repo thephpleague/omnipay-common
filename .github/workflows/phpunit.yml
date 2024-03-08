@@ -10,12 +10,11 @@ jobs:
   phpunit:
     name: "PHPUnit tests"
 
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
         dependencies:
-          - "lowest"
           - "highest"
         php-version:
           - "7.2"
@@ -25,8 +24,10 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
-        operating-system:
-          - "ubuntu-latest"
+
+        include:
+          - php-version: '7.2'
+            dependencies: "lowest"
 
     steps:
       - name: "Checkout"
