@@ -10,6 +10,7 @@ interface NotificationInterface extends MessageInterface
     const STATUS_COMPLETED = 'completed';
     const STATUS_PENDING = 'pending';
     const STATUS_FAILED = 'failed';
+    const STATUS_REFUNDED = 'refunded';
 
     /**
      * Gateway Reference
