@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Http\Client\Exception\NetworkException;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
+use Psr\Http\Client\ClientInterface as HttpClient;
 use Psr\Http\Message\RequestFactoryInterface as RequestFactory;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;

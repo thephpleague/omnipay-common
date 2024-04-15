@@ -2,16 +2,14 @@
 
 namespace Omnipay\Common\Http;
 
-use function GuzzleHttp\Psr7\str;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
+use Psr\Http\Client\ClientInterface as HttpClientInterface;
+use Http\Discovery\Psr18ClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 class Client implements ClientInterface
@@ -20,7 +18,7 @@ class Client implements ClientInterface
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
      * Note: Will be changed to PSR-18 when released
      *
-     * @var HttpClient
+     * @var HttpClientInterface
      */
     private $httpClient;
 
@@ -31,8 +29,8 @@ class Client implements ClientInterface
 
     public function __construct($httpClient = null, RequestFactoryInterface $requestFactory = null)
     {
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
+        $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
     }
 
     /**
