@@ -15,9 +15,6 @@ interface ClientInterface
      *
      * @param string                               $method
      * @param string|UriInterface                  $uri
-     * @param array                                $headers
-     * @param resource|string|StreamInterface|null $body
-     * @param string                               $protocolVersion
      *
      * @throws RequestException when the HTTP client is passed a request that is invalid and cannot be sent.
      * @throws NetworkException if there is an error with the network or the remote server cannot be reached.
@@ -26,9 +23,6 @@ interface ClientInterface
      */
     public function request(
         $method,
-        $uri,
-        array $headers = [],
-        $body = null,
-        $protocolVersion = '1.1'
+        $uri
     );
 }

@@ -6,8 +6,8 @@ use GuzzleHttp\Psr7\Response;
 use Http\Client\Exception\NetworkException;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
+use Psr\Http\Client\ClientInterface as HttpClient;
+use Psr\Http\Message\RequestFactoryInterface as RequestFactory;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
 
@@ -26,9 +26,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -52,9 +49,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -79,9 +73,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -106,9 +97,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $exception = new \Exception('Something went wrong');
