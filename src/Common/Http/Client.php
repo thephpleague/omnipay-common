@@ -40,7 +40,9 @@ class Client implements ClientInterface
      * @throws \Http\Client\Exception
      */
     public function request(
-        $method, $uri) {
+        $method,
+        $uri
+    ) {
         $request = $this->requestFactory->createRequest($method, $uri);
 
         return $this->sendRequest($request);
