@@ -6,10 +6,10 @@ use function GuzzleHttp\Psr7\str;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -25,33 +25,25 @@ class Client implements ClientInterface
     private $httpClient;
 
     /**
-     * @var RequestFactory
+     * @var RequestFactoryInterface
      */
     private $requestFactory;
 
-    public function __construct($httpClient = null, RequestFactory $requestFactory = null)
+    public function __construct($httpClient = null, RequestFactoryInterface $requestFactory = null)
     {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
     }
 
     /**
-     * @param $method
-     * @param $uri
-     * @param array $headers
-     * @param string|array|resource|StreamInterface|null $body
-     * @param string $protocolVersion
+     * @param string $method
+     * @param string|UriInterface $uri
      * @return ResponseInterface
      * @throws \Http\Client\Exception
      */
     public function request(
-        $method,
-        $uri,
-        array $headers = [],
-        $body = null,
-        $protocolVersion = '1.1'
-    ) {
-        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
+        $method, $uri) {
+        $request = $this->requestFactory->createRequest($method, $uri);
 
         return $this->sendRequest($request);
     }
