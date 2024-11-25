@@ -83,7 +83,7 @@ class Omnipay
      *
      * @param GatewayFactory $factory A GatewayFactory instance
      */
-    public static function setFactory(GatewayFactory $factory = null)
+    public static function setFactory(?GatewayFactory $factory = null)
     {
         self::$factory = $factory;
     }

@@ -190,7 +190,7 @@ class CreditCard
      * @param array $parameters An associative array of parameters
      * @return $this
      */
-    public function initialize(array $parameters = null)
+    public function initialize(?array $parameters = null)
     {
         $this->parameters = new ParameterBag;
 
