@@ -22,7 +22,7 @@ class Item implements ItemInterface
      *
      * @param array|null $parameters An array of parameters to set on the new object
      */
-    public function __construct(array $parameters = null)
+    public function __construct(?array $parameters = null)
     {
         $this->initialize($parameters);
     }
@@ -33,7 +33,7 @@ class Item implements ItemInterface
      * @param array|null $parameters An array of parameters to set on this object
      * @return $this Item
      */
-    public function initialize(array $parameters = null)
+    public function initialize(?array $parameters = null)
     {
         $this->parameters = new ParameterBag;
 

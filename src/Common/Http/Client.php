@@ -29,7 +29,7 @@ class Client implements ClientInterface
      */
     private $requestFactory;
 
-    public function __construct($httpClient = null, RequestFactory $requestFactory = null)
+    public function __construct($httpClient = null, ?RequestFactory $requestFactory = null)
     {
         $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
