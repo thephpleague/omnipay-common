@@ -79,7 +79,7 @@ class Helper
      * @param mixed $target     The object to set parameters on
      * @param array $parameters An array of parameters to set
      */
-    public static function initialize($target, array $parameters = null)
+    public static function initialize($target, ?array $parameters = null)
     {
         if ($parameters) {
             foreach ($parameters as $key => $value) {
