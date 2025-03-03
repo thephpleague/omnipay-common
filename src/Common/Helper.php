@@ -63,7 +63,7 @@ class Helper
     public static function validateLuhn($number)
     {
         $str = '';
-        foreach (array_reverse(str_split($number)) as $i => $c) {
+        foreach (array_reverse(str_split((string) $number)) as $i => $c) {
             $str .= $i % 2 ? $c * 2 : $c;
         }
 

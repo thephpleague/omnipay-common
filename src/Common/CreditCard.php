@@ -377,7 +377,7 @@ class CreditCard
     public function setNumber($value)
     {
         // strip non-numeric characters
-        return $this->setParameter('number', preg_replace('/\D/', '', $value));
+        return $this->setParameter('number', preg_replace('/\D/', '', (string) $value));
     }
 
     /**
@@ -412,8 +412,10 @@ class CreditCard
      */
     public function getBrand()
     {
+        $number = (string) $this->getNumber();
+
         foreach ($this->getSupportedBrands() as $brand => $val) {
-            if (preg_match($val, $this->getNumber())) {
+            if (preg_match($val, $number)) {
                 return $brand;
             }
         }
