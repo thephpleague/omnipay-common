@@ -6,6 +6,9 @@ use Omnipay\Tests\TestCase;
 
 class ItemTest extends TestCase
 {
+    /** @var Item  */
+    protected $item;
+
     public function setUp() : void
     {
         $this->item = new Item;
