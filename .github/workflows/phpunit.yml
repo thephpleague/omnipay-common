@@ -50,5 +50,10 @@ jobs:
         if: ${{ matrix.dependencies == 'highest' }}
         run: "composer update --no-interaction --no-progress"
 
-      - name: "Tests"
+      - name: "Tests (PHPUnit 9)"
+        if: ${{ matrix.php-version <= '8.0' }}
+        run: "vendor/bin/phpunit --configuration phpunit9.xml.dist"
+
+      - name: "Tests (PHPUnit 10+)"
+        if: ${{ matrix.php-version >= '8.1' }}
         run: "vendor/bin/phpunit"
