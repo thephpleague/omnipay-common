@@ -205,6 +205,27 @@ abstract class AbstractRequest implements RequestInterface
     }
 
     /**
+     * Set whether you wish to generate and store a card token with this request.
+     *
+     * @param bool $value
+     * @return $this
+     */
+    public function setCreateToken($value)
+    {
+        return $this->setParameter('createToken', $value);
+    }
+
+    /**
+     * Get whether you wish to generate and store a card token with this request.
+     *
+     * @return bool
+     */
+    public function getCreateToken()
+    {
+        return $this->getParameter('createToken');
+    }
+
+    /**
      * Get the card token.
      *
      * @return string
