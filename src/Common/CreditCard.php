@@ -107,6 +107,7 @@ class CreditCard
     const BRAND_MAESTRO = 'maestro';
     const BRAND_FORBRUGSFORENINGEN = 'forbrugsforeningen';
     const BRAND_LASER = 'laser';
+    const BRAND_TROY = 'troy';
 
     /**
      * All known/supported card brands, and a regular expression to match them.
@@ -133,6 +134,7 @@ class CreditCard
         self::BRAND_MAESTRO => '/^(5[06-8]|6\d)\d{10,17}$/',
         self::BRAND_FORBRUGSFORENINGEN => '/^600722\d{10}$/',
         self::BRAND_LASER => '/^(6304|6706|6709|6771(?!89))\d{8}(\d{4}|\d{6,7})?$/',
+        self::BRAND_TROY => '/^(?:9792|65\d{2}|36|2205)\d{12}$/',
     );
 
     /**
