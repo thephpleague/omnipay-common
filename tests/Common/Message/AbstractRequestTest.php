@@ -226,9 +226,6 @@ class AbstractRequestTest extends TestCase
         $this->request->getAmount();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAmountInvalidFormatThrowsException()
     {
         $this->expectException(\InvalidArgumentException::class);
