@@ -423,6 +423,13 @@ class CreditCardTest extends TestCase
         $this->assertEquals('Suburb', $this->card->getAddress2());
     }
 
+    public function testBillingAddress3()
+    {
+        $this->card->setBillingAddress3('Building C, Room 308');
+        $this->assertEquals('Building C, Room 308', $this->card->getBillingAddress3());
+        $this->assertEquals('Building C, Room 308', $this->card->getAddress3());
+    }
+
     public function testBillingCity()
     {
         $this->card->setBillingCity('Quahog');
@@ -519,6 +526,12 @@ class CreditCardTest extends TestCase
         $this->assertEquals('Suburb', $this->card->getShippingAddress2());
     }
 
+    public function testShippingAddress3()
+    {
+        $this->card->setShippingAddress3('Building C, Room 308');
+        $this->assertEquals('Building C, Room 308', $this->card->getShippingAddress3());
+    }
+
     public function testShippingCity()
     {
         $this->card->setShippingCity('Quahog');
@@ -583,6 +596,14 @@ class CreditCardTest extends TestCase
         $this->assertEquals('Suburb', $this->card->getAddress2());
         $this->assertEquals('Suburb', $this->card->getBillingAddress2());
         $this->assertEquals('Suburb', $this->card->getShippingAddress2());
+    }
+
+    public function testAddress3()
+    {
+        $this->card->setAddress3('Building C, Room 308');
+        $this->assertEquals('Building C, Room 308', $this->card->getAddress3());
+        $this->assertEquals('Building C, Room 308', $this->card->getBillingAddress3());
+        $this->assertEquals('Building C, Room 308', $this->card->getShippingAddress3());
     }
 
     public function testCity()
