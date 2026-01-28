@@ -67,15 +67,15 @@ class Client implements ClientInterface
             $request = $request->withHeader($name, $value);
         }
 
-        if (null !== $body) {
+        if ($body !== '' && $body !== null) {
             if (is_resource($body)) {
                 $stream = $this->streamFactory->createStreamFromResource($body);
-            } elseif (is_string($body)) {
-                $stream = $this->streamFactory->createStream($body);
             } elseif ($body instanceof StreamInterface) {
                 $stream = $body;
+            } elseif (is_scalar($body) || (is_object($body) && method_exists($body, '__toString'))) {
+                $stream = $this->streamFactory->createStream((string) $body);
             } else {
-                throw new \InvalidArgumentException('Invalid body type.');
+                throw new \InvalidArgumentException('Invalid body type: ' . gettype($body));
             }
             $request = $request->withBody($stream);
         }
