@@ -27,6 +27,9 @@ class Client implements ClientInterface
      */
     private $requestFactory;
 
+    /**
+     * @var StreamFactoryInterface
+     */
     private $streamFactory;
 
     /**
