@@ -46,7 +46,7 @@
         "php-http/client-implementation": "^1",
         "php-http/message": "^1.5",
         "php-http/discovery": "^1.14",
-        "symfony/http-foundation": "^5.4|^6|^7|^8",
+        "symfony/http-foundation": "^5.4.50|^6|^7|^8",
         "moneyphp/money": "^3.1|^4.0.3",
         "psr/http-factory": "^1"
     },
