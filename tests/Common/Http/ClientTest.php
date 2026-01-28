@@ -10,6 +10,7 @@ use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class ClientTest extends TestCase
 {
@@ -26,9 +27,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -37,13 +35,12 @@ class ClientTest extends TestCase
             ->once();
 
         $this->assertSame($response, $client->request('GET', '/path'));
-
     }
 
-    public function testSendException()
+    public function testSendPsrFactory()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
         $client = new Client($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
@@ -52,9 +49,28 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
+        ])->andReturn($request);
+
+        $mockClient->shouldReceive('sendRequest')
+            ->with($request)
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('GET', '/path'));
+    }
+
+    public function testSendException()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('GET', '/path');
+        $response = new Response();
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'GET',
+            '/path',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -79,9 +95,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -106,9 +119,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $exception = new \Exception('Something went wrong');

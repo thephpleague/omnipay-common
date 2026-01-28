@@ -2,10 +2,8 @@
 
 namespace Omnipay\Common\Http;
 
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\RequestFactory;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
@@ -16,21 +14,24 @@ class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
-     * Note: Will be changed to PSR-18 when released
      *
-     * @var HttpClient
+     * @var \Psr\Http\Client\ClientInterface|\Http\Client\HttpClient
      */
     private $httpClient;
 
     /**
-     * @var RequestFactory
+     * @var \Psr\Http\Message\RequestFactoryInterface|\Http\Message\RequestFactory
      */
     private $requestFactory;
 
-    public function __construct($httpClient = null, ?RequestFactory $requestFactory = null)
+    /**
+     * @param \Psr\Http\Client\ClientInterface|\Http\Client\HttpClient|null $httpClient
+     * @param \Psr\Http\Message\RequestFactoryInterface|\Http\Message\RequestFactory|null $requestFactory
+     */
+    public function __construct($httpClient = null, $requestFactory = null)
     {
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
+        $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
     }
 
     /**
@@ -49,7 +50,15 @@ class Client implements ClientInterface
         $body = null,
         $protocolVersion = '1.1'
     ) {
-        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
+        $request = $this->requestFactory->createRequest($method, $uri)->withProtocolVersion($protocolVersion);
+
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
+        if (null !== $body) {
+            $request = $request->withBody($body);
+        }
 
         return $this->sendRequest($request);
     }
