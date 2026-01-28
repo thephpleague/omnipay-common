@@ -221,4 +221,194 @@ class ClientTest extends TestCase
             throw $e;
         }
     }
+
+    public function testRequestWithNullBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) {
+                return $request->getBody()->getSize() === 0;
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('GET', '/path', [], null));
+    }
+
+    public function testRequestWithEmptyStringBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) {
+                return $request->getBody()->getSize() === 0;
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('GET', '/path', [], ''));
+    }
+
+    public function testRequestWithStreamInterfaceBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+        $streamFactory = new StreamFactory();
+        $stream = $streamFactory->createStream('test content');
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) use ($stream) {
+                return $request->getBody() === $stream;
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('POST', '/path', [], $stream));
+    }
+
+    public function testRequestWithResourceBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+        $mockStream = m::mock(StreamFactoryInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory(), $mockStream);
+
+        $response = new Response();
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'resource content');
+        rewind($resource);
+
+        $streamFactory = new StreamFactory();
+        $stream = $streamFactory->createStream('resource content');
+
+        $mockStream->shouldReceive('createStreamFromResource')
+            ->with($resource)
+            ->andReturn($stream);
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) use ($stream) {
+                return $request->getBody() === $stream;
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('POST', '/path', [], $resource));
+
+        fclose($resource);
+    }
+
+    public function testRequestWithIntegerBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) {
+                return $request->getBody()->getContents() === '12345';
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('POST', '/path', [], 12345));
+    }
+
+    public function testRequestWithFloatBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) {
+                return $request->getBody()->getContents() === '123.45';
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('POST', '/path', [], 123.45));
+    }
+
+    public function testRequestWithObjectToStringBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+
+        $client = new Client($mockClient, Psr17FactoryDiscovery::findRequestFactory());
+
+        $response = new Response();
+
+        $object = new class {
+            public function __toString()
+            {
+                return 'object content';
+            }
+        };
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) {
+                return $request->getBody()->getContents() === 'object content';
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('POST', '/path', [], $object));
+    }
+
+    public function testRequestWithInvalidBodyType()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+        ])->andReturn($request);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid body type: array');
+
+        $client->request('POST', '/path', [], ['invalid' => 'array']);
+    }
+
+    public function testRequestWithInvalidObjectBody()
+    {
+        $mockClient = m::mock(\Psr\Http\Client\ClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+
+        $client = new Client($mockClient, $mockFactory);
+
+        $request = new Request('POST', '/path');
+
+        $mockFactory->shouldReceive('createRequest')->withArgs([
+            'POST',
+            '/path',
+        ])->andReturn($request);
+
+        $object = new \stdClass();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid body type: object');
+
+        $client->request('POST', '/path', [], $object);
+    }
 }
