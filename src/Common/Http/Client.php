@@ -4,10 +4,13 @@ namespace Omnipay\Common\Http;
 
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
+use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
 class Client implements ClientInterface
@@ -20,25 +23,30 @@ class Client implements ClientInterface
     private $httpClient;
 
     /**
-     * @var \Psr\Http\Message\RequestFactoryInterface|\Http\Message\RequestFactory
+     * @var RequestFactoryInterface|RequestFactory
      */
     private $requestFactory;
 
+    private $streamFactory;
+
     /**
      * @param \Psr\Http\Client\ClientInterface|\Http\Client\HttpClient|null $httpClient
-     * @param \Psr\Http\Message\RequestFactoryInterface|\Http\Message\RequestFactory|null $requestFactory
      */
-    public function __construct($httpClient = null, $requestFactory = null)
-    {
+    public function __construct(
+        $httpClient = null,
+        null|RequestFactoryInterface|RequestFactory $requestFactory = null,
+        null|StreamFactoryInterface $streamFactory = null
+    ) {
         $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
         $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
+        $this->streamFactory = $streamFactory ?: Psr17FactoryDiscovery::findStreamFactory();
     }
 
     /**
      * @param $method
      * @param $uri
      * @param array $headers
-     * @param string|array|resource|StreamInterface|null $body
+     * @param string|resource|StreamInterface|null $body
      * @param string $protocolVersion
      * @return ResponseInterface
      * @throws \Http\Client\Exception
@@ -57,7 +65,16 @@ class Client implements ClientInterface
         }
 
         if (null !== $body) {
-            $request = $request->withBody($body);
+            if (is_resource($body)) {
+                $stream = $this->streamFactory->createStreamFromResource($body);
+            } elseif (is_string($body)) {
+                $stream = $this->streamFactory->createStream($body);
+            } elseif ($body instanceof StreamInterface) {
+                $stream = $body;
+            } else {
+                throw new \InvalidArgumentException('Invalid body type.');
+            }
+            $request = $request->withBody($stream);
         }
 
         return $this->sendRequest($request);

@@ -17,10 +17,6 @@ jobs:
         dependencies:
           - "highest"
         php-version:
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
@@ -28,7 +24,7 @@ jobs:
           - "8.5"
 
         include:
-          - php-version: '7.2'
+          - php-version: '8.1'
             dependencies: "lowest"
 
     steps:
@@ -51,10 +47,5 @@ jobs:
         if: ${{ matrix.dependencies == 'highest' }}
         run: "composer update --no-interaction --no-progress"
 
-      - name: "Tests (PHPUnit 9)"
-        if: ${{ matrix.php-version <= '8.0' }}
-        run: "vendor/bin/phpunit --configuration phpunit9.xml.dist"
-
       - name: "Tests (PHPUnit 10+)"
-        if: ${{ matrix.php-version >= '8.1' }}
         run: "vendor/bin/phpunit"
