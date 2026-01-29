@@ -11,59 +11,14 @@ use Omnipay\Common\Http\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * @deprecated use Psr18Client instead
  */
-class Client implements ClientInterface
+class Client extends AbstractClient
 {
-    /**
-     * The Http Client which implements `public function sendRequest(RequestInterface $request)`
-     *
-     * @var HttpClient
-     */
-    private $httpClient;
-
-    /**
-     * @var RequestFactory
-     */
-    private $requestFactory;
-
     public function __construct($httpClient = null, ?RequestFactory $requestFactory = null)
     {
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function request(
-        $method,
-        $uri,
-        array $headers = [],
-        $body = null,
-        $protocolVersion = '1.1'
-    ) {
-        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
-
-        return $this->sendRequest($request);
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     * @throws \Http\Client\Exception
-     */
-    private function sendRequest(RequestInterface $request)
-    {
-        try {
-            return $this->httpClient->sendRequest($request);
-        } catch (\Http\Client\Exception\NetworkException $networkException) {
-            throw new NetworkException($networkException->getMessage(), $request, $networkException);
-        } catch (\Exception $exception) {
-            throw new RequestException($exception->getMessage(), $request, $exception);
-        }
+        parent::__construct($httpClient, $requestFactory);
     }
 }
