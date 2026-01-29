@@ -4,24 +4,25 @@ namespace Omnipay\Common\Http;
 
 use GuzzleHttp\Psr7\Response;
 use Http\Client\Exception\NetworkException;
-use Http\Discovery\MessageFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Factory\Guzzle\StreamFactory;
 use Mockery as m;
 use GuzzleHttp\Psr7\Request;
-use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Tests\TestCase;
+use Psr\Http\Client\ClientInterface as HttpClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
-class ClientTest extends TestCase
+class PsrClientTest extends TestCase
 {
 
     public function testSend()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
-        $client = new Client($mockClient, $mockFactory);
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new PsrClient($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
         $response = new Response();
@@ -29,13 +30,9 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
-            ->with($request)
             ->andReturn($response)
             ->once();
 
@@ -44,9 +41,8 @@ class ClientTest extends TestCase
 
     public function testSendRequest()
     {
-        $mockClient = m::mock(HttpClient::class);
-
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -56,7 +52,36 @@ class ClientTest extends TestCase
                     && $request->getUri()->getPath() === '/path'
                     && $request->getHeader('Content-Type')[0] === 'application/json'
                     && $request->getBody()->getContents() === '{"a":"b"}'
-                   ;
+                    ;
+            })
+            ->andReturn($response)
+            ->once();
+
+        $this->assertSame($response, $client->request('GET', '/path', [
+            'Content-Type' => 'application/json'
+        ], json_encode(['a' => 'b'])));
+    }
+
+    public function testSendRequestBody()
+    {
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockStream = m::mock(StreamFactoryInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory(), $mockStream);
+
+        $request = new Request('GET', '/path');
+        $response = new Response();
+
+        $streamFactory = new StreamFactory();
+        $stream = $streamFactory->createStream('{"a":"b"}');
+
+        $mockStream->shouldReceive('createStream')
+            ->withArgs(['{"a":"b"}'])
+            ->andReturn($stream);
+
+        $mockClient->shouldReceive('sendRequest')
+            ->withArgs(function (RequestInterface $request) use ($stream) {
+                return $request->getBody() === $stream;
             })
             ->andReturn($response)
             ->once();
@@ -68,9 +93,9 @@ class ClientTest extends TestCase
 
     public function testSendException()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
-        $client = new Client($mockClient, $mockFactory);
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new PsrClient($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
         $response = new Response();
@@ -78,9 +103,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -95,9 +117,9 @@ class ClientTest extends TestCase
 
     public function testSendNetworkException()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
-        $client = new Client($mockClient, $mockFactory);
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new PsrClient($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
         $response = new Response();
@@ -105,9 +127,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $mockClient->shouldReceive('sendRequest')
@@ -122,9 +141,9 @@ class ClientTest extends TestCase
 
     public function testSendExceptionGetRequest()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $mockFactory = m::mock(RequestFactory::class);
-        $client = new Client($mockClient, $mockFactory);
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockFactory = m::mock(RequestFactoryInterface::class);
+        $client = new PsrClient($mockClient, $mockFactory);
 
         $request = new Request('GET', '/path');
         $response = new Response();
@@ -132,9 +151,6 @@ class ClientTest extends TestCase
         $mockFactory->shouldReceive('createRequest')->withArgs([
             'GET',
             '/path',
-            [],
-            null,
-            '1.1',
         ])->andReturn($request);
 
         $exception = new \Exception('Something went wrong');
@@ -159,8 +175,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithNullBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -176,8 +193,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithEmptyStringBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -193,8 +211,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithStreamInterfaceBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
         $streamFactory = new StreamFactory();
@@ -212,8 +231,10 @@ class ClientTest extends TestCase
 
     public function testRequestWithResourceBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+        $mockStream = m::mock(StreamFactoryInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory(), $mockStream);
 
         $response = new Response();
         $resource = fopen('php://memory', 'r+');
@@ -223,9 +244,13 @@ class ClientTest extends TestCase
         $streamFactory = new StreamFactory();
         $stream = $streamFactory->createStream('resource content');
 
+        $mockStream->shouldReceive('createStreamFromResource')
+            ->with($resource)
+            ->andReturn($stream);
+
         $mockClient->shouldReceive('sendRequest')
             ->withArgs(function (RequestInterface $request) use ($stream) {
-                return $request->getBody()->getContents() === 'resource content';
+                return $request->getBody() === $stream;
             })
             ->andReturn($response)
             ->once();
@@ -237,8 +262,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithIntegerBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -254,8 +280,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithFloatBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -271,8 +298,9 @@ class ClientTest extends TestCase
 
     public function testRequestWithObjectToStringBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $response = new Response();
 
@@ -295,24 +323,26 @@ class ClientTest extends TestCase
 
     public function testRequestWithInvalidBodyType()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid resource type: array');
+        $this->expectExceptionMessage('Invalid body type: array');
 
         $client->request('POST', '/path', [], ['invalid' => 'array']);
     }
 
     public function testRequestWithInvalidObjectBody()
     {
-        $mockClient = m::mock(HttpClient::class);
-        $client = new Client($mockClient, MessageFactoryDiscovery::find());
+        $mockClient = m::mock(HttpClientInterface::class);
+
+        $client = new PsrClient($mockClient, Psr17FactoryDiscovery::findRequestFactory());
 
         $object = new \stdClass();
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid resource type: object');
+        $this->expectExceptionMessage('Invalid body type: object');
 
         $client->request('POST', '/path', [], $object);
     }
