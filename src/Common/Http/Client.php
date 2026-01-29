@@ -2,57 +2,42 @@
 
 namespace Omnipay\Common\Http;
 
-use Http\Discovery\Psr17FactoryDiscovery;
-use Http\Discovery\Psr18ClientDiscovery;
+use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\MessageFactoryDiscovery;
 use Http\Message\RequestFactory;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
+/**
+ * @deprecated use Psr18Client instead
+ */
 class Client implements ClientInterface
 {
     /**
      * The Http Client which implements `public function sendRequest(RequestInterface $request)`
      *
-     * @var \Psr\Http\Client\ClientInterface|\Http\Client\HttpClient
+     * @var HttpClient
      */
     private $httpClient;
 
     /**
-     * @var RequestFactoryInterface|RequestFactory
+     * @var RequestFactory
      */
     private $requestFactory;
 
-    /**
-     * @var StreamFactoryInterface
-     */
-    private $streamFactory;
-
-    /**
-     * @param \Psr\Http\Client\ClientInterface|\Http\Client\HttpClient|null $httpClient
-     */
-    public function __construct(
-        $httpClient = null,
-        null|RequestFactoryInterface|RequestFactory $requestFactory = null,
-        null|StreamFactoryInterface $streamFactory = null
-    ) {
-        $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
-        $this->streamFactory = $streamFactory ?: Psr17FactoryDiscovery::findStreamFactory();
+    public function __construct($httpClient = null, ?RequestFactory $requestFactory = null)
+    {
+        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
     }
 
     /**
-     * @param $method
-     * @param $uri
-     * @param array $headers
-     * @param string|resource|StreamInterface|null $body
-     * @param string $protocolVersion
-     * @return ResponseInterface
-     * @throws \Http\Client\Exception
+     * {@inheritDoc}
      */
     public function request(
         $method,
@@ -61,24 +46,7 @@ class Client implements ClientInterface
         $body = null,
         $protocolVersion = '1.1'
     ) {
-        $request = $this->requestFactory->createRequest($method, $uri)->withProtocolVersion($protocolVersion);
-
-        foreach ($headers as $name => $value) {
-            $request = $request->withHeader($name, $value);
-        }
-
-        if ($body !== '' && $body !== null) {
-            if (is_resource($body)) {
-                $stream = $this->streamFactory->createStreamFromResource($body);
-            } elseif ($body instanceof StreamInterface) {
-                $stream = $body;
-            } elseif (is_scalar($body) || (is_object($body) && method_exists($body, '__toString'))) {
-                $stream = $this->streamFactory->createStream((string) $body);
-            } else {
-                throw new \InvalidArgumentException('Invalid body type: ' . gettype($body));
-            }
-            $request = $request->withBody($stream);
-        }
+        $request = $this->requestFactory->createRequest($method, $uri, $headers, $body, $protocolVersion);
 
         return $this->sendRequest($request);
     }
