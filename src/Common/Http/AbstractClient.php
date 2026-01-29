@@ -87,7 +87,7 @@ abstract class AbstractClient implements ClientInterface
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
-     * @throws \Http\Client\Exception
+     * @throws NetworkException|RequestException
      */
     private function sendRequest(RequestInterface $request)
     {
@@ -95,7 +95,7 @@ abstract class AbstractClient implements ClientInterface
             return $this->httpClient->sendRequest($request);
         } catch (NetworkExceptionInterface $networkException) {
             throw new NetworkException($networkException->getMessage(), $request, $networkException);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             throw new RequestException($exception->getMessage(), $request, $exception);
         }
     }
