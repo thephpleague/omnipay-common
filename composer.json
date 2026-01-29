@@ -42,7 +42,7 @@
         "classmap": ["tests/OmnipayTest.php"]
     },
     "require": {
-        "php": "^8",
+        "php": "^7.2|^8",
         "php-http/client-implementation": "^1",
         "php-http/message": "^1.5",
         "php-http/discovery": "^1.14",

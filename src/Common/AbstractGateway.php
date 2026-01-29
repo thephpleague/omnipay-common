@@ -5,7 +5,6 @@
 
 namespace Omnipay\Common;
 
-use Omnipay\Common\Http\Client;
 use Omnipay\Common\Http\ClientInterface;
 use Omnipay\Common\Http\PsrClient;
 use Symfony\Component\HttpFoundation\ParameterBag;

@@ -24,7 +24,7 @@ abstract class AbstractClient implements ClientInterface
     private $requestFactory;
 
     /** @var StreamFactoryInterface|null */
-    private $streamFactory = null;
+    private $streamFactory;
 
     public function __construct(
         $httpClient = null,
@@ -93,7 +93,7 @@ abstract class AbstractClient implements ClientInterface
     {
         try {
             return $this->httpClient->sendRequest($request);
-        } catch (\Http\Client\Exception\NetworkException|NetworkExceptionInterface $networkException) {
+        } catch (NetworkExceptionInterface $networkException) {
             throw new NetworkException($networkException->getMessage(), $request, $networkException);
         } catch (\Exception $exception) {
             throw new RequestException($exception->getMessage(), $request, $exception);
