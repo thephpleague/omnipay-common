@@ -28,7 +28,7 @@ abstract class AbstractClient implements ClientInterface
 
     public function __construct(
         $httpClient = null,
-        RequestFactoryInterface|RequestFactory $requestFactory = null,
+        null|RequestFactoryInterface|RequestFactory $requestFactory = null,
         ?StreamFactoryInterface $streamFactory = null
     ) {
         $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
