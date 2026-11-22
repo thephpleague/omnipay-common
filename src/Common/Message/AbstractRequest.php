@@ -273,7 +273,7 @@ abstract class AbstractRequest implements RequestInterface
             return null;
         } elseif ($amount instanceof Money) {
             $money = $amount;
-        } elseif (is_integer($amount)) {
+        } elseif (is_int($amount)) {
             $money = new Money($amount, $currency);
         } else {
             $moneyParser = new DecimalMoneyParser($this->getCurrencies());
